@@ -61,6 +61,8 @@ pub fn run(config: Config) void {
     app_desc.window_title = config.window_title;
     app_desc.enable_clipboard = config.enable_clipboard;
     app_desc.clipboard_size = config.clipboard_size;
+
+    app_desc.alpha = false;
     _ = sokol.sapp_run(&app_desc);
 }
 
@@ -111,6 +113,11 @@ export fn update() void {
 }
 
 export fn event(e: [*c]const sokol.sapp_event) void {
+    // macos only and subject to removal since this exists only in a fork of Sokol
+    if (@enumToInt(e[0].type) == 22) {
+        var file = sapp_get_clipboard_string();
+        std.debug.print("file dragged: {s}\n", .{file});
+    }
     _ = simgui_handle_event(e);
 }
 
