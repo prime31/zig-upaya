@@ -8,10 +8,13 @@ pub const filebrowser = @import("filebrowser");
 
 // types
 pub const Texture = @import("texture.zig").Texture;
+pub const MenuItem = @import("menu.zig").MenuItem;
 
 // namespaces
 pub const mem = @import("mem/mem.zig");
 pub const fs = @import("fs.zig");
+pub const colors = @import("colors.zig");
+pub const menu = @import("menu.zig");
 
 usingnamespace sokol;
 usingnamespace imgui;

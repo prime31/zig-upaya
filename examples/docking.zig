@@ -14,34 +14,34 @@ pub fn main() !void {
 fn init() void {}
 
 fn update() void {
-    if (igBeginMenuBar()) {
-        defer igEndMenuBar();
-
-        if (igBeginMenu("File", true)) {
-            defer igEndMenu();
-
-            _ = igMenuItemBool("New", "cmd+n", false, true);
-            _ = igMenuItemBool("Save", "cmd+s", false, true);
-        }
-
-        if (igBeginMenu("Edit", true)) {
-            defer igEndMenu();
-
-            _ = igMenuItemBool("Copy", "cmd+c", false, true);
-            _ = igMenuItemBool("Paste", "cmd+v", false, true);
-        }
-    }
+    upaya.menu.draw(&[_]upaya.MenuItem{ .{
+        .label = "File",
+        .children = &[_]upaya.MenuItem{
+            .{ .label = "New", .shortcut = "cmd+n" },
+            .{ .label = "Save", .shortcut = "cmd+s" },
+        },
+    }, .{
+        .label = "Edit",
+        .children = &[_]upaya.MenuItem{
+            .{ .label = "Copy", .shortcut = "cmd+c" },
+            .{ .label = "Paste", .shortcut = "cmd+v" },
+        },
+    } });
 
     _ = igBegin("Properties", null, ImGuiWindowFlags_None);
+    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(255, 0, 0));
     igEnd();
 
     _ = igBegin("Top Left", null, ImGuiWindowFlags_None);
+    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(0, 0, 255));
     igEnd();
 
     _ = igBegin("Bottom Left 1", null, ImGuiWindowFlags_None);
+    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(0, 255, 0));
     igEnd();
 
     _ = igBegin("Bottom Left 2", null, ImGuiWindowFlags_None);
+    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(100, 100, 100));
     igEnd();
 
     igSetNextWindowSize(.{ .x = 100, .y = 75 }, ImGuiCond_FirstUseEver);

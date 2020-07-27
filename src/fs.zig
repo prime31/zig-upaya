@@ -31,7 +31,7 @@ pub fn getSaveGamesFile(app: []const u8, filename: []const u8) ![]u8 {
 /// saves a serializable struct to disk
 pub fn savePrefs(app: []const u8, filename: []const u8, data: anytype) !void {
     const file = try getSaveGamesFile(app, filename);
-    var buf = upaya.mem.SdlBufferStream.init(file, .write);
+    var buf = upaya.mem.BufferStream.init(file, .write);
     defer buf.deinit();
 
     var serializer = std.io.serializer(.Little, .Byte, buf.writer());
@@ -40,7 +40,7 @@ pub fn savePrefs(app: []const u8, filename: []const u8, data: anytype) !void {
 
 pub fn readPrefs(comptime T: type, app: []const u8, filename: []const u8) !T {
     const file = try getSaveGamesFile(app, filename);
-    var buf = upaya.mem.SdlBufferStream.init(file, .read);
+    var buf = upaya.mem.BufferStream.init(file, .read);
     defer buf.deinit();
 
     var deserializer = std.io.deserializer(.Little, .Byte, buf.reader());
@@ -49,7 +49,7 @@ pub fn readPrefs(comptime T: type, app: []const u8, filename: []const u8) !T {
 
 pub fn savePrefsJson(app: []const u8, filename: []const u8, data: anytype) !void {
     const file = try getSaveGamesFile(app, filename);
-    var buf = upaya.mem.SdlBufferStream.init(file, .write);
+    var buf = upaya.mem.BufferStream.init(file, .write);
 
     try std.json.stringify(data, .{ .whitespace = .{} }, buf.writer());
 }
