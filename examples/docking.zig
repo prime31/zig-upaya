@@ -18,7 +18,7 @@ fn update() void {
         .label = "File",
         .children = &[_]upaya.MenuItem{
             .{ .label = "New", .shortcut = "cmd+n" },
-            .{ .label = "Save", .shortcut = "cmd+s" },
+            .{ .label = "Save", .shortcut = "cmd+s", .action = onSave },
         },
     }, .{
         .label = "Edit",
@@ -47,6 +47,13 @@ fn update() void {
     igSetNextWindowSize(.{ .x = 100, .y = 75 }, ImGuiCond_FirstUseEver);
     _ = igBegin("Floating", null, ImGuiWindowFlags_None);
     igEnd();
+}
+
+fn onSave() void {
+    var file = upaya.filebrowser.saveFileDialog("Save File", "", "*.txt");
+    if (file != null) {
+        std.debug.print("save file: {s}\n", .{file});
+    }
 }
 
 fn setupDockLayout(id: ImGuiID) void {
