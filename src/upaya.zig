@@ -34,6 +34,7 @@ pub const Config = struct {
 
     icon_font: bool = true,
     docking: bool = true,
+    dark_style: bool = false,
 };
 
 var state = struct {
@@ -72,13 +73,16 @@ export fn init() void {
     imgui_desc.no_default_font = true;
     sokol.simgui_setup(&imgui_desc);
 
-    var io = imgui.igGetIO();
-    if (state.config.docking) io.ConfigFlags |= imgui.ImGuiConfigFlags_DockingEnable;
+    var io = igGetIO();
+    if (state.config.docking) io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     io.ConfigDockingWithShift = true;
 
-    imgui.igStyleColorsDark(imgui.igGetStyle());
-    imgui.igGetStyle().FrameRounding = 0;
-    imgui.igGetStyle().WindowRounding = 0;
+    if (state.config.dark_style) {
+        igStyleColorsDark(igGetStyle());
+    }
+
+    igGetStyle().FrameRounding = 0;
+    igGetStyle().WindowRounding = 0;
 
     loadDefaultFont();
 
@@ -147,31 +151,31 @@ fn beginDock() void {
     igDockSpace(dockspace_id, .{}, ImGuiDockNodeFlags_None, null);
 }
 
-const font_awesome_range: [3]imgui.ImWchar = [_]imgui.ImWchar{ imgui.icons.icon_range_min, imgui.icons.icon_range_max, 0 };
+const font_awesome_range: [3]ImWchar = [_]ImWchar{ icons.icon_range_min, icons.icon_range_max, 0 };
 
 fn loadDefaultFont() void {
-    var io = imgui.igGetIO();
-    _ = imgui.ImFontAtlas_AddFontDefault(io.Fonts, null);
+    var io = igGetIO();
+    _ = ImFontAtlas_AddFontDefault(io.Fonts, null);
 
     // add FontAwesome optionally
     if (state.config.icon_font) {
-        var icons_config = imgui.ImFontConfig_ImFontConfig();
+        var icons_config = ImFontConfig_ImFontConfig();
         icons_config[0].MergeMode = true;
         icons_config[0].PixelSnapH = true;
         icons_config[0].FontDataOwnedByAtlas = false;
 
-        var data = @embedFile("assets/" ++ imgui.icons.font_icon_filename_fas);
-        _ = imgui.ImFontAtlas_AddFontFromMemoryTTF(io.Fonts, data, data.len, 14, icons_config, &font_awesome_range[0]);
+        var data = @embedFile("assets/" ++ icons.font_icon_filename_fas);
+        _ = ImFontAtlas_AddFontFromMemoryTTF(io.Fonts, data, data.len, 14, icons_config, &font_awesome_range[0]);
     }
 
     var w: i32 = undefined;
     var h: i32 = undefined;
     var bytes_per_pixel: i32 = undefined;
     var pixels: [*c]u8 = undefined;
-    imgui.ImFontAtlas_GetTexDataAsRGBA32(io.Fonts, &pixels, &w, &h, &bytes_per_pixel);
+    ImFontAtlas_GetTexDataAsRGBA32(io.Fonts, &pixels, &w, &h, &bytes_per_pixel);
 
     var tex = Texture.initFromData(pixels[0..@intCast(usize, w * h * bytes_per_pixel)], w, h);
-    imgui.ImFontAtlas_SetTexID(io.Fonts, tex.imTextureID());
+    ImFontAtlas_SetTexID(io.Fonts, tex.imTextureID());
 }
 
 pub fn loadTexture(pixels: []u8, width: i32, height: i32) sg_image {
