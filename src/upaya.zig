@@ -25,6 +25,7 @@ pub const Config = struct {
     shutdown: ?fn () void = null,
     /// optional, will be called if there is no previous dock layout setup with the id of the main dockspace node
     setupDockLayout: ?fn (ImGuiID) void = null,
+    onFileDropped: ?fn ([]const u8) void = null,
 
     width: c_int = 1024,
     height: c_int = 768,
@@ -43,12 +44,13 @@ pub const Config = struct {
 var state = struct {
     config: Config = undefined,
     pass_action: sg_pass_action = undefined,
+    cmd_down: bool = false,
 }{};
 
 pub fn run(config: Config) void {
     state.config = config;
 
-    var app_desc = std.mem.zeroes(sokol.sapp_desc);
+    var app_desc = std.mem.zeroes(sapp_desc);
     app_desc.init_cb = init;
     app_desc.frame_cb = update;
     app_desc.cleanup_cb = cleanup;
@@ -63,7 +65,7 @@ pub fn run(config: Config) void {
     app_desc.clipboard_size = config.clipboard_size;
 
     app_desc.alpha = false;
-    _ = sokol.sapp_run(&app_desc);
+    _ = sapp_run(&app_desc);
 }
 
 // Event functions
@@ -72,11 +74,11 @@ export fn init() void {
 
     var desc = std.mem.zeroes(sg_desc);
     desc.context = sapp_sgcontext();
-    sokol.sg_setup(&desc);
+    sg_setup(&desc);
 
     var imgui_desc = std.mem.zeroes(simgui_desc_t);
     imgui_desc.no_default_font = true;
-    sokol.simgui_setup(&imgui_desc);
+    simgui_setup(&imgui_desc);
 
     var io = igGetIO();
     if (state.config.docking) io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
@@ -112,12 +114,28 @@ export fn update() void {
     sg_commit();
 }
 
-export fn event(e: [*c]const sokol.sapp_event) void {
-    // macos only and subject to removal since this exists only in a fork of Sokol
-    if (@enumToInt(e[0].type) == 22) {
-        var file = sapp_get_clipboard_string();
-        std.debug.print("file dragged: {s}\n", .{file});
-        return;
+export fn event(e: [*c]const sapp_event) void {
+    // special handling of dropped files
+    if (e[0].type == .SAPP_EVENTTYPE_FILE_DROPPED) {
+        if (state.config.onFileDropped) |onFileDropped| {
+            const dropped_files = sapp_get_dropped_files();
+            var i: usize = 0;
+            while (i < e[0].drop_files_count) : (i += 1) {
+                onFileDropped(std.mem.spanZ(dropped_files[i]));
+            }
+        }
+    }
+
+    if (std.Target.current.os.tag == .macosx) {
+        if (e[0].type == .SAPP_EVENTTYPE_KEY_DOWN) {
+            if (e[0].key_code == .SAPP_KEYCODE_LEFT_SUPER) {
+                state.cmd_down = true;
+            } else if (state.cmd_down and e[0].key_code == .SAPP_KEYCODE_Q) {
+                sapp_request_quit();
+            }
+        } else if (e[0].type == .SAPP_EVENTTYPE_KEY_UP and e[0].key_code == .SAPP_KEYCODE_LEFT_SUPER) {
+            state.cmd_down = false;
+        }
     }
 
     _ = simgui_handle_event(e);
