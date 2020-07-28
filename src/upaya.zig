@@ -9,10 +9,12 @@ pub const filebrowser = @import("filebrowser");
 // types
 pub const Texture = @import("texture.zig").Texture;
 pub const MenuItem = @import("menu.zig").MenuItem;
+pub const FixedList = @import("utils/fixed_list.zig").FixedList;
 
 // namespaces
 pub const mem = @import("mem/mem.zig");
 pub const fs = @import("fs.zig");
+pub const math = @import("math/math.zig");
 pub const colors = @import("colors.zig");
 pub const menu = @import("menu.zig");
 
@@ -29,17 +31,21 @@ pub const Config = struct {
 
     width: c_int = 1024,
     height: c_int = 768,
-    swap_interval: c_int = 2,
+    swap_interval: c_int = 1,
     high_dpi: bool = false,
     fullscreen: bool = false,
     window_title: [*c]const u8 = "upaya",
     enable_clipboard: bool = true,
     clipboard_size: c_int = 4096,
 
+    /// optionally adds FontAwesome fonts which are accessible via imgui.icons
     icon_font: bool = true,
     docking: bool = true,
     dark_style: bool = false,
 };
+
+// private
+const font_awesome_range: [3]ImWchar = [_]ImWchar{ icons.icon_range_min, icons.icon_range_max, 0 };
 
 var state = struct {
     config: Config = undefined,
@@ -78,6 +84,7 @@ export fn init() void {
 
     var imgui_desc = std.mem.zeroes(simgui_desc_t);
     imgui_desc.no_default_font = true;
+    imgui_desc.dpi_scale = sapp_dpi_scale();
     simgui_setup(&imgui_desc);
 
     var io = igGetIO();
@@ -182,8 +189,6 @@ fn beginDock() void {
     igDockSpace(dockspace_id, .{}, ImGuiDockNodeFlags_None, null);
 }
 
-const font_awesome_range: [3]ImWchar = [_]ImWchar{ icons.icon_range_min, icons.icon_range_max, 0 };
-
 fn loadDefaultFont() void {
     var io = igGetIO();
     _ = ImFontAtlas_AddFontDefault(io.Fonts, null);
@@ -205,22 +210,6 @@ fn loadDefaultFont() void {
     var pixels: [*c]u8 = undefined;
     ImFontAtlas_GetTexDataAsRGBA32(io.Fonts, &pixels, &w, &h, &bytes_per_pixel);
 
-    var tex = Texture.initFromData(pixels[0..@intCast(usize, w * h * bytes_per_pixel)], w, h);
+    var tex = Texture.initWithData(pixels[0..@intCast(usize, w * h * bytes_per_pixel)], w, h, .nearest);
     ImFontAtlas_SetTexID(io.Fonts, tex.imTextureID());
-}
-
-pub fn loadTexture(pixels: []u8, width: i32, height: i32) sg_image {
-    var img_desc = std.mem.zeroes(sg_image_desc);
-    img_desc.width = width;
-    img_desc.height = height;
-    img_desc.pixel_format = .SG_PIXELFORMAT_RGBA8;
-    img_desc.wrap_u = .SG_WRAP_CLAMP_TO_EDGE;
-    img_desc.wrap_v = .SG_WRAP_CLAMP_TO_EDGE;
-    img_desc.min_filter = .SG_FILTER_LINEAR;
-    img_desc.mag_filter = .SG_FILTER_LINEAR;
-    img_desc.content.subimage[0][0].ptr = pixels.ptr;
-    img_desc.content.subimage[0][0].size = width * height * 4 * @sizeOf(u8);
-    img_desc.label = "upaya-texture";
-
-    return sg_make_image(&img_desc);
 }

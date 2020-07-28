@@ -31,27 +31,28 @@ pub fn getSaveGamesFile(app: []const u8, filename: []const u8) ![]u8 {
 /// saves a serializable struct to disk
 pub fn savePrefs(app: []const u8, filename: []const u8, data: anytype) !void {
     const file = try getSaveGamesFile(app, filename);
-    var buf = upaya.mem.BufferStream.init(file, .write);
-    defer buf.deinit();
+    var handle = try std.fs.cwd().createFile(file, .{});
+    defer handle.close();
 
-    var serializer = std.io.serializer(.Little, .Byte, buf.writer());
+    var serializer = std.io.serializer(.Little, .Byte, handle.writer());
     try serializer.serialize(data);
 }
 
 pub fn readPrefs(comptime T: type, app: []const u8, filename: []const u8) !T {
     const file = try getSaveGamesFile(app, filename);
-    var buf = upaya.mem.BufferStream.init(file, .read);
-    defer buf.deinit();
+    var handle = try std.fs.cwd().openFile(file, .{});
+    defer handle.close();
 
-    var deserializer = std.io.deserializer(.Little, .Byte, buf.reader());
+    var deserializer = std.io.deserializer(.Little, .Byte, handle.reader());
     return deserializer.deserialize(T);
 }
 
 pub fn savePrefsJson(app: []const u8, filename: []const u8, data: anytype) !void {
     const file = try getSaveGamesFile(app, filename);
-    var buf = upaya.mem.BufferStream.init(file, .write);
+    var handle = try std.fs.cwd().createFile(file, .{});
+    defer handle.close();
 
-    try std.json.stringify(data, .{ .whitespace = .{} }, buf.writer());
+    try std.json.stringify(data, .{ .whitespace = .{} }, handle.writer());
 }
 
 pub fn readPrefsJson(comptime T: type, app: []const u8, filename: []const u8) !T {

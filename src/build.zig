@@ -42,14 +42,7 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
         .dependencies = &[_]Pkg{stb_image, filebrowser, sokol, imgui},
     };
 
-    // temporary during transition
-    const aya = Pkg{
-        .name = "aya",
-        .path = "src/aya.zig",
-    };
-
     // packages exported to userland
-    artifact.addPackage(aya);
     artifact.addPackage(upaya);
     artifact.addPackage(sokol);
     artifact.addPackage(stb_image);
