@@ -6,6 +6,7 @@ pub fn main() !void {
     upaya.run(.{
         .init = init,
         .update = update,
+        .docking = false,
     });
 }
 

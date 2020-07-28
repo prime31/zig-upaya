@@ -117,7 +117,9 @@ export fn event(e: [*c]const sokol.sapp_event) void {
     if (@enumToInt(e[0].type) == 22) {
         var file = sapp_get_clipboard_string();
         std.debug.print("file dragged: {s}\n", .{file});
+        return;
     }
+
     _ = simgui_handle_event(e);
 }
 
