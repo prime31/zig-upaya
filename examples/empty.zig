@@ -12,8 +12,9 @@ pub fn main() !void {
 fn init() void {}
 
 fn update() void {
-    _ = igBegin("wtf", null, ImGuiWindowFlags_None);
-    igText("Hello, world!");
-    igText("icon: " ++ upaya.imgui.icons.igloo);
+    if (igBegin("My First Window", null, ImGuiWindowFlags_None)) {
+        igText("Hello, world!");
+        igText("We get built-in icons too: " ++ icons.igloo);
+    }
     igEnd();
 }
