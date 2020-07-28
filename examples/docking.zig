@@ -60,7 +60,7 @@ fn setupDockLayout(id: ImGuiID) void {
     var dock_main_id = id;
 
     // dock_main_id is the left node after this
-    const right_id = igDockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.37, null, &dock_main_id);
+    const right_id = igDockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.35, null, &dock_main_id);
     igDockBuilderDockWindow("Properties", right_id);
 
     // dock_main_id is the bottom node after this

@@ -2,6 +2,21 @@ const std = @import("std");
 usingnamespace @import("imgui.zig");
 pub const icons = @import("font_awesome.zig");
 
+/// only true if down this frame and not down the previous frame
+pub fn ogKeyPressed(key: usize) bool {
+    return igGetIO().KeysDown[key] and igGetIO().KeysDownDuration[key] == 0;
+}
+
+/// true the entire time the key is down
+pub fn ogKeyDown(key: usize) bool {
+    return igGetIO().KeysDown[key];
+}
+
+/// true only the frame the key is released
+pub fn ogKeyUp(key: usize) bool {
+    return !igGetIO().KeysDown[key] and igGetIO().KeysDownDuration[key] == -1 and igGetIO().KeysDownDurationPrev[key] >= 0;
+}
+
 pub fn ogButton(label: [*c]const u8) bool {
     return igButton(label, .{});
 }

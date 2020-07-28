@@ -8,4 +8,3 @@ pub const mem = struct {
 };
 
 pub const fs = upaya.fs;
-pub const SdlBufferStream = upaya.mem.BufferStream;
