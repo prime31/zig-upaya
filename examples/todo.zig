@@ -1,5 +1,6 @@
 const std = @import("std");
 const upaya = @import("upaya");
+const Color = upaya.math.Color;
 usingnamespace upaya.imgui;
 
 const ToDoState = struct {
@@ -39,7 +40,7 @@ pub fn main() !void {
 }
 
 fn init() void {
-    upaya.colors.setTintColor(upaya.math.Color.aya.asImVec4());
+    upaya.colors.setTintColor(Color.aya.asImVec4());
     state = upaya.fs.readPrefsJson(ToDoState, "upaya-todo", "todos.json") catch unreachable;
 }
 
@@ -70,7 +71,7 @@ fn update() void {
 
             var line_end = pos;
             line_end.x += 250;
-            ImDrawList_AddLine(igGetWindowDrawList(), pos, line_end, upaya.colors.rgbToU32(255, 255, 255), 1);
+            ImDrawList_AddLine(igGetWindowDrawList(), pos, line_end, Color.white.value, 1);
         } else {
             igSetNextItemWidth(-1);
             _ = ogInputText("##input", &todo.label, todo.label.len);
