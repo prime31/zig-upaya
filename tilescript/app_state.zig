@@ -246,7 +246,7 @@ pub const AppState = struct {
     }
 
     pub fn loadMap(self: *AppState, file: []const u8) !void {
-        if (std.mem.endsWith(u8, file, ".tk")) {
+        if (std.mem.endsWith(u8, file, ".ts")) {
             self.map = try persistence.load(file);
         } else if (std.mem.endsWith(u8, file, ".tkp")) {
             self.map = try @import("tilekit_importer.zig").import(file);

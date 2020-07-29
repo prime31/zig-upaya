@@ -45,7 +45,7 @@ pub const TileScript = struct {
     }
 
     pub fn handleDroppedFile(self: *TileScript, file: []const u8) void {
-        if (std.mem.endsWith(u8, file, ".tk") or std.mem.endsWith(u8, file, ".tkp")) {
+        if (std.mem.endsWith(u8, file, ".ts") or std.mem.endsWith(u8, file, ".tkp")) {
             self.state.loadMap(file) catch unreachable;
         } else if (std.mem.endsWith(u8, file, ".png")) {
             menu.loadTileset(file);
