@@ -155,6 +155,10 @@ export fn cleanup() void {
     sg_shutdown();
 }
 
+pub fn quit() void {
+    sapp_request_quit();
+}
+
 // helper functions
 fn beginDock() void {
     const vp = igGetMainViewport();

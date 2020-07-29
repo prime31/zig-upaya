@@ -1,5 +1,5 @@
 const std = @import("std");
-const Vec4 = @import("vec4.zig").Vec4;
+usingnamespace @import("imgui");
 
 pub const Color = extern union {
     value: u32,
@@ -58,7 +58,7 @@ pub const Color = extern union {
         self.value = (self.value & 0x00ffffff) | a;
     }
 
-    pub fn asVec4(self: Color) Vec4 {
+    pub fn asImVec4(self: Color) ImVec4 {
         return .{
             .x = @intToFloat(f32, self.comps.r) / 255,
             .y = @intToFloat(f32, self.comps.g) / 255,
