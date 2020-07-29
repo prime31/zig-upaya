@@ -125,10 +125,10 @@ export fn event(e: [*c]const sapp_event) void {
     // special handling of dropped files
     if (e[0].type == .SAPP_EVENTTYPE_FILE_DROPPED) {
         if (state.config.onFileDropped) |onFileDropped| {
-            const dropped_files = sapp_get_dropped_files();
+            const dropped_file_cnt = sapp_get_num_dropped_files();
             var i: usize = 0;
-            while (i < e[0].drop_files_count) : (i += 1) {
-                onFileDropped(std.mem.spanZ(dropped_files[i]));
+            while (i < dropped_file_cnt) : (i += 1) {
+                onFileDropped(std.mem.spanZ(sapp_get_dropped_file_path(@intCast(c_int, i))));
             }
         }
     }
