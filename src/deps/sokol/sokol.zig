@@ -1,3 +1,4 @@
+// sokol imgui
 pub const simgui_desc_t = extern struct {
     max_vertices: c_int,
     color_format: sg_pixel_format,
@@ -15,9 +16,11 @@ pub extern fn simgui_render() void;
 pub extern fn simgui_handle_event(ev: [*c]const sapp_event) bool;
 pub extern fn simgui_shutdown() void;
 
+// sokol glue
+pub extern fn sapp_sgcontext() sg_context_desc;
+
 pub usingnamespace @cImport({
     @cDefine("SOKOL_GLCORE33", "");
     @cInclude("sokol/sokol_app.h");
     @cInclude("sokol/sokol_gfx.h");
-    @cInclude("sokol/sokol_glue.h");
 });
