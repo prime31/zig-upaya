@@ -16,11 +16,11 @@ pub extern fn tinyfd_colorChooser(aTitle: [*c]const u8, aDefaultHexRGB: [*c]cons
 pub extern fn tinyfd_arrayDialog(aTitle: [*c]const u8, aNumOfColumns: c_int, aColumns: [*c]const [*c]const u8, aNumOfRows: c_int, aCells: [*c]const [*c]const u8) [*c]u8;
 
 pub fn openFileDialog(title: [:0]const u8, path: [:0]const u8, filter: [:0]const u8) [*c]u8 {
-    const filters = &[_][*c]const u8 {@ptrCast([*c]const u8, filter)};
+    const filters = &[_][*c]const u8{@ptrCast([*c]const u8, filter)};
     return tinyfd_openFileDialog(title, path, 1, filters, null, 0);
 }
 
 pub fn saveFileDialog(title: [:0]const u8, path: [:0]const u8, filter: [:0]const u8) [*c]u8 {
-    const filters = &[_][*c]const u8 {@ptrCast([*c]const u8, filter)};
+    const filters = &[_][*c]const u8{@ptrCast([*c]const u8, filter)};
     return tinyfd_saveFileDialog(title, path, 1, filters, null);
 }

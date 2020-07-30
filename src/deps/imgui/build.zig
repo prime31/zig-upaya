@@ -40,7 +40,6 @@ fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
     exe.addCSourceFile("src/deps/imgui/cimgui/cimgui.cpp", &cpp_args);
 }
 
-
 // helper function to get SDK path on Mac
 fn macosFrameworksDir(b: *Builder) ![]u8 {
     var str = try b.exec(&[_][]const u8{ "xcrun", "--show-sdk-path" });

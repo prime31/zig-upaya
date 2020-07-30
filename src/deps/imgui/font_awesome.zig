@@ -1,4 +1,3 @@
-
 pub const font_icon_filename_far = "fa-regular-400.ttf";
 pub const font_icon_filename_fas = "fa-solid-900.ttf";
 

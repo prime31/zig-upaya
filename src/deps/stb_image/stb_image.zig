@@ -12,7 +12,6 @@ const enum_unnamed_1 = extern enum(c_int) {
     _,
 };
 
-
 pub const stbi_uc = u8;
 pub const stbi_us = c_ushort;
 const struct_unnamed_9 = extern struct {
@@ -50,4 +49,3 @@ pub extern fn stbi_zlib_decode_malloc(buffer: [*c]const u8, len: c_int, outlen: 
 pub extern fn stbi_zlib_decode_buffer(obuffer: [*c]u8, olen: c_int, ibuffer: [*c]const u8, ilen: c_int) c_int;
 pub extern fn stbi_zlib_decode_noheader_malloc(buffer: [*c]const u8, len: c_int, outlen: [*c]c_int) [*c]u8;
 pub extern fn stbi_zlib_decode_noheader_buffer(obuffer: [*c]u8, olen: c_int, ibuffer: [*c]const u8, ilen: c_int) c_int;
-

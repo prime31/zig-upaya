@@ -4,7 +4,7 @@ usingnamespace upaya.imgui;
 pub const MenuItem = struct {
     label: [*c]const u8,
     shortcut: [*c]const u8 = null,
-    action: ?fn()void = null,
+    action: ?fn () void = null,
     children: []const MenuItem = &[_]MenuItem{},
 
     pub fn draw(self: MenuItem) void {

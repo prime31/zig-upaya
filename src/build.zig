@@ -39,7 +39,7 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
     const upaya = Pkg{
         .name = "upaya",
         .path = "src/upaya.zig",
-        .dependencies = &[_]Pkg{stb_image, filebrowser, sokol, imgui},
+        .dependencies = &[_]Pkg{ stb_image, filebrowser, sokol, imgui },
     };
 
     // packages exported to userland
