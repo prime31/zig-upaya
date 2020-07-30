@@ -1,6 +1,5 @@
 pub usingnamespace @import("wrapper.zig");
 
-pub const va_list = __darwin_va_list;
 pub const struct___sbuf = extern struct {
     _base: [*c]u8,
     _size: c_int,
