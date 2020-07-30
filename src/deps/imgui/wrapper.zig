@@ -116,7 +116,10 @@ pub fn ogUnformattedTooltip(text_wrap_pos: f32, text: [*c]const u8) void {
 }
 
 pub fn ogDrag(comptime T: type, label: [*c]const u8, p_data: *T, v_speed: f32, p_min: T, p_max: T) bool {
-    return ogDragUnsignedFormat(T, label, p_data, v_speed, p_min, p_max, null);
+    if (std.meta.trait.isUnsignedInt(T)) {
+        return ogDragUnsignedFormat(T, label, p_data, v_speed, p_min, p_max, null);
+    }
+    return ogDragSigned(T, label, p_data, v_speed, p_min, p_max);
 }
 
 pub fn ogDragUnsignedFormat(comptime T: type, label: [*c]const u8, p_data: *T, v_speed: f32, p_min: T, p_max: T, format: [*c]const u8) bool {
@@ -134,6 +137,7 @@ pub fn ogDragUnsignedFormat(comptime T: type, label: [*c]const u8, p_data: *T, v
 }
 
 pub fn ogDragSigned(comptime T: type, label: [*c]const u8, p_data: *T, v_speed: f32, p_min: T, p_max: T) bool {
+    std.debug.assert(std.meta.trait.isSignedInt(T));
     var min = p_min;
     var max = p_max;
     const data_type = switch (T) {

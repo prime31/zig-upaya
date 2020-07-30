@@ -43,6 +43,10 @@ pub const Config = struct {
     icon_font: bool = true,
     docking: bool = true,
     dark_style: bool = false,
+    /// how the imgui internal data should be stored. If saved_games_dir is used, app_name MUST be specified!
+    ini_file_storage: enum { none, current_dir, saved_games_dir } = .current_dir,
+    /// used if ini_file_storage is saved_games_dir as the subfolder in the save games folder
+    app_name: ?[]const u8 = null,
 };
 
 // private
@@ -86,6 +90,17 @@ export fn init() void {
     var imgui_desc = std.mem.zeroes(simgui_desc_t);
     imgui_desc.no_default_font = true;
     imgui_desc.dpi_scale = sapp_dpi_scale();
+
+    if (state.config.ini_file_storage != .none) {
+        if (state.config.ini_file_storage == .current_dir) {
+            imgui_desc.ini_filename = "imgui.ini";
+        } else {
+            std.debug.assert(state.config.app_name != null);
+            const path = fs.getSaveGamesFile(state.config.app_name.?, "imgui.ini") catch unreachable;
+            imgui_desc.ini_filename = @ptrCast([*c]const u8, mem.allocator.dupeZ(u8, path) catch unreachable);
+        }
+    }
+
     simgui_setup(&imgui_desc);
 
     var io = igGetIO();

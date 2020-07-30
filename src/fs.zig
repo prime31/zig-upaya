@@ -14,7 +14,7 @@ pub fn read(allocator: *std.mem.Allocator, filename: []const u8) ![]u8 {
 }
 
 pub fn write(filename: []const u8, data: []u8) !void {
-    const file = try std.fs.cwd().openFile(filename, .{.write = true});
+    const file = try std.fs.cwd().openFile(filename, .{ .write = true });
     defer file.close();
 
     const file_size = try file.getEndPos();
