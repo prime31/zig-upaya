@@ -8,6 +8,7 @@ pub const filebrowser = @import("filebrowser");
 
 // types
 pub const Texture = @import("texture.zig").Texture;
+pub const RenderTexture = @import("render_texture.zig").RenderTexture;
 pub const MenuItem = @import("menu.zig").MenuItem;
 pub const FixedList = @import("utils/fixed_list.zig").FixedList;
 

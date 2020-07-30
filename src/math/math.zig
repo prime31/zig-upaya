@@ -3,6 +3,8 @@ const std = @import("std");
 pub const Rect = @import("rect.zig").Rect;
 pub const RectI = @import("rect.zig").RectI;
 pub const Color = @import("color.zig").Color;
+pub const Mat4 = @import("mat4.zig").Mat4;
+pub const Vec3 = @import("vec3.zig").Vec3;
 
 pub const rand = @import("rand.zig");
 
