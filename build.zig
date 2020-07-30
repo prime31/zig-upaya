@@ -7,7 +7,7 @@ const upaya_build = @import("src/build.zig");
 pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{});
 
-    var lib_type = b.option(i32, "lib_type", "0: static, 1: dynamic, 2: exe compiled") orelse 0;
+    var lib_type = b.option(i32, "lib_type", "0: static, 1: dynamic, 2: exe compiled") orelse 2;
 
     // first item in list will be added as "run" so `zig build run` will always work
     const examples = [_][2][]const u8{
