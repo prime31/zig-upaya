@@ -75,6 +75,10 @@ pub fn run(config: Config) void {
     app_desc.enable_clipboard = config.enable_clipboard;
     app_desc.clipboard_size = config.clipboard_size;
 
+    if (state.config.onFileDropped == null) {
+        app_desc.max_dropped_files = 0;
+    }
+
     app_desc.alpha = false;
     _ = sapp_run(&app_desc);
 }
