@@ -19,8 +19,6 @@ pub extern fn simgui_shutdown() void;
 // sokol glue
 pub extern fn sapp_sgcontext() sg_context_desc;
 
-pub usingnamespace @cImport({
-    @cDefine("SOKOL_GLCORE33", "");
-    @cInclude("sokol/sokol_app.h");
-    @cInclude("sokol/sokol_gfx.h");
-});
+// sokol app
+pub usingnamespace @import("sokol_app.zig");
+pub usingnamespace @import("sokol_gfx.zig");
