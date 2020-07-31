@@ -6,14 +6,14 @@ const ts = @import("../tilescript.zig");
 const thickness: f32 = 2;
 
 pub fn drawWindow(state: *ts.AppState) void {
-        if (igBegin("Brushes", null, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
-            draw(state, 32, false);
+    if (igBegin("Brushes", null, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_AlwaysAutoResize)) {
+        draw(state, 32, false);
         igEnd();
     }
 }
 
 pub fn drawPopup(state: *ts.AppState, popup_id: [*c]const u8) void {
-    igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{.x = 0.5});
+    igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{ .x = 0.5 });
     if (igBeginPopup(popup_id, ImGuiWindowFlags_NoTitleBar)) {
         draw(state, state.map_rect_size, false);
         igEndPopup();

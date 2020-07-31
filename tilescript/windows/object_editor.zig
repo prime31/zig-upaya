@@ -89,7 +89,7 @@ pub fn draw(state: *ts.AppState) void {
             igPopStyleVar(1);
         }
 
-        igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{.x = 0.5});
+        igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{ .x = 0.5 });
         if (igBeginPopup("##add-property", ImGuiWindowFlags_None)) {
             addPropertyPopup(state);
             igEndPopup();

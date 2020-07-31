@@ -56,7 +56,6 @@ pub fn generateOutputMap(state: *AppState) void {
     }
 }
 
-
 pub fn transformTileWithRuleSet(state: *AppState, tile_source: []u8, rules: []Rule, is_pre_ruleset: bool, x: usize, y: usize) u8 {
     var rule_passed = false;
     for (rules) |*rule| brk: {

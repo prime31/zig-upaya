@@ -89,7 +89,7 @@ pub const TileScript = struct {
     }
 
     pub fn setupDockLayout(id: ImGuiID) void {
-        var dock_main_id =  id;
+        var dock_main_id = id;
 
         // dock_main_id is the left node after this
         const right_id = igDockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.37, null, &dock_main_id);
@@ -132,7 +132,7 @@ pub fn tileImageButton(state: *AppState, size: f32, tile: usize) bool {
     const uv1 = ImVec2{ .x = rect.x + rect.w, .y = rect.y + rect.h };
 
     const tint = colors.colorRgbaVec4(255, 255, 255, 255);
-    return igImageButton(state.texture.imTextureID(), ImVec2{ .x = size, .y = size }, uv0, uv1, 2, ImVec4{ .w = 1 }, tint);
+    return ogImageButton(state.texture.imTextureID(), .{ .x = size, .y = size }, uv0, uv1, 2, .{ .w = 1 }, tint);
 }
 
 pub fn uvsForTile(state: *AppState, tile: usize) upaya.math.Rect {

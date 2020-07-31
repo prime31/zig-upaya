@@ -2,9 +2,12 @@ const std = @import("std");
 const upaya = @import("upaya");
 
 const Item = struct {
-    data: []u8 = undefined, /// copy of the data before it was modified
-    ptr: usize = undefined, /// pointer to data
-    size: usize = undefined, /// size in bytes
+    /// copy of the data before it was modified
+    data: []u8 = undefined,
+    /// pointer to data
+    ptr: usize = undefined,
+    /// size in bytes
+    size: usize = undefined,
 };
 
 var history = struct {
@@ -78,7 +81,7 @@ pub fn commit() void {
             upaya.mem.allocator.free(item.data);
         } else {
             if (!added_commit_boundary) {
-                history.undo.append(.{.ptr = 0, .size = 0}) catch unreachable;
+                history.undo.append(.{ .ptr = 0, .size = 0 }) catch unreachable;
                 added_commit_boundary = true;
             }
 
@@ -96,7 +99,7 @@ pub fn undo() void {
         }
 
         if (!added_commit_boundary) {
-            history.redo.append(.{.ptr = 0, .size = 0}) catch unreachable;
+            history.redo.append(.{ .ptr = 0, .size = 0 }) catch unreachable;
             added_commit_boundary = true;
         }
 
@@ -119,7 +122,7 @@ pub fn redo() void {
         }
 
         if (!added_commit_boundary) {
-            history.undo.append(.{.ptr = 0, .size = 0}) catch unreachable;
+            history.undo.append(.{ .ptr = 0, .size = 0 }) catch unreachable;
             added_commit_boundary = true;
         }
 
