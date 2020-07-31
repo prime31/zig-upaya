@@ -128,7 +128,7 @@ pub fn ogUnformattedTooltip(text_wrap_pos: f32, text: [*c]const u8) void {
 
 pub fn ogDrag(comptime T: type, label: [*c]const u8, p_data: *T, v_speed: f32, p_min: T, p_max: T) bool {
     if (std.meta.trait.isUnsignedInt(T)) {
-        return ogDragUnsignedFormat(T, label, p_data, v_speed, p_min, p_max, null);
+        return ogDragUnsignedFormat(T, label, p_data, v_speed, p_min, p_max, "%u");
     }
     return ogDragSigned(T, label, p_data, v_speed, p_min, p_max);
 }
