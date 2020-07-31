@@ -9,10 +9,7 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
 fn compileSokol(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
     exe.linkLibC();
 
-    if (target.isWindows()) {
-        exe.linkSystemLibrary("user32");
-        exe.linkSystemLibrary("gdi32");
-    } else if (target.isDarwin()) {
+    if (target.isDarwin()) {
         const frameworks_dir = macosFrameworksDir(b) catch unreachable;
         exe.addFrameworkDir(frameworks_dir);
         exe.linkFramework("Foundation");
@@ -26,13 +23,12 @@ fn compileSokol(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.linkFramework("CoreAudio");
         exe.linkSystemLibrary("c++");
         exe.enableSystemLinkerHack();
-    } else {
+    } else if (target.isLinux()) {
         // Not tested
         exe.linkSystemLibrary("GL");
         exe.linkSystemLibrary("GLEW");
     }
 
-    exe.addIncludeDir("src/");
     exe.addIncludeDir("src/deps/sokol");
     const cFlags = if (std.Target.current.os.tag == .macosx) [_][]const u8{ "-std=c99", "-ObjC", "-fobjc-arc" } else [_][]const u8{"-std=c99"};
     exe.addCSourceFile("src/deps/sokol/compile_sokol.c", &cFlags);

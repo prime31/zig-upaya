@@ -7,6 +7,7 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
 }
 
 fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
+    exe.linkLibC();
     if (target.isWindows()) {
         exe.linkSystemLibrary("user32");
         exe.linkSystemLibrary("gdi32");
@@ -25,7 +26,6 @@ fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.linkSystemLibrary("c++");
         exe.enableSystemLinkerHack();
     } else {
-        exe.linkLibC();
         exe.linkSystemLibrary("c++");
     }
 
@@ -38,6 +38,7 @@ fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
     exe.addCSourceFile("src/deps/imgui/cimgui/imgui/imgui_draw.cpp", &cpp_args);
     exe.addCSourceFile("src/deps/imgui/cimgui/imgui/imgui_widgets.cpp", &cpp_args);
     exe.addCSourceFile("src/deps/imgui/cimgui/cimgui.cpp", &cpp_args);
+    exe.addCSourceFile("src/deps/imgui/temporary_hacks.cpp", &cpp_args);
 }
 
 // helper function to get SDK path on Mac

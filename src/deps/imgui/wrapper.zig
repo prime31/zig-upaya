@@ -2,6 +2,9 @@ const std = @import("std");
 usingnamespace @import("imgui.zig");
 pub const icons = @import("font_awesome.zig");
 
+extern fn _ogImage(user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2) void;
+extern fn _ogImageButton(user_texture_id: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, frame_padding: c_int) bool;
+
 /// only true if down this frame and not down the previous frame
 pub fn ogKeyPressed(key: usize) bool {
     return igGetIO().KeysDown[key] and igGetIO().KeysDownDuration[key] == 0;
@@ -24,7 +27,15 @@ pub fn ogButton(label: [*c]const u8) bool {
 pub fn ogImage(texture: ImTextureID, width: i32, height: i32) void {
     const white = ImVec4{ .x = 1, .y = 1, .z = 1, .w = 1 };
     const size = ImVec2{ .x = @intToFloat(f32, width), .y = @intToFloat(f32, height) };
-    igImage(texture, size, ImVec2{}, ImVec2{ .x = 1, .y = 1 }, white, ImVec4{});
+    // TODO: remove when windows can handle passing ImVec4s
+    // igImage(texture, size, ImVec2{}, ImVec2{ .x = 1, .y = 1 }, white, .{});
+    _ogImage(texture, size, .{}, .{ .x = 1, .y = 1});
+}
+
+pub fn ogImageButton(texture: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, frame_padding: c_int, bg_col: ImVec4, tint_col: ImVec4) bool {
+    // TODO: remove when windows can handle passing ImVec4s
+    // return igImageButton(texture, size, uv0, uv1, frame_padding, bg_col, tint_col);
+    return _ogImageButton(texture, size, uv0, uv1, frame_padding);
 }
 
 pub fn ogGetCursorScreenPos() ImVec2 {
