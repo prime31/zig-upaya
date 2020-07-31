@@ -97,7 +97,7 @@ export fn init() void {
         } else {
             std.debug.assert(state.config.app_name != null);
             const path = fs.getSaveGamesFile(state.config.app_name.?, "imgui.ini") catch unreachable;
-            imgui_desc.ini_filename = @ptrCast([*c]const u8, mem.allocator.dupeZ(u8, path) catch unreachable);
+            imgui_desc.ini_filename = mem.allocator.dupeZ(u8, path) catch unreachable;
         }
     }
 
