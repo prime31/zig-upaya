@@ -11,7 +11,7 @@ const ToDoState = struct {
         done: bool = false,
     };
 
-    pub fn init() void {
+    pub fn init() ToDoState {
         return .{ .todos = &[_]ToDo{} };
     }
 
@@ -41,7 +41,12 @@ pub fn main() !void {
 
 fn init() void {
     upaya.colors.setTintColor(Color.aya.asImVec4());
-    state = upaya.fs.readPrefsJson(ToDoState, "upaya-todo", "todos.json") catch unreachable;
+    // TODO: figure out why on windows [25]u8 is saved as an array and not a string
+    if (std.Target.current.os.tag == .windows) {
+        state = ToDoState.init();
+    } else {
+        state = upaya.fs.readPrefsJson(ToDoState, "upaya-todo", "todos.json") catch |err| ToDoState.init();
+    }
 }
 
 fn update() void {
@@ -53,7 +58,7 @@ fn update() void {
         },
     }});
 
-    _ = igBegin("To Do", null, ImGuiWindowFlags_None);
+    _ = igBegin("ToDos", null, ImGuiWindowFlags_None);
     defer igEnd();
 
     for (state.todos) |*todo| {
@@ -74,7 +79,10 @@ fn update() void {
             ImDrawList_AddLine(igGetWindowDrawList(), pos, line_end, Color.white.value, 1);
         } else {
             igSetNextItemWidth(-1);
-            _ = ogInputText("##input", &todo.label, todo.label.len);
+            if (ogInputText("##input", &todo.label, todo.label.len)) {
+                // TODO: why does windows not properly handle 0-terminated strings?
+                todo.label[24] = 0;
+            }
         }
     }
 }
@@ -84,7 +92,7 @@ fn shutdown() void {
 }
 
 fn setupDockLayout(id: ImGuiID) void {
-    igDockBuilderDockWindow("To Do", id);
+    igDockBuilderDockWindow("ToDos", id);
     igDockBuilderFinish(id);
 }
 
