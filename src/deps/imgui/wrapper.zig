@@ -29,7 +29,7 @@ pub fn ogImage(texture: ImTextureID, width: i32, height: i32) void {
     const size = ImVec2{ .x = @intToFloat(f32, width), .y = @intToFloat(f32, height) };
     // TODO: remove when windows can handle passing ImVec4s
     // igImage(texture, size, ImVec2{}, ImVec2{ .x = 1, .y = 1 }, white, .{});
-    _ogImage(texture, size, .{}, .{ .x = 1, .y = 1});
+    _ogImage(texture, size, .{}, .{ .x = 1, .y = 1 });
 }
 
 pub fn ogImageButton(texture: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, frame_padding: c_int, bg_col: ImVec4, tint_col: ImVec4) bool {
