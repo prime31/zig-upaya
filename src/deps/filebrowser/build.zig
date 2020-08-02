@@ -23,7 +23,7 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
             lib.setBuildMode(builtin.Mode.ReleaseSmall);
             lib.setTarget(target);
 
-            compileFontStash(b, lib, target);
+            compileFileBrowser(b, lib, target);
             lib.install();
 
             artifact.linkLibrary(lib);
@@ -33,18 +33,18 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
             lib.setBuildMode(builtin.Mode.ReleaseSmall);
             lib.setTarget(target);
 
-            compileFontStash(b, lib, target);
+            compileFileBrowser(b, lib, target);
             lib.install();
 
             artifact.linkLibrary(lib);
         },
         .exe_compiled => {
-            compileFontStash(b, artifact, target);
+            compileFileBrowser(b, artifact, target);
         },
     }
 }
 
-fn compileFontStash(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
+fn compileFileBrowser(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
     if (target.isWindows()) {
         exe.linkSystemLibrary("comdlg32");
         exe.linkSystemLibrary("ole32");
