@@ -27,6 +27,7 @@ fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.enableSystemLinkerHack();
     } else {
         exe.linkSystemLibrary("c++");
+        exe.linkSystemLibrary("X11");
     }
 
     exe.addIncludeDir("src/deps/imgui");

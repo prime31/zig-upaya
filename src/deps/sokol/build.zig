@@ -24,9 +24,9 @@ fn compileSokol(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.linkSystemLibrary("c++");
         exe.enableSystemLinkerHack();
     } else if (target.isLinux()) {
-        // Not tested
         exe.linkSystemLibrary("GL");
         exe.linkSystemLibrary("GLEW");
+        exe.linkSystemLibrary("X11");
     }
 
     exe.addIncludeDir("src/deps/sokol");
