@@ -21,7 +21,7 @@ Zig is a fast moving target right now and Upaya uses some of the newer features 
 
 ## Your First Upaya App
 A full basic Upaya app is below. You can start putting code right in the `update` method which will be called each frame.
-```go
+```zig
 const upaya = @import("upaya");
 usingnamespace upaya.imgui;
 
