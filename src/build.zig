@@ -14,11 +14,11 @@ pub const LibType = enum(i32) {
     exe_compiled,
 };
 
-pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target, lib_type: LibType) void {
+pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target) void {
     sokol_build.linkArtifact(b, artifact, target);
-    stb_image_build.linkArtifact(b, artifact, target, @intToEnum(stb_image_build.LibType, @enumToInt(lib_type)));
+    stb_image_build.linkArtifact(b, artifact, target);
     imgui_build.linkArtifact(b, artifact, target);
-    filebrowser_build.linkArtifact(b, artifact, target, @intToEnum(filebrowser_build.LibType, @enumToInt(lib_type)));
+    filebrowser_build.linkArtifact(b, artifact, target);
 
     const sokol = Pkg{
         .name = "sokol",
@@ -53,7 +53,7 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
 // add tests.zig file runnable via "zig build test"
 pub fn addTests(b: *Builder, target: std.build.Target) void {
     var tst = b.addTest("src/tests.zig");
-    linkArtifact(b, tst, target, .exe_compiled);
+    linkArtifact(b, tst, target);
     const test_step = b.step("test", "Run tests in tests.zig");
     test_step.dependOn(&tst.step);
 }

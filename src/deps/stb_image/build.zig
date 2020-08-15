@@ -16,35 +16,7 @@ pub fn build(b: *Builder) void {
     exe.install();
 }
 
-pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target, lib_type: LibType) void {
-    switch (lib_type) {
-        .static => {
-            const lib = b.addStaticLibrary("StbImage", null);
-            lib.setBuildMode(builtin.Mode.ReleaseSmall);
-            lib.setTarget(target);
-
-            compileFontStash(b, lib, target);
-            lib.install();
-
-            artifact.linkLibrary(lib);
-        },
-        .dynamic => {
-            const lib = b.addSharedLibrary("StbImage", null, b.version(0, 0, 1));
-            lib.setBuildMode(builtin.Mode.ReleaseSmall);
-            lib.setTarget(target);
-
-            compileFontStash(b, lib, target);
-            lib.install();
-
-            artifact.linkLibrary(lib);
-        },
-        .exe_compiled => {
-            compileFontStash(b, artifact, target);
-        },
-    }
-}
-
-fn compileFontStash(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
+pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
     exe.linkLibC();
     exe.addIncludeDir("src/deps/stb_image/src");
 
