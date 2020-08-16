@@ -2,7 +2,7 @@ const std = @import("std");
 
 // libs
 pub const sokol = @import("sokol");
-pub const stb_image = @import("stb_image");
+pub const stb = @import("stb");
 pub const imgui = @import("imgui");
 pub const filebrowser = @import("filebrowser");
 

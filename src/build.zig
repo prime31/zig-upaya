@@ -4,7 +4,7 @@ const Builder = std.build.Builder;
 const Pkg = std.build.Pkg;
 
 const sokol_build = @import("deps/sokol/build.zig");
-const stb_image_build = @import("deps/stb_image/build.zig");
+const stb_build = @import("deps/stb/build.zig");
 const imgui_build = @import("deps/imgui/build.zig");
 const filebrowser_build = @import("deps/filebrowser/build.zig");
 
@@ -16,7 +16,7 @@ pub const LibType = enum(i32) {
 
 pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target) void {
     sokol_build.linkArtifact(b, artifact, target);
-    stb_image_build.linkArtifact(b, artifact, target);
+    stb_build.linkArtifact(b, artifact, target);
     imgui_build.linkArtifact(b, artifact, target);
     filebrowser_build.linkArtifact(b, artifact, target);
 
@@ -24,9 +24,9 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
         .name = "sokol",
         .path = "src/deps/sokol/sokol.zig",
     };
-    const stb_image = Pkg{
-        .name = "stb_image",
-        .path = "src/deps/stb_image/stb_image.zig",
+    const stb = Pkg{
+        .name = "stb",
+        .path = "src/deps/stb/stb_image.zig",
     };
     const imgui = Pkg{
         .name = "imgui",
@@ -39,13 +39,13 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
     const upaya = Pkg{
         .name = "upaya",
         .path = "src/upaya.zig",
-        .dependencies = &[_]Pkg{ stb_image, filebrowser, sokol, imgui },
+        .dependencies = &[_]Pkg{ stb, filebrowser, sokol, imgui },
     };
 
     // packages exported to userland
     artifact.addPackage(upaya);
     artifact.addPackage(sokol);
-    artifact.addPackage(stb_image);
+    artifact.addPackage(stb);
     artifact.addPackage(imgui);
     artifact.addPackage(filebrowser);
 }

@@ -73,9 +73,9 @@ pub const Texture = extern struct {
         var w: c_int = undefined;
         var h: c_int = undefined;
         var channels: c_int = undefined;
-        const load_res = upaya.stb_image.stbi_load_from_memory(image_contents.ptr, @intCast(c_int, image_contents.len), &w, &h, &channels, 4);
+        const load_res = upaya.stb.stbi_load_from_memory(image_contents.ptr, @intCast(c_int, image_contents.len), &w, &h, &channels, 4);
         if (load_res == null) return error.ImageLoadFailed;
-        defer upaya.stb_image.stbi_image_free(load_res);
+        defer upaya.stb.stbi_image_free(load_res);
 
         return Texture.initWithData(load_res[0..@intCast(usize, w * h * channels)], w, h, filter);
     }
@@ -102,7 +102,7 @@ pub const Texture = extern struct {
     pub fn getTextureSize(file: []const u8, w: *c_int, h: *c_int) bool {
         const image_contents = upaya.fs.read(upaya.mem.tmp_allocator, file) catch unreachable;
         var comp: c_int = undefined;
-        if (upaya.stb_image.stbi_info_from_memory(image_contents.ptr, @intCast(c_int, image_contents.len), w, h, &comp) == 1) {
+        if (upaya.stb.stbi_info_from_memory(image_contents.ptr, @intCast(c_int, image_contents.len), w, h, &comp) == 1) {
             return true;
         }
 

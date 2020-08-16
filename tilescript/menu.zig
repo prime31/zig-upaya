@@ -4,7 +4,7 @@ usingnamespace @import("imgui");
 const ts = @import("tilescript.zig");
 const upaya = @import("upaya");
 const files = @import("filebrowser");
-const stb_image = @import("stb_image");
+const stb = @import("stb");
 
 // used to fill the ui while we are getting input for loading/resizing
 var temp_state = struct {
@@ -380,7 +380,7 @@ fn validateImage() bool {
     var w: c_int = 0;
     var h: c_int = 0;
     var comp: c_int = 0;
-    if (stb_image.stbi_info_from_memory(image_contents.ptr, @intCast(c_int, image_contents.len), &w, &h, &comp) == 1) {
+    if (stb.stbi_info_from_memory(image_contents.ptr, @intCast(c_int, image_contents.len), &w, &h, &comp) == 1) {
         const max_tiles = @intCast(usize, w) / temp_state.tile_size;
         var i: usize = 3;
         while (i <= max_tiles) : (i += 1) {
