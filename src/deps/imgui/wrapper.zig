@@ -98,16 +98,21 @@ pub fn ogGetWindowCenter() ImVec2 {
 }
 
 pub fn ogAddQuad(draw_list: [*c]ImDrawList, tl: ImVec2, size: f32, col: ImU32, thickness: f32) void {
-    ImDrawList_AddQuad(draw_list, ImVec2{ .x = tl.x, .y = tl.y }, ImVec2{ .x = tl.x + size, .y = tl.y }, ImVec2{ .x = tl.x + size, .y = tl.y + size }, ImVec2{ .x = tl.x, .y = tl.y + size }, col, thickness);
+    ImDrawList_AddQuad(draw_list, .{ .x = tl.x, .y = tl.y }, .{ .x = tl.x + size, .y = tl.y }, .{ .x = tl.x + size, .y = tl.y + size }, .{ .x = tl.x, .y = tl.y + size }, col, thickness);
 }
 
 pub fn ogAddQuadFilled(draw_list: [*c]ImDrawList, tl: ImVec2, size: f32, col: ImU32) void {
-    ImDrawList_AddQuadFilled(draw_list, ImVec2{ .x = tl.x, .y = tl.y }, ImVec2{ .x = tl.x + size, .y = tl.y }, ImVec2{ .x = tl.x + size, .y = tl.y + size }, ImVec2{ .x = tl.x, .y = tl.y + size }, col);
+    ImDrawList_AddQuadFilled(draw_list, .{ .x = tl.x, .y = tl.y }, .{ .x = tl.x + size, .y = tl.y }, .{ .x = tl.x + size, .y = tl.y + size }, .{ .x = tl.x, .y = tl.y + size }, col);
+}
+
+/// adds a rect outline with possibly non-matched width/height to the draw list
+pub fn ogAddRect(draw_list: [*c]ImDrawList, tl: ImVec2, size: ImVec2, col: ImU32, thickness: f32) void {
+    ImDrawList_AddQuad(draw_list, .{ .x = tl.x, .y = tl.y }, .{ .x = tl.x + size.x, .y = tl.y }, .{ .x = tl.x + size.x, .y = tl.y + size.y }, .{ .x = tl.x, .y = tl.y + size.y }, col, thickness);
 }
 
 /// adds a rect with possibly non-matched width/height to the draw list
 pub fn ogAddRectFilled(draw_list: [*c]ImDrawList, tl: ImVec2, size: ImVec2, col: ImU32) void {
-    ImDrawList_AddQuadFilled(draw_list, ImVec2{ .x = tl.x, .y = tl.y }, ImVec2{ .x = tl.x + size.x, .y = tl.y }, ImVec2{ .x = tl.x + size.x, .y = tl.y + size.y }, ImVec2{ .x = tl.x, .y = tl.y + size.y }, col);
+    ImDrawList_AddQuadFilled(draw_list, .{ .x = tl.x, .y = tl.y }, .{ .x = tl.x + size.x, .y = tl.y }, .{ .x = tl.x + size.x, .y = tl.y + size.y }, .{ .x = tl.x, .y = tl.y + size.y }, col);
 }
 
 pub fn ogInputText(label: [*c]const u8, buf: [*c]u8, buf_size: usize) bool {

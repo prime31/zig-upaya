@@ -20,9 +20,9 @@ pub const stbrp_rect = extern struct {
     id: c_int,
     w: c_ushort,
     h: c_ushort,
-    x: c_ushort,
-    y: c_ushort,
-    was_packed: c_int,
+    x: c_ushort = 0,
+    y: c_ushort = 0,
+    was_packed: c_int = 0,
 };
 
 pub extern fn stbrp_pack_rects(context: [*c]stbrp_context, rects: [*c]stbrp_rect, num_rects: c_int) c_int;

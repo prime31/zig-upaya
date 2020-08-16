@@ -8,12 +8,6 @@ const stb_build = @import("deps/stb/build.zig");
 const imgui_build = @import("deps/imgui/build.zig");
 const filebrowser_build = @import("deps/filebrowser/build.zig");
 
-pub const LibType = enum(i32) {
-    static,
-    dynamic, // requires DYLD_LIBRARY_PATH to point to the dylib path
-    exe_compiled,
-};
-
 pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target) void {
     sokol_build.linkArtifact(b, artifact, target);
     stb_build.linkArtifact(b, artifact, target);
@@ -26,7 +20,7 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
     };
     const stb = Pkg{
         .name = "stb",
-        .path = "src/deps/stb/stb_image.zig",
+        .path = "src/deps/stb/stb.zig",
     };
     const imgui = Pkg{
         .name = "imgui",
