@@ -84,7 +84,16 @@ pub const RectI = struct {
         };
     }
 
-    pub fn contains(x: i32, y: i32) bool {
-        return r.x <= x and x < r.right() and r.y <= y and y < r.bottom();
+    pub fn contains(self: RectI, x: i32, y: i32) bool {
+        return self.x <= x and x < self.right() and self.y <= y and y < self.bottom();
+    }
+
+    pub fn asRect(self: RectI) Rect {
+        return .{
+            .x = @intToFloat(f32, self.x),
+            .y = @intToFloat(f32, self.y),
+            .w = @intToFloat(f32, self.w),
+            .h = @intToFloat(f32, self.h),
+        };
     }
 };
