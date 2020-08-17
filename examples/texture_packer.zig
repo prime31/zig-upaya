@@ -40,7 +40,7 @@ fn update() void {
             igSameLine(0, 5);
 
             igSetNextItemWidth(100);
-            var tmp_size = [_]c_int{@intCast(c_int, a.w), @intCast(c_int, a.h)};
+            var tmp_size = [_]c_int{ @intCast(c_int, a.w), @intCast(c_int, a.h) };
             _ = igInputInt2("", &tmp_size, ImGuiInputTextFlags_None);
 
             if (igBeginChildEx("#child", 666, ogGetContentRegionAvail(), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_HorizontalScrollbar)) {
@@ -58,6 +58,18 @@ fn update() void {
                 }
                 igEndChild();
             }
+        } else {
+            var pos = ogGetCursorScreenPos();
+            const size = ogGetContentRegionAvail();
+            ogAddRectFilled(igGetWindowDrawList(), pos, size, colors.rgbToU32(80, 80, 80));
+
+            var text_size: ImVec2 = undefined;
+            igCalcTextSize(&text_size, "Drag/drop a folder", null, false, 1024);
+            igSetCursorPos(.{ .x = (size.x / 2) - text_size.x, .y = size.y / 2 });
+
+            igGetCurrentContext().FontSize *= 2;
+            igText("Drag/drop a folder");
+            igGetCurrentContext().FontSize /= 2;
         }
     }
     igEnd();
@@ -109,36 +121,6 @@ fn onFileDropped(file: []const u8) void {
     }
 }
 
-/// returns a slice of all the files with extension. The caller owns the slice AND each path in the slice.
-pub fn getAllFilesOfType(allocator: *std.mem.Allocator, dir: fs.Dir, extension: []const u8, recurse: bool) [][]const u8 {
-    var list = std.ArrayList([]const u8).init(allocator);
-
-    var recursor = struct {
-        fn search(alloc: *std.mem.Allocator, directory: fs.Dir, recursive: bool, filelist: *std.ArrayList([]const u8), ext: []const u8) void {
-            directory.setAsCwd() catch unreachable;
-            var buffer: [std.fs.MAX_PATH_BYTES]u8 = undefined;
-            const dir_string = std.os.getcwd(&buffer) catch unreachable;
-
-            var iter = directory.iterate();
-            while (iter.next() catch unreachable) |entry| {
-                if (entry.kind == .File) {
-                    if (std.mem.endsWith(u8, entry.name, ext)) {
-                        const abs_path = fs.path.join(alloc, &[_][]const u8{ dir_string, entry.name }) catch unreachable;
-                        filelist.append(abs_path) catch unreachable;
-                    }
-                } else if (entry.kind == .Directory) {
-                    const abs_path = fs.path.join(alloc, &[_][]const u8{ dir_string, entry.name }) catch unreachable;
-                    search(alloc, directory.openDir(entry.name, .{ .iterate = true }) catch unreachable, recursive, filelist, ext);
-                }
-            }
-        }
-    }.search;
-
-    recursor(allocator, dir, recurse, &list, extension);
-
-    return list.toOwnedSlice();
-}
-
 const TexturePacker = struct {
     pub const Atlas = struct {
         names: [][]const u8,
@@ -168,7 +150,7 @@ const TexturePacker = struct {
             var image = upaya.Image.init(size.width, size.height);
             defer image.deinit();
 
-            image.fillRect(.{.w = size.width, .h = size.height}, upaya.math.Color.transparent);
+            image.fillRect(.{ .w = size.width, .h = size.height }, upaya.math.Color.transparent);
 
             for (files) |file, i| {
                 var sub_image = upaya.Image.initFromFile(file);
@@ -197,7 +179,7 @@ const TexturePacker = struct {
 
     pub fn pack(folder: []const u8) ?Atlas {
         if (fs.cwd().openDir(folder, .{ .iterate = true })) |dir| {
-            const pngs = getAllFilesOfType(upaya.mem.allocator, dir, ".png", true);
+            const pngs = upaya.fs.getAllFilesOfType(upaya.mem.allocator, dir, ".png", true);
             const frames = getFramesForPngs(pngs);
             if (runRectPacker(frames)) |atlas_size| {
                 std.debug.print("fit in: {}\n", .{atlas_size});
