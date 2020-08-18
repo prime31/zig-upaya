@@ -75,6 +75,8 @@ pub const Image = struct {
     }
 
     pub fn save(self: Image, file: []const u8) void {
-        _ = upaya.stb.stbi_write_png(file.ptr, @intCast(c_int, self.w), @intCast(c_int, self.h), 4, self.pixels.ptr, @intCast(c_int, self.w * 4));
+        var c_file = std.cstr.addNullByte(upaya.mem.tmp_allocator, file) catch unreachable;
+        var bytes = std.mem.sliceAsBytes(self.pixels);
+        _ = upaya.stb.stbi_write_png(c_file.ptr, @intCast(c_int, self.w), @intCast(c_int, self.h), 4, bytes.ptr, @intCast(c_int, self.w * 4));
     }
 };

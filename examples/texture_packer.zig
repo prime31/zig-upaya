@@ -43,6 +43,12 @@ fn update() void {
             igSetNextItemWidth(100);
             var tmp_size = [_]c_int{ @intCast(c_int, a.w), @intCast(c_int, a.h) };
             _ = igInputInt2("", &tmp_size, ImGuiInputTextFlags_None);
+            igSameLine(0, 5);
+
+            if (ogButton("Save to Desktop")) {
+                const path_or_null = @import("known-folders.zig").getPath(upaya.mem.tmp_allocator, .desktop) catch unreachable;
+                if (path_or_null) |path| atlas.?.save(path, "test");
+            }
 
             if (igBeginChildEx("#child", 666, ogGetContentRegionAvail(), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_HorizontalScrollbar)) {
                 var pos = ogGetCursorScreenPos();
