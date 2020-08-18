@@ -7,6 +7,7 @@ pub const imgui = @import("imgui");
 pub const filebrowser = @import("filebrowser");
 
 // types
+pub const TexturePacker = @import("utils/texture_packer.zig").TexturePacker;
 pub const Image = @import("image.zig").Image;
 pub const Texture = @import("texture.zig").Texture;
 pub const RenderTexture = @import("render_texture.zig").RenderTexture;

@@ -70,6 +70,10 @@ pub const Image = struct {
         }
     }
 
+    pub fn asTexture(self: Image, filter: upaya.Texture.Filter) upaya.Texture {
+        return upaya.Texture.initWithColorData(self.pixels, @intCast(i32, self.w), @intCast(i32, self.h), filter);
+    }
+
     pub fn save(self: Image, file: []const u8) void {
         _ = upaya.stb.stbi_write_png(file.ptr, @intCast(c_int, self.w), @intCast(c_int, self.h), 4, self.pixels.ptr, @intCast(c_int, self.w * 4));
     }
