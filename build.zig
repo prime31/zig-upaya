@@ -9,6 +9,7 @@ pub fn build(b: *Builder) void {
 
     // first item in list will be added as "run" so `zig build run` will always work
     const examples = [_][2][]const u8{
+        [_][]const u8{ "texture_packer_cli", "examples/texture_packer_cli.zig" },
         [_][]const u8{ "texture_packer", "examples/texture_packer.zig" },
         [_][]const u8{ "empty", "examples/empty.zig" },
         [_][]const u8{ "tilescript", "tilescript/main.zig" },
@@ -31,11 +32,17 @@ pub fn build(b: *Builder) void {
 
 /// creates an exe with all the required dependencies
 fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []const u8) !void {
+    const is_cli = std.mem.endsWith(u8, name, "cli");
+
     var exe = b.addExecutable(name, source);
     exe.setBuildMode(b.standardReleaseOptions());
     exe.setOutputDir("zig-cache/bin");
 
-    upaya_build.linkArtifact(b, exe, target);
+    if (is_cli) {
+        upaya_build.linkCommandLineArtifact(b, exe, target);
+    } else {
+        upaya_build.linkArtifact(b, exe, target);
+    }
 
     const run_cmd = exe.run();
     const exe_step = b.step(name, b.fmt("run {}.zig", .{name}));

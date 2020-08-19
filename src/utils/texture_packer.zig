@@ -1,6 +1,7 @@
 const std = @import("std");
 const fs = std.fs;
-const upaya = @import("../upaya.zig");
+const Image = @import("../image.zig").Image;
+const upaya = @import("../upaya_cli.zig");
 const math = upaya.math;
 const stb = @import("stb");
 
@@ -68,9 +69,7 @@ pub const TexturePacker = struct {
             const out_stream = handle.writer();
             const options = std.json.StringifyOptions{ .whitespace = .{} };
 
-            out_stream.writeByte('{') catch unreachable;
             std.json.stringify(.{ .names = self.names, .rects = self.rects }, options, out_stream) catch unreachable;
-            out_stream.writeByte('}') catch unreachable;
         }
     };
 
@@ -98,7 +97,7 @@ pub const TexturePacker = struct {
         for (pngs) |png, i| {
             var w: c_int = undefined;
             var h: c_int = undefined;
-            const tex_size = upaya.Texture.getTextureSize(png, &w, &h);
+            const tex_size = upaya.Image.getTextureSize(png, &w, &h);
             frames.append(.{
                 .id = @intCast(c_int, i),
                 .w = @intCast(u16, w),

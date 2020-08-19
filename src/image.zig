@@ -1,5 +1,6 @@
 const std = @import("std");
-const upaya = @import("upaya.zig");
+const upaya = @import("upaya_cli.zig");
+const Texture = @import("texture.zig").Texture;
 
 /// Image is a CPU side array of color data with some helper methods that can be used to prep data
 /// before creating a Texture
@@ -70,13 +71,24 @@ pub const Image = struct {
         }
     }
 
-    pub fn asTexture(self: Image, filter: upaya.Texture.Filter) upaya.Texture {
-        return upaya.Texture.initWithColorData(self.pixels, @intCast(i32, self.w), @intCast(i32, self.h), filter);
+    pub fn asTexture(self: Image, filter: Texture.Filter) Texture {
+        return Texture.initWithColorData(self.pixels, @intCast(i32, self.w), @intCast(i32, self.h), filter);
     }
 
     pub fn save(self: Image, file: []const u8) void {
         var c_file = std.cstr.addNullByte(upaya.mem.tmp_allocator, file) catch unreachable;
         var bytes = std.mem.sliceAsBytes(self.pixels);
         _ = upaya.stb.stbi_write_png(c_file.ptr, @intCast(c_int, self.w), @intCast(c_int, self.h), 4, bytes.ptr, @intCast(c_int, self.w * 4));
+    }
+
+    /// returns true if the image was loaded successfully
+    pub fn getTextureSize(file: []const u8, w: *c_int, h: *c_int) bool {
+        const image_contents = upaya.fs.read(upaya.mem.tmp_allocator, file) catch unreachable;
+        var comp: c_int = undefined;
+        if (upaya.stb.stbi_info_from_memory(image_contents.ptr, @intCast(c_int, image_contents.len), w, h, &comp) == 1) {
+            return true;
+        }
+
+        return false;
     }
 };

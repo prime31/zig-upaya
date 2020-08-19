@@ -1,5 +1,5 @@
 const std = @import("std");
-const upaya = @import("upaya.zig");
+const upaya = @import("upaya_cli.zig");
 const fs = std.fs;
 
 /// reads the contents of a file. Returned value is owned by the caller and must be freed!

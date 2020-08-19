@@ -44,6 +44,24 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
     artifact.addPackage(filebrowser);
 }
 
+pub fn linkCommandLineArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target) void {
+    stb_build.linkArtifact(b, artifact, target);
+
+    const stb = Pkg{
+        .name = "stb",
+        .path = "src/deps/stb/stb.zig",
+    };
+    const upaya = Pkg{
+        .name = "upaya",
+        .path = "src/upaya_cli.zig",
+        .dependencies = &[_]Pkg{ stb },
+    };
+
+    // packages exported to userland
+    artifact.addPackage(upaya);
+    artifact.addPackage(stb);
+}
+
 // add tests.zig file runnable via "zig build test"
 pub fn addTests(b: *Builder, target: std.build.Target) void {
     var tst = b.addTest("src/tests.zig");

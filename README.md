@@ -3,9 +3,10 @@
 
 Zig-based framework for creating game tools and helper apps. Consists of the following:
 - *Sokol*: used for cross-platform window creation and rendering
-- *STB Image*: image loader
+- *STB Image and Rect*: image loading, image saving and rect packing
 - *Tiny Filebrowser*: cross-platform filebrowsers and dialogs
 - *Dear ImGui*: needs no introduction
+- *Clap and Known Folders*: staples of many zig codebases. See their GitHub pages: [clap](https://github.com/Hejsil/zig-clap) and [known-folders](https://github.com/ziglibs/known-folders)
 
 Upaya provides a set of conveniences to speed up tool building:
 - *upaya.fs*: one-liners for saving/loading JSON/binary files
@@ -39,3 +40,6 @@ fn update() void {
     igEnd();
 }
 ```
+
+## Building a Command Line App
+Parts of Upaya can be used for command line tools as well. For example you may want to build a command line image manipulator that uses the STB Image and STB Image Write libs included in Upaya. To do that, the Upaya `build.zig` file has a separate method that you can use to setup the dependencies for you executable: `linkCommandLineArtifact`. When you call `linkCommandLineArtifact` it will skip linking Sokol, Dear ImGui and Tiny Filebrowser giving you a stripped down binary. Note that you must manually initialize the temp allocator by calling `upaya.mem.initTmpAllocator();` See the "texture_packer_cli" example code.

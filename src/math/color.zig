@@ -1,5 +1,5 @@
 const std = @import("std");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 pub const Color = extern union {
     value: u32,
@@ -58,7 +58,7 @@ pub const Color = extern union {
         self.value = (self.value & 0x00ffffff) | a;
     }
 
-    pub fn asImVec4(self: Color) ImVec4 {
+    pub fn asImVec4(self: Color) imgui.ImVec4 {
         return .{
             .x = @intToFloat(f32, self.comps.r) / 255,
             .y = @intToFloat(f32, self.comps.g) / 255,

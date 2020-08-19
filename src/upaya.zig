@@ -20,6 +20,8 @@ pub const fs = @import("fs.zig");
 pub const math = @import("math/math.zig");
 pub const colors = @import("colors.zig");
 pub const menu = @import("menu.zig");
+pub const known_folders = @import("utils/known-folders.zig");
+pub const clap = @import("utils/clap.zig");
 
 usingnamespace sokol;
 usingnamespace imgui;
