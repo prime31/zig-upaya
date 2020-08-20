@@ -82,10 +82,21 @@ pub const SceneView = struct {
 
     fn drawRect(center: math.Vec2, size: f32, color: math.Color) void {
         const half_size = size / 2;
-        const tl = trans_mat.transformImVec2(.{ .x = center.x - half_size, .y = center.y - half_size });
-        const tr = trans_mat.transformImVec2(.{ .x = center.x + half_size, .y = center.y - half_size });
-        const br = trans_mat.transformImVec2(.{ .x = center.x + half_size, .y = center.y + half_size });
-        const bl = trans_mat.transformImVec2(.{ .x = center.x - half_size, .y = center.y + half_size });
+        const real_center = center.subtract(.{ .x = cam.pos.x, .y = cam.pos.y });
+        var tl = trans_mat.transformImVec2(.{ .x = center.x - half_size, .y = center.y - half_size });
+        var tr = trans_mat.transformImVec2(.{ .x = center.x + half_size, .y = center.y - half_size });
+        var br = trans_mat.transformImVec2(.{ .x = center.x + half_size, .y = center.y + half_size });
+        var bl = trans_mat.transformImVec2(.{ .x = center.x - half_size, .y = center.y + half_size });
+
+        // tl = ImVec2{ .x = real_center.x - half_size, .y = real_center.y - half_size };
+        // tr = ImVec2{ .x = real_center.x + half_size, .y = real_center.y - half_size };
+        // br = ImVec2{ .x = real_center.x + half_size, .y = real_center.y + half_size };
+        // bl = ImVec2{ .x = real_center.x - half_size, .y = real_center.y + half_size };
+        // tl = tl.scale(cam.zoom);
+        // tr = tr.scale(cam.zoom);
+        // br = br.scale(cam.zoom);
+        // bl = bl.scale(cam.zoom);
+
         ImDrawList_AddQuadFilled(igGetWindowDrawList(), tl.add(screen_pos), tr.add(screen_pos), br.add(screen_pos), bl.add(screen_pos), color.value);
     }
 };
