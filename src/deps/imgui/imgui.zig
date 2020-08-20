@@ -113,11 +113,22 @@ pub const struct_ImVec4 = extern struct {
     w: f32 = 0,
 };
 pub const ImVec4 = struct_ImVec4;
-pub const struct_ImVec2 = extern struct {
+pub const ImVec2 = extern struct {
     x: f32 = 0,
     y: f32 = 0,
+
+    pub fn add(self: ImVec2, other: ImVec2) ImVec2 {
+        return .{ .x = self.x + other.x, .y = self.y + other.y };
+    }
+
+    pub fn subtract(self: ImVec2, other: ImVec2) ImVec2 {
+        return .{ .x = self.x - other.x, .y = self.y - other.y };
+    }
+
+    pub fn scale(self: ImVec2, s: f32) ImVec2 {
+        return .{ .x = self.x * s, .y = self.y * s };
+    }
 };
-pub const ImVec2 = struct_ImVec2;
 pub const struct_ImGuiWindowSettings = extern struct {
     ID: ImGuiID,
     Pos: ImVec2ih,

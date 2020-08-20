@@ -50,6 +50,12 @@ pub fn ogGetCursorPos() ImVec2 {
     return pos;
 }
 
+pub fn ogGetWindowSize() ImVec2 {
+    var pos = ImVec2{};
+    igGetWindowSize(&pos);
+    return pos;
+}
+
 pub fn ogGetMouseDragDelta(button: ImGuiMouseButton, lock_threshold: f32) ImVec2 {
     var pos = ImVec2{};
     igGetMouseDragDelta(&pos, button, lock_threshold);
@@ -134,6 +140,8 @@ pub fn ogUnformattedTooltip(text_wrap_pos: f32, text: [*c]const u8) void {
 pub fn ogDrag(comptime T: type, label: [*c]const u8, p_data: *T, v_speed: f32, p_min: T, p_max: T) bool {
     if (std.meta.trait.isUnsignedInt(T)) {
         return ogDragUnsignedFormat(T, label, p_data, v_speed, p_min, p_max, "%u");
+    } else if (T == f32) {
+        return ogDragSigned(T, label, p_data, v_speed, p_min, p_max);
     }
     return ogDragSigned(T, label, p_data, v_speed, p_min, p_max);
 }
@@ -153,7 +161,6 @@ pub fn ogDragUnsignedFormat(comptime T: type, label: [*c]const u8, p_data: *T, v
 }
 
 pub fn ogDragSigned(comptime T: type, label: [*c]const u8, p_data: *T, v_speed: f32, p_min: T, p_max: T) bool {
-    std.debug.assert(std.meta.trait.isSignedInt(T));
     var min = p_min;
     var max = p_max;
     const data_type = switch (T) {
