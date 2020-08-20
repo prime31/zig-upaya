@@ -1,6 +1,7 @@
 const Vec2 = @import("vec2.zig").Vec2;
 const Color = @import("color.zig").Color;
 const std = @import("std");
+const imgui = @import("imgui");
 const math = std.math;
 
 // 3 row, 2 col 2D matrix
@@ -129,7 +130,7 @@ pub const Mat32 = struct {
         };
     }
 
-    pub fn transformImVec2(self: Mat32, pos: ImVec2) ImVec2 {
+    pub fn transformImVec2(self: Mat32, pos: imgui.ImVec2) imgui.ImVec2 {
         return .{
             .x = pos.x * self.data[0] + pos.y * self.data[2] + self.data[4],
             .y = pos.x * self.data[1] + pos.y * self.data[3] + self.data[5],
