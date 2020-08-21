@@ -21,19 +21,21 @@ fn init() void {
 
 fn update() void {
     if (SceneView.begin("Game View")) {
-    SceneView.drawRect(.{}, 10, math.Color.white);
-    SceneView.drawRect(.{ .x = 30, .y = 30 }, 20, math.Color.dark_blue);
-    SceneView.drawRect(.{ .x = 130, .y = 130 }, 20, math.Color.yellow);
-    SceneView.drawRect(.{ .x = 430, .y = 230 }, 20, math.Color.voilet);
-    SceneView.drawRect(.{ .x = 630, .y = 330 }, 20, math.Color.green);
+        SceneView.drawRect(.{}, 10, math.Color.white);
+        SceneView.drawRect(.{ .x = 30, .y = 30 }, 20, math.Color.dark_blue);
+        if (math.isEven(@divTrunc(std.time.milliTimestamp(), 1000)))
+            SceneView.drawHollowRect(.{ .x = 30, .y = 30 }, .{ .x = 20, .y = 20 }, 3, math.Color.red);
+        SceneView.drawRect(.{ .x = 130, .y = 130 }, 20, math.Color.yellow);
+        SceneView.drawRect(.{ .x = 430, .y = 230 }, 20, math.Color.voilet);
+        SceneView.drawRect(.{ .x = 630, .y = 330 }, 20, math.Color.green);
 
-    SceneView.drawTex(tex, .{});
-    SceneView.drawTexPortion(tex, .{ .x = -100, .y = -100 }, .{ .x = 0, .y = 0, .w = 18, .h = 18 });
-    SceneView.drawTexPortion(tex, .{ .x = -82, .y = -100 }, .{ .x = 18, .y = 0, .w = 18, .h = 18 });
-    SceneView.drawTexPortion(tex, .{ .x = -82, .y = -82 }, .{ .x = 18, .y = 18, .w = 18, .h = 18 });
-    SceneView.drawTexPortion(tex, .{ .x = -100, .y = -82 }, .{ .x = 0, .y = 18, .w = 18, .h = 18 });
+        SceneView.drawTex(tex, .{});
+        SceneView.drawTexPortion(tex, .{ .x = -100, .y = -100 }, .{ .x = 0, .y = 0, .w = 18, .h = 18 });
+        SceneView.drawTexPortion(tex, .{ .x = -82, .y = -100 }, .{ .x = 18, .y = 0, .w = 18, .h = 18 });
+        SceneView.drawTexPortion(tex, .{ .x = -82, .y = -82 }, .{ .x = 18, .y = 18, .w = 18, .h = 18 });
+        SceneView.drawTexPortion(tex, .{ .x = -100, .y = -82 }, .{ .x = 0, .y = 18, .w = 18, .h = 18 });
 
-    SceneView.drawText("Text at origin", .{});
+        SceneView.drawText("Text at origin", .{});
     }
     SceneView.end();
 }
@@ -55,12 +57,7 @@ pub const SceneView = struct {
         igSetNextItemWidth(75);
         igSetCursorPosX(win_size.x - 300);
 
-        // TODO: when zooming center around the mouse cursor
-        // var old_size = ogGetWindowSize().scale(cam.zoom);
-        if (ogDrag(f32, "Zoom", &cam.zoom, 0.01, 0.1, 4)) {
-            // var delta_size = old_size.subtract(ogGetWindowSize().scale(cam.zoom)).scale(0.3);
-            // cam.pos = cam.pos.add(.{ .x = delta_size.x, .y = delta_size.y });
-        }
+        _ = ogDrag(f32, "Zoom", &cam.zoom, 0.01, 0.1, 4);
 
         // all controls need to be done by now
         igSetCursorScreenPos(screen_pos);
@@ -85,8 +82,8 @@ pub const SceneView = struct {
         if (igIsMouseDragging(ImGuiMouseButton_Left, 0) and (igGetIO().KeyAlt or igGetIO().KeySuper)) {
             var scroll_delta = ogGetMouseDragDelta(ImGuiMouseButton_Left, 0);
 
-            cam.pos.x -= scroll_delta.x;
-            cam.pos.y -= scroll_delta.y;
+            cam.pos.x -= scroll_delta.x * 1 / camera.zoom;
+            cam.pos.y -= scroll_delta.y * 1 / camera.zoom;
             igResetMouseDragDelta(ImGuiMouseButton_Left);
             return;
         }
@@ -106,6 +103,16 @@ pub const SceneView = struct {
         var bl = trans_mat.transformImVec2(.{ .x = center.x - half_size, .y = center.y + half_size });
 
         ImDrawList_AddQuadFilled(igGetWindowDrawList(), tl.add(screen_pos), tr.add(screen_pos), br.add(screen_pos), bl.add(screen_pos), color.value);
+    }
+
+    fn drawHollowRect(center: math.Vec2, size: math.Vec2, thickness: f32, color: math.Color) void {
+        const half_size = size.scale(0.5);
+        var tl = trans_mat.transformImVec2(.{ .x = center.x - half_size.x, .y = center.y - half_size.y });
+        var tr = trans_mat.transformImVec2(.{ .x = center.x + half_size.x, .y = center.y - half_size.y });
+        var br = trans_mat.transformImVec2(.{ .x = center.x + half_size.x, .y = center.y + half_size.y });
+        var bl = trans_mat.transformImVec2(.{ .x = center.x - half_size.x, .y = center.y + half_size.y });
+
+        ImDrawList_AddQuad(igGetWindowDrawList(), tl.add(screen_pos), tr.add(screen_pos), br.add(screen_pos), bl.add(screen_pos), color.value, thickness);
     }
 
     fn drawText(text: [*c]const u8, top_left: ImVec2) void {
@@ -144,20 +151,8 @@ pub const Camera = struct {
     pos: math.Vec2 = .{},
     zoom: f32 = 1,
 
-    pub fn invTransMat(self: Camera) math.Mat32 {
-        var size = ogGetWindowSize();
-        // var ortho = math.Mat32.initOrtho(size.x, size.y);
-        // var trans = math.Mat32.initTransform(.{ .x = self.pos.x, .y = self.pos.y, .sx = self.zoom, .sy = self.zoom });
-        // return ortho.mul(trans);
-
-        // return math.Mat32.initTransform(.{ .x = self.pos.x, .y = self.pos.y, .sx = self.zoom, .sy = self.zoom }).inverse();
-        return math.Mat32.initTransform(.{ .x = self.pos.x - size.x / 2, .y = self.pos.y - size.y / 2, .sx = self.zoom, .sy = self.zoom }).inverse();
-
-        // return math.Mat32.initTransform(.{ .x = self.pos.x, .y = self.pos.y, .sx = self.zoom, .sy = self.zoom, .ox = size.x / 2, .oy = size.y / 2 }).inverse();
-    }
-
     pub fn transMat(self: Camera) math.Mat32 {
-        var size = ogGetWindowSize();
+        var window_half_size = ogGetWindowSize().scale(0.5);
 
         var transform = math.Mat32.identity;
 
@@ -170,7 +165,7 @@ pub const Camera = struct {
         transform = tmp.mul(transform);
 
         tmp = math.Mat32.identity;
-        tmp.translate(size.x / 2, size.y / 2);
+        tmp.translate(window_half_size.x, window_half_size.y);
         transform = tmp.mul(transform);
 
         return transform;
