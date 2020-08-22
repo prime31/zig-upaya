@@ -14,7 +14,7 @@ pub fn main() !void {
 fn init() void {}
 
 fn update() void {
-    // not the MenuItems do not automatically bind to keys. The shortcut fuild is just for the UI. You can add listeners for the key combos
+    // note: the MenuItems do not automatically bind to keys. The shortcut field is just for the UI. You can add listeners for the key combos
     // like this:
     const io = igGetIO();
     if ((io.KeyCtrl or io.KeySuper) and ogKeyPressed(upaya.sokol.SAPP_KEYCODE_S)) {
