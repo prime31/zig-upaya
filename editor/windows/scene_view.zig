@@ -1,6 +1,7 @@
 const std = @import("std");
 const upaya = @import("upaya");
 const math = upaya.math;
+const editor = @import("../editor.zig");
 const Color = math.Color;
 usingnamespace @import("imgui");
 
@@ -33,12 +34,36 @@ const Camera = struct {
     }
 };
 
-
 var trans_mat: math.Mat32 = undefined;
 var camera: Camera = .{};
 var screen_pos: ImVec2 = undefined;
 
-pub fn begin(name: [*c]const u8) bool {
+var tex: ?upaya.Texture = null;
+
+pub fn draw(state: *editor.AppState) void {
+    if (tex == null) tex = upaya.Texture.initFromFile("examples/assets/plant.png", .nearest) catch unreachable;
+
+    if (begin("Scene")) {
+        drawRect(.{}, 10, Color.white);
+        drawRect(.{ .x = 30, .y = 30 }, 20, Color.dark_blue);
+        if (upaya.math.isEven(@divTrunc(std.time.milliTimestamp(), 1000)))
+            drawHollowRect(.{ .x = 30, .y = 30 }, .{ .x = 20, .y = 20 }, 3, Color.red);
+        drawRect(.{ .x = 130, .y = 130 }, 20, Color.yellow);
+        drawRect(.{ .x = 430, .y = 230 }, 20, Color.voilet);
+        drawRect(.{ .x = 630, .y = 330 }, 20, Color.green);
+
+        drawTex(tex.?, .{});
+        drawTexPortion(tex.?, .{ .x = -100, .y = -100 }, .{ .x = 0, .y = 0, .w = 18, .h = 18 });
+        drawTexPortion(tex.?, .{ .x = -82, .y = -100 }, .{ .x = 18, .y = 0, .w = 18, .h = 18 });
+        drawTexPortion(tex.?, .{ .x = -82, .y = -82 }, .{ .x = 18, .y = 18, .w = 18, .h = 18 });
+        drawTexPortion(tex.?, .{ .x = -100, .y = -82 }, .{ .x = 0, .y = 18, .w = 18, .h = 18 });
+
+        drawText("Text at origin", .{});
+    }
+    end();
+}
+
+fn begin(name: [*c]const u8) bool {
     if (!igBegin(name, null, ImGuiWindowFlags_None)) return false;
     screen_pos = ogGetCursorScreenPos();
     const win_size = ogGetContentRegionAvail();
@@ -66,7 +91,7 @@ pub fn begin(name: [*c]const u8) bool {
     return true;
 }
 
-pub fn end() void {
+fn end() void {
     igEnd();
 }
 
@@ -88,6 +113,7 @@ fn handleInput() void {
     }
 }
 
+// rendering methods
 pub fn drawRect(center: math.Vec2, size: f32, color: math.Color) void {
     const half_size = size / 2;
     var tl = trans_mat.transformImVec2(.{ .x = center.x - half_size, .y = center.y - half_size });
