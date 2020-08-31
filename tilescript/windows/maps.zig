@@ -10,7 +10,7 @@ var dragged = false;
 var prev_mouse_pos: ImVec2 = undefined;
 
 pub fn drawWindows(state: *ts.AppState) void {
-    // if the alt key is dont dont allow scrolling with the mouse since we will be zooming
+    // if the alt key is down dont allow scrolling with the mouse wheel since we will be zooming with it
     var window_flags = ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysHorizontalScrollbar;
     if (igGetIO().KeyAlt) window_flags |= ImGuiWindowFlags_NoScrollWithMouse;
 
