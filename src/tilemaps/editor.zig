@@ -24,12 +24,13 @@ pub const TilemapEditor = struct {
         if (!igBegin(name, null, window_flags)) return;
 
         var pos = ogGetCursorScreenPos();
+        var map_size = ImVec2{ .x = 16, .y = 16 };
         ogAddRectFilled(igGetWindowDrawList(), pos, map_size, colors.rgbToU32(0, 0, 0));
 
         _ = igInvisibleButton("##input_map_button", map_size);
         const is_hovered = igIsItemHovered(ImGuiHoveredFlags_None);
 
-        if (is_hovered) handleInput(pos);
+        if (is_hovered) self.handleInput(pos);
     }
 
     fn handleInput(self: @This(), origin: ImVec2) void {

@@ -1,5 +1,5 @@
 const std = @import("std");
 
-const Tilemap = @import("tilemap.zig").Tilemap;
-const TilemapEditor = @import("editor.zig").TilemapEditor;
-const Markov = @import("markov.zig").Markov;
+pub const Tilemap = @import("tilemap.zig").Tilemap;
+pub const TilemapEditor = @import("editor.zig").TilemapEditor;
+pub const Markov = @import("markov.zig").Markov;
