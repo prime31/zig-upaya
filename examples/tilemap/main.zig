@@ -1,10 +1,11 @@
 const std = @import("std");
 const upaya = @import("upaya");
 usingnamespace @import("imgui");
+usingnamespace upaya.tilemaps;
 const menu = @import("menu.zig");
 
-var map: upaya.tilemaps.Tilemap = undefined;
-var map_editor: upaya.tilemaps.TilemapEditor = undefined;
+var map: Tilemap = undefined;
+var map_editor: TilemapEditor = undefined;
 
 pub fn main() !void {
     upaya.run(.{
@@ -18,7 +19,8 @@ pub fn main() !void {
 }
 
 fn init() void {
-    map_editor = upaya.tilemaps.TilemapEditor.init();
+    const tileset = Tileset.init(16);
+    map_editor = TilemapEditor.init(Tilemap.init(120, 80), tileset);
 }
 
 fn shutdown() void {
@@ -29,11 +31,9 @@ fn update() void {
     menu.draw();
 
     map_editor.draw("Scene");
+    map_editor.drawTileset("Palette");
 
     _ = igBegin("Layers", null, ImGuiWindowFlags_None);
-    igEnd();
-
-    _ = igBegin("Palette", null, ImGuiWindowFlags_None);
     igEnd();
 }
 

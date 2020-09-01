@@ -1,35 +1,50 @@
 const std = @import("std");
+const upaya = @import("../upaya.zig");
 
 pub const Tilemap = struct {
     w: usize,
     h: usize,
-    map: []u8,
+    data: []u8,
+
+    pub fn init(width: usize, height: usize) Tilemap {
+        var map = Tilemap{
+            .w = width,
+            .h = height,
+            .data = upaya.mem.allocator.alloc(u8, width * height) catch unreachable,
+        };
+        map.reset();
+        return map;
+    }
 
     pub fn initWithData(data: []const u8, width: usize, height: usize) Tilemap {
         return .{
             .w = width,
             .h = height,
-            .map = std.mem.dupe(std.testing.allocator, u8, data) catch unreachable,
+            .data = std.mem.dupe(upaya.mem.allocator, u8, data) catch unreachable,
         };
     }
 
     pub fn deinit(self: Tilemap) void {
-        std.testing.allocator.free(self.map);
+        upaya.mem.allocator.free(self.data);
+    }
+
+    pub fn reset(self: Tilemap) void {
+        std.mem.set(u8, self.data, 0);
     }
 
     pub fn rotate(self: *Tilemap) void {
-        var rotated = std.testing.allocator.alloc(u8, self.map.len) catch unreachable;
+        var rotated = upaya.mem.allocator.alloc(u8, self.data.len) catch unreachable;
 
         var y: usize = 0;
         while (y < self.h) : (y += 1) {
             var x: usize = 0;
             while (x < self.w) : (x += 1) {
-                rotated[y + x * self.h] = self.map[x + y * self.w];
+                rotated[y + x * self.h] = self.data[x + y * self.w];
             }
         }
 
-        std.testing.allocator.free(self.map);
-        self.map = rotated;
+        std.testing.allocator.free(self.data);
+        self.data = rotated;
         std.mem.swap(usize, &self.w, &self.h);
     }
 
@@ -38,7 +53,7 @@ pub const Tilemap = struct {
         while (y < self.h) : (y += 1) {
             var x: usize = 0;
             while (x < self.w) : (x += 1) {
-                std.debug.print("{}, ", .{self.map[x + y * self.w]});
+                std.debug.print("{}, ", .{self.data[x + y * self.w]});
             }
             std.debug.print("\n", .{});
         }
