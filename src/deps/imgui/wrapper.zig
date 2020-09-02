@@ -74,6 +74,11 @@ pub fn ogGetAnyMouseDragDelta() ImVec2 {
 }
 
 /// returns true if any mouse is dragging
+pub fn ogIsAnyMouseDown() bool {
+    return igIsMouseDown(ImGuiMouseButton_Left) or igIsMouseDown(ImGuiMouseButton_Right);
+}
+
+/// returns true if any mouse is dragging
 pub fn ogIsAnyMouseDragging() bool {
     return igIsMouseDragging(ImGuiMouseButton_Left, 0) or igIsMouseDragging(ImGuiMouseButton_Right, 0);
 }

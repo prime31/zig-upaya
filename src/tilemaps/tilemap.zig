@@ -59,4 +59,15 @@ pub const Tilemap = struct {
         }
         std.debug.print("\n", .{});
     }
+
+    pub fn getTile(self: Tilemap, x: usize, y: usize) u8 {
+        if (x > self.w or y > self.h) {
+            return 0;
+        }
+        return self.data[x + y * self.w];
+    }
+
+    pub fn setTile(self: Tilemap, x: usize, y: usize, value: u8) void {
+        self.data[x + y * self.w] = value;
+    }
 };

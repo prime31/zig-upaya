@@ -19,8 +19,7 @@ pub fn main() !void {
 }
 
 fn init() void {
-    const tileset = Tileset.init(16);
-    map_editor = TilemapEditor.init(Tilemap.init(120, 80), tileset);
+    map_editor = TilemapEditor.init(Tilemap.init(120, 80), Tileset.init(16));
 }
 
 fn shutdown() void {
@@ -37,7 +36,11 @@ fn update() void {
     igEnd();
 }
 
-fn onFileDropped(file: []const u8) void {}
+fn onFileDropped(file: []const u8) void {
+    if (std.mem.endsWith(u8, file, ".png")) {
+        map_editor.tileset.loadTexture(file);
+    }
+}
 
 pub fn setupDockLayout(id: ImGuiID) void {
     var dock_main_id = id;
