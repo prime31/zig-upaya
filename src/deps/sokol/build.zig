@@ -22,7 +22,6 @@ fn compileSokol(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.linkFramework("Audiotoolbox");
         exe.linkFramework("CoreAudio");
         exe.linkSystemLibrary("c++");
-        exe.enableSystemLinkerHack();
     } else if (target.isLinux()) {
         exe.linkSystemLibrary("GL");
         exe.linkSystemLibrary("GLEW");
