@@ -52,6 +52,22 @@ pub const TilemapEditor = struct {
         self.tileset.drawTileset(name);
     }
 
+    pub fn drawLayers(self: *@This(), name: [*c]const u8) void {
+        defer igEnd();
+        if (!igBegin(name, null, ImGuiWindowFlags_None)) return;
+
+        for (self.map.layers) |layer, i| {
+            igPushIDInt(@intCast(c_int, i));
+            defer igPopID();
+
+            if (igSelectableBool(layer.name.ptr, i == self.map.current_layer, ImGuiSelectableFlags_None, .{})) {
+                self.map.current_layer = i;
+            }
+        }
+
+        if (ogButton("Add Layer")) self.map.addLayer();
+    }
+
     fn handleInput(self: *@This(), origin: ImVec2) void {
         // scrolling via drag with alt or super key down
         if (igIsMouseDragging(ImGuiMouseButton_Left, 0) and (igGetIO().KeyAlt or igGetIO().KeySuper)) {
@@ -119,16 +135,18 @@ pub const TilemapEditor = struct {
     }
 
     fn drawPostProcessedMap(self: @This(), origin: ImVec2) void {
-        var y: usize = 0;
-        while (y < self.map.h) : (y += 1) {
-            var x: usize = 0;
-            while (x < self.map.w) : (x += 1) {
-                const tile = self.map.data[x + y * self.map.w];
-                if (tile == 0) continue;
+        for (self.map.layers) |layer| {
+            var y: usize = 0;
+            while (y < self.map.h) : (y += 1) {
+                var x: usize = 0;
+                while (x < self.map.w) : (x += 1) {
+                    const tile = layer.data[x + y * self.map.w];
+                    if (tile == 0) continue;
 
-                const offset = ImVec2.init(@intToFloat(f32, x * self.tileset.tile_size), @intToFloat(f32, y * self.tileset.tile_size));
-                var tl = origin.add(offset);
-                self.drawTile(tl, tile - 1, 1);
+                    const offset = ImVec2.init(@intToFloat(f32, x * self.tileset.tile_size), @intToFloat(f32, y * self.tileset.tile_size));
+                    var tl = origin.add(offset);
+                    self.drawTile(tl, tile - 1, 1);
+                }
             }
         }
     }
@@ -201,7 +219,6 @@ pub const TilemapEditor = struct {
         ImDrawList_AddImage(igGetWindowDrawList(), self.tileset.tex.imTextureID(), tl, br, uv0, uv1, 0xffffffff);
     }
 };
-
 
 /// helper to find the tile under the position given a top-left position of the grid (origin) and a grid size
 pub fn tileIndexUnderPos(pos: ImVec2, rect_size: usize, origin: ImVec2) struct { x: usize, y: usize } {

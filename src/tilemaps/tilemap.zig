@@ -4,15 +4,41 @@ const upaya = @import("../upaya.zig");
 pub const Tilemap = struct {
     w: usize,
     h: usize,
-    data: []u8,
+    layers: []Layer,
+    current_layer: usize = 0,
+
+    pub const Layer = struct {
+        name: []const u8,
+        data: []u8,
+
+        pub fn init(name: []const u8, size: usize) Layer {
+            var layer = Layer{
+                .name = upaya.mem.allocator.dupeZ(u8, name) catch unreachable,
+                .data = upaya.mem.allocator.alloc(u8, size) catch unreachable,
+            };
+            layer.clear();
+            return layer;
+        }
+
+        pub fn deinit(self: Layer) void {
+            for (self.layers) |layer| {
+                upaya.mem.allocator.free(layer.data);
+                upaya.mem.allocator.free(layer.name);
+            }
+        }
+
+        pub fn clear(self: Layer) void {
+            std.mem.set(u8, self.data, 0);
+        }
+    };
 
     pub fn init(width: usize, height: usize) Tilemap {
         var map = Tilemap{
             .w = width,
             .h = height,
-            .data = upaya.mem.allocator.alloc(u8, width * height) catch unreachable,
+            .layers = upaya.mem.allocator.alloc(Layer, 1) catch unreachable,
         };
-        map.reset();
+        map.layers[0] = Layer.init("Layer 1", map.w * map.h);
         return map;
     }
 
@@ -28,8 +54,9 @@ pub const Tilemap = struct {
         upaya.mem.allocator.free(self.data);
     }
 
-    pub fn reset(self: Tilemap) void {
-        std.mem.set(u8, self.data, 0);
+    pub fn addLayer(self: *Tilemap) void {
+        self.layers = upaya.mem.allocator.realloc(self.layers, self.layers.len + 1) catch unreachable;
+        self.layers[self.layers.len - 1] = Layer.init("Layer", self.w * self.h);
     }
 
     pub fn rotate(self: *Tilemap) void {
@@ -64,10 +91,10 @@ pub const Tilemap = struct {
         if (x > self.w or y > self.h) {
             return 0;
         }
-        return self.data[x + y * self.w];
+        return self.layers[self.current_layer].data[x + y * self.w];
     }
 
     pub fn setTile(self: Tilemap, x: usize, y: usize, value: u8) void {
-        self.data[x + y * self.w] = value;
+        self.layers[self.current_layer].data[x + y * self.w] = value;
     }
 };

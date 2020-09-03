@@ -31,9 +31,7 @@ fn update() void {
 
     map_editor.draw("Scene");
     map_editor.drawTileset("Palette");
-
-    _ = igBegin("Layers", null, ImGuiWindowFlags_None);
-    igEnd();
+    map_editor.drawLayers("Layers");
 }
 
 fn onFileDropped(file: []const u8) void {
