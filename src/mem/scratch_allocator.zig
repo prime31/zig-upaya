@@ -22,7 +22,7 @@ pub const ScratchAllocator = struct {
         };
     }
 
-    fn alloc(allocator: *Allocator, n: usize, ptr_align: u29, len_align: u29) ![]u8 {
+    fn alloc(allocator: *Allocator, n: usize, ptr_align: u29, len_align: u29, ret_addr: usize) ![]u8 {
         const self = @fieldParentPtr(ScratchAllocator, "allocator", allocator);
         const addr = @ptrToInt(self.buffer.ptr) + self.end_index;
         const adjusted_addr = mem.alignForward(addr, ptr_align);
@@ -33,7 +33,7 @@ pub const ScratchAllocator = struct {
             // if more memory is requested then we have in our buffer leak like a sieve!
             if (n > self.buffer.len) {
                 std.debug.warn("\n---------\nwarning: tmp allocated more than is in our temp allocator. This memory WILL leak!\n--------\n", .{});
-                return self.allocator.allocFn(allocator, n, ptr_align, len_align);
+                return self.allocator.allocFn(allocator, n, ptr_align, len_align, ret_addr);
             }
 
             const result = self.buffer[0..n];

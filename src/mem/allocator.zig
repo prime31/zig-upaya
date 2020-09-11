@@ -6,7 +6,7 @@ var c_allocator_state = std.mem.Allocator{
     .resizeFn = cResize,
 };
 
-fn cAlloc(allocator: *std.mem.Allocator, len: usize, ptr_align: u29, len_align: u29) ![]u8 {
+fn cAlloc(allocator: *std.mem.Allocator, len: usize, ptr_align: u29, len_align: u29, ret_addr: usize) ![]u8 {
     std.debug.assert(ptr_align <= @alignOf(c_longdouble));
     const ptr = @ptrCast([*]u8, std.c.malloc(len) orelse return error.OutOfMemory);
 
@@ -17,7 +17,7 @@ fn cAlloc(allocator: *std.mem.Allocator, len: usize, ptr_align: u29, len_align: 
     return ptr[0..std.mem.alignBackwardAnyAlign(len, len_align)];
 }
 
-fn cResize(self: *std.mem.Allocator, old_mem: []u8, new_len: usize, len_align: u29) std.mem.Allocator.Error!usize {
+fn cResize(allocator: *std.mem.Allocator, old_mem: []u8, buf_align: u29, new_len: usize, len_align: u29, ret_addr: usize) std.mem.Allocator.Error!usize {
     if (new_len == 0) {
         std.c.free(old_mem.ptr);
         return 0;
