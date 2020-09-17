@@ -6,7 +6,7 @@ Zig-based framework for creating game tools and helper apps. Consists of the fol
 - *STB Image and Rect*: image loading, image saving and rect packing
 - *Tiny Filebrowser*: cross-platform filebrowsers and dialogs
 - *Dear ImGui*: needs no introduction
-- *Clap and Known Folders*: staples of many zig codebases. See their GitHub pages: [clap](https://github.com/Hejsil/zig-clap) and [known-folders](https://github.com/ziglibs/known-folders)
+- *Known Folders*: staple of many zig codebases. See the GitHub page: [known-folders](https://github.com/ziglibs/known-folders)
 
 Upaya provides a set of conveniences to speed up tool building:
 - *upaya.fs*: one-liners for saving/loading JSON/binary files
