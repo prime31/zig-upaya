@@ -7,8 +7,8 @@ pub const BufferStream = @import("stream.zig").BufferStream;
 pub var tmp_allocator: *std.mem.Allocator = undefined;
 var tmp_allocator_instance: ScratchAllocator = undefined;
 
-// default to the SDL c allocator for now
-pub const allocator = @import("allocator.zig").c_allocator;
+var gpa = std.heap.GeneralPurposeAllocator(.{}){};
+pub const allocator = &gpa.allocator;
 
 pub fn initTmpAllocator() void {
     tmp_allocator_instance = ScratchAllocator.init(allocator);
