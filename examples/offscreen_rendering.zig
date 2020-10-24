@@ -95,8 +95,8 @@ fn init() void {
         .type = .SG_UNIFORMTYPE_MAT4,
         .array_count = 0,
     };
-    shader_desc.vs.source = if (std.Target.current.os.tag == .macosx) @embedFile("assets/shaders/vertcolor_metal.vs") else @embedFile("assets/shaders/vertcolor_gl.vs");
-    shader_desc.fs.source = if (std.Target.current.os.tag == .macosx) @embedFile("assets/shaders/vertcolor_metal.fs") else @embedFile("assets/shaders/vertcolor_gl.fs");
+    shader_desc.vs.source = if (std.Target.current.os.tag == .macos) @embedFile("assets/shaders/vertcolor_metal.vs") else @embedFile("assets/shaders/vertcolor_gl.vs");
+    shader_desc.fs.source = if (std.Target.current.os.tag == .macos) @embedFile("assets/shaders/vertcolor_metal.fs") else @embedFile("assets/shaders/vertcolor_gl.fs");
 
     var pipeline_desc = std.mem.zeroes(sg_pipeline_desc);
     pipeline_desc.layout.attrs[0].format = .SG_VERTEXFORMAT_FLOAT3;
