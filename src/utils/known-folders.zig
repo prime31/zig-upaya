@@ -97,7 +97,7 @@ pub fn getPath(allocator: *std.mem.Allocator, folder: KnownFolder) Error!?[]cons
                 },
             }
         },
-        .macosx => {
+        .macos => {
             if (@hasDecl(root, "known_folders_config") and root.known_folders_config.xdg_on_mac) {
                 return getPathXdg(allocator, &arena, folder);
             }

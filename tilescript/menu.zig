@@ -78,7 +78,7 @@ fn checkKeyboardShortcuts(state: *ts.AppState) void {
 }
 
 fn getDefaultPath() [:0]const u8 {
-    const path_or_null = @import("known-folders.zig").getPath(upaya.mem.tmp_allocator, .desktop) catch unreachable;
+    const path_or_null = upaya.known_folders.getPath(upaya.mem.tmp_allocator, .desktop) catch unreachable;
     const tmp_path = std.mem.concat(upaya.mem.tmp_allocator, u8, &[_][]const u8{ path_or_null.?, std.fs.path.sep_str }) catch unreachable;
     return std.mem.dupeZ(upaya.mem.tmp_allocator, u8, tmp_path) catch unreachable;
 }

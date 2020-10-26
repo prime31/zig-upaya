@@ -37,7 +37,8 @@ pub fn save(map: Map, file: []const u8) !void {
 
     // groups
     try out.writeIntLittle(usize, map.ruleset_groups.count());
-    for (map.ruleset_groups.items()) |entry| {
+    var iter = map.ruleset_groups.iterator();
+    while (iter.next()) |entry| {
         try out.writeIntLittle(u8, entry.key);
         try writeFixedSliceZ(out, entry.value);
     }
@@ -306,8 +307,8 @@ fn writeUnion(out: Writer, value: anytype) !void {
         const active_tag = std.meta.activeTag(value);
         try writeValue(out, active_tag);
 
-        inline for (info.fields) |field_info| {
-            if (field_info.enum_field.?.value == @enumToInt(active_tag)) {
+        inline for (std.meta.fields(TagType)) |field_info| {
+            if (field_info.value == @enumToInt(active_tag)) {
                 const name = field_info.name;
                 try writeValue(out, @field(value, name));
             }
@@ -326,7 +327,7 @@ fn writeValue(out: Writer, value: anytype) !void {
 
     switch (@typeInfo(T)) {
         .Int => try out.writeIntLittle(T, value),
-        .Float => try out.writeIntLittle(T, value),
+        // .Float => try out.writeIntLittle(T, value),
         .Enum => try writeValue(out, @enumToInt(value)),
         else => unreachable,
     }
@@ -343,10 +344,9 @@ fn readUnionInto(in: Reader, ptr: anytype) !void {
         // this is a technically a u2 but we read it as a u8 because there is no bit packing in this reader/writer
         const tag = try in.readIntLittle(u8);
 
-        inline for (info.fields) |field_info| {
-            if (field_info.enum_field.?.value == tag) {
+        inline for (std.meta.fields(TagType)) |field_info| {
+            if (field_info.value == tag) {
                 const name = field_info.name;
-                const FieldType = field_info.field_type;
                 ptr.* = @unionInit(C, name, undefined);
                 try readValueInto(in, &@field(ptr, name));
             }
@@ -370,7 +370,8 @@ fn readValueInto(in: Reader, ptr: anytype) !void {
     const child_type_id = @typeInfo(C);
 
     switch (child_type_id) {
-        .Float, .Int => ptr.* = try in.readIntLittle(C),
+        .Int => ptr.* = try in.readIntLittle(C),
+        // .Float => ptr.* = try in.readIntLittle(C),
         else => unreachable,
     }
 }
