@@ -29,7 +29,7 @@ fn compileSokol(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
     }
 
     exe.addIncludeDir("src/deps/sokol");
-    const cFlags = if (std.Target.current.os.tag == .macosx) [_][]const u8{ "-std=c99", "-ObjC", "-fobjc-arc" } else [_][]const u8{"-std=c99"};
+    const cFlags = if (std.Target.current.os.tag == .macos) [_][]const u8{ "-std=c99", "-ObjC", "-fobjc-arc" } else [_][]const u8{"-std=c99"};
     exe.addCSourceFile("src/deps/sokol/compile_sokol.c", &cFlags);
 }
 
