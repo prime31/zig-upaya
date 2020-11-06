@@ -39,6 +39,7 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
     var exe = b.addExecutable(name, source);
     exe.setBuildMode(b.standardReleaseOptions());
     exe.setOutputDir("zig-cache/bin");
+    exe.setTarget(target);
 
     if (is_cli) {
         upaya_build.linkCommandLineArtifact(b, exe, target);

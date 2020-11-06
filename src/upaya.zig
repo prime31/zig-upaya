@@ -158,7 +158,7 @@ export fn event(e: [*c]const sapp_event) void {
     }
 
     // handle cmd+Q on macos
-    if (std.Target.current.os.tag == .macosx) {
+    if (std.Target.current.os.tag == .macos) {
         if (e[0].type == .SAPP_EVENTTYPE_KEY_DOWN) {
             if (e[0].key_code == .SAPP_KEYCODE_LEFT_SUPER) {
                 state.cmd_down = true;

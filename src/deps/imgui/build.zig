@@ -24,7 +24,6 @@ fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.linkFramework("Audiotoolbox");
         exe.linkFramework("CoreAudio");
         exe.linkSystemLibrary("c++");
-        exe.enableSystemLinkerHack();
     } else {
         exe.linkSystemLibrary("c++");
         exe.linkSystemLibrary("X11");
