@@ -37,7 +37,8 @@ pub fn save(map: Map, file: []const u8) !void {
 
     // groups
     try out.writeIntLittle(usize, map.ruleset_groups.count());
-    for (map.ruleset_groups.items()) |entry| {
+    var iter = map.ruleset_groups.iterator();
+    while (iter.next()) |entry| {
         try out.writeIntLittle(u8, entry.key);
         try writeFixedSliceZ(out, entry.value);
     }
