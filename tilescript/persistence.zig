@@ -307,8 +307,8 @@ fn writeUnion(out: Writer, value: anytype) !void {
         const active_tag = std.meta.activeTag(value);
         try writeValue(out, active_tag);
 
-        inline for (info.fields) |field_info| {
-            if (field_info.enum_field.?.value == @enumToInt(active_tag)) {
+        inline for (std.meta.fields(TagType)) |field_info| {
+            if (field_info.value == @enumToInt(active_tag)) {
                 const name = field_info.name;
                 try writeValue(out, @field(value, name));
             }
@@ -335,19 +335,16 @@ fn writeValue(out: Writer, value: anytype) !void {
 
 // generic read helpers
 fn readUnionInto(in: Reader, ptr: anytype) !void {
-    const T = @TypeOf(ptr);
-    const C = comptime std.meta.Child(T);
+    const C = comptime std.meta.Child(@TypeOf(ptr));
     const info = @typeInfo(C).Union;
 
     if (info.tag_type) |TagType| {
-        const TagInt = @TagType(TagType);
         // this is a technically a u2 but we read it as a u8 because there is no bit packing in this reader/writer
         const tag = try in.readIntLittle(u8);
 
-        inline for (info.fields) |field_info| {
-            if (field_info.enum_field.?.value == tag) {
+        inline for (std.meta.fields(TagType)) |field_info| {
+            if (field_info.value == tag) {
                 const name = field_info.name;
-                const FieldType = field_info.field_type;
                 ptr.* = @unionInit(C, name, undefined);
                 try readValueInto(in, &@field(ptr, name));
             }
