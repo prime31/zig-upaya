@@ -327,7 +327,7 @@ fn writeValue(out: Writer, value: anytype) !void {
 
     switch (@typeInfo(T)) {
         .Int => try out.writeIntLittle(T, value),
-        .Float => try out.writeIntLittle(T, value),
+        .Float => try out.writeIntLittle(i32, @bitCast(i32, value)), // zig pre-0.7 try out.writeIntLittle(T, value)
         .Enum => try writeValue(out, @enumToInt(value)),
         else => unreachable,
     }
@@ -365,10 +365,11 @@ fn readValueInto(in: Reader, ptr: anytype) !void {
     comptime std.debug.assert(std.meta.trait.isSingleItemPtr(T));
 
     const C = comptime std.meta.Child(T);
-    const child_type_id = @typeInfo(C);
+    const child_ti = @typeInfo(C);
 
-    switch (child_type_id) {
-        .Float, .Int => ptr.* = try in.readIntLittle(C),
+    switch (child_ti) {
+        .Int => ptr.* = try in.readIntLittle(C),
+        .Float => ptr.* = @bitCast(f32, try in.readIntLittle(i32)), // zig pre-0.7 ptr.* = try in.readIntLittle(C)
         else => unreachable,
     }
 }
