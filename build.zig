@@ -9,9 +9,9 @@ pub fn build(b: *Builder) void {
 
     // first item in list will be added as "run" so `zig build run` will always work
     const examples = [_][2][]const u8{
-        [_][]const u8{ "tilemap", "examples/tilemap/main.zig" },
-        [_][]const u8{ "tilescript", "tilescript/main.zig" },
-        [_][]const u8{ "editor", "editor/main.zig" },
+        [_][]const u8{ "tilescript", "tilescript/ts_main.zig" },
+        [_][]const u8{ "tilemap", "examples/tilemap/tilemap_main.zig" },
+        [_][]const u8{ "editor", "examples/editor/editor_main.zig" },
         [_][]const u8{ "texture_packer_cli", "examples/texture_packer_cli.zig" },
         [_][]const u8{ "texture_packer", "examples/texture_packer.zig" },
         [_][]const u8{ "empty", "examples/empty.zig" },
