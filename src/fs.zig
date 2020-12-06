@@ -72,31 +72,31 @@ pub fn freePrefsJson(data: anytype) void {
 }
 
 /// returns a slice of all the files with extension. The caller owns the slice AND each path in the slice.
-pub fn getAllFilesOfType(allocator: *std.mem.Allocator, dir: fs.Dir, extension: []const u8, recurse: bool) [][]const u8 {
-    var list = std.ArrayList([]const u8).init(allocator);
+pub fn getAllFilesOfType(allocator: *std.mem.Allocator, root_directory: []const u8, extension: []const u8, recurse: bool) [][:0]const u8 {
+    var list = std.ArrayList([:0]const u8).init(allocator);
 
     var recursor = struct {
-        fn search(alloc: *std.mem.Allocator, directory: fs.Dir, recursive: bool, filelist: *std.ArrayList([]const u8), ext: []const u8) void {
-            directory.setAsCwd() catch unreachable;
-            var buffer: [std.fs.MAX_PATH_BYTES]u8 = undefined;
-            const dir_string = std.os.getcwd(&buffer) catch unreachable;
+        fn search(alloc: *std.mem.Allocator, directory: []const u8, recursive: bool, filelist: *std.ArrayList([:0]const u8), ext: []const u8) void {
+            var dir = fs.cwd().openDir(directory, .{ .iterate = true }) catch unreachable;
+            defer dir.close();
 
-            var iter = directory.iterate();
+            var iter = dir.iterate();
             while (iter.next() catch unreachable) |entry| {
                 if (entry.kind == .File) {
                     if (std.mem.endsWith(u8, entry.name, ext)) {
-                        const abs_path = fs.path.join(alloc, &[_][]const u8{ dir_string, entry.name }) catch unreachable;
-                        filelist.append(abs_path) catch unreachable;
+                        const name_null_term = std.mem.concat(upaya.mem.tmp_allocator, u8, &[_][]const u8{ entry.name, "\x00" }) catch unreachable;
+                        const abs_path = fs.path.join(alloc, &[_][]const u8{ directory, name_null_term }) catch unreachable;
+                        filelist.append(abs_path[0 .. abs_path.len - 1 :0]) catch unreachable;
                     }
                 } else if (entry.kind == .Directory) {
-                    const abs_path = fs.path.join(alloc, &[_][]const u8{ dir_string, entry.name }) catch unreachable;
-                    search(alloc, directory.openDir(entry.name, .{ .iterate = true }) catch unreachable, recursive, filelist, ext);
+                    const abs_path = fs.path.join(upaya.mem.tmp_allocator, &[_][]const u8{ directory, entry.name }) catch unreachable;
+                    search(alloc, abs_path, recursive, filelist, ext);
                 }
             }
         }
     }.search;
 
-    recursor(allocator, dir, recurse, &list, extension);
+    recursor(allocator, root_directory, recurse, &list, extension);
 
     return list.toOwnedSlice();
 }

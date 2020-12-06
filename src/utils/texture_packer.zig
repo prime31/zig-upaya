@@ -79,16 +79,12 @@ pub const TexturePacker = struct {
     };
 
     pub fn pack(folder: []const u8) !Atlas {
-        if (fs.cwd().openDir(folder, .{ .iterate = true })) |dir| {
-            const pngs = upaya.fs.getAllFilesOfType(upaya.mem.allocator, dir, ".png", true);
-            const frames = getFramesForPngs(pngs);
-            if (runRectPacker(frames)) |atlas_size| {
-                return Atlas.init(frames, pngs, atlas_size);
-            } else {
-                return error.NotEnoughRoom;
-            }
-        } else |err| {
-            return err;
+        const pngs = upaya.fs.getAllFilesOfType(upaya.mem.allocator, folder, ".png", true);
+        const frames = getFramesForPngs(pngs);
+        if (runRectPacker(frames)) |atlas_size| {
+            return Atlas.init(frames, pngs, atlas_size);
+        } else {
+            return error.NotEnoughRoom;
         }
     }
 
