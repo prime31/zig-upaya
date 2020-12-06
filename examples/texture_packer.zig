@@ -50,20 +50,20 @@ fn update() void {
                 if (path_or_null) |path| atlas.?.save(path, "test");
             }
 
-            if (igBeginChildEx("#child", 666, ogGetContentRegionAvail(), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_HorizontalScrollbar)) {
+            defer igEndChild();
+            if (ogBeginChildEx("#child", 666, ogGetContentRegionAvail(), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_HorizontalScrollbar)) {
                 var pos = ogGetCursorScreenPos();
                 const size = ImVec2{ .x = @intToFloat(f32, a.w), .y = @intToFloat(f32, a.h) };
 
                 ogAddRectFilled(igGetWindowDrawList(), pos, size, colors.rgbToU32(0, 0, 0));
                 ogAddRect(igGetWindowDrawList(), pos, size, colors.rgbToU32(155, 0, 155), 1);
-                _ = igInvisibleButton("##rects", size);
+                _ = ogInvisibleButton("##rects", size, ImGuiButtonFlags_None);
 
                 for (a.rects) |rect| {
                     const tl = .{ .x = pos.x + @intToFloat(f32, rect.x), .y = pos.y + @intToFloat(f32, rect.y) };
                     ogAddRect(igGetWindowDrawList(), tl, .{ .x = @intToFloat(f32, rect.w), .y = @intToFloat(f32, rect.h) }, colors.rgbToU32(0, 255, 0), 1);
                     drawChunk(tl, rect.asRect());
                 }
-                igEndChild();
             }
         } else {
             var pos = ogGetCursorScreenPos();
@@ -72,7 +72,7 @@ fn update() void {
 
             var text_size: ImVec2 = undefined;
             igCalcTextSize(&text_size, "Drag/drop a folder", null, false, 1024);
-            igSetCursorPos(.{ .x = (size.x / 2) - text_size.x, .y = size.y / 2 });
+            ogSetCursorPos(.{ .x = (size.x / 2) - text_size.x, .y = size.y / 2 });
 
             igGetCurrentContext().FontSize *= 2;
             igText("Drag/drop a folder");

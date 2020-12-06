@@ -32,6 +32,18 @@
             }
         },
         {
+            "label": "Build and Run Project (x64 on arm)",
+            "type": "shell",
+            "command": "~/zig/zig-x64/zig build run",
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": "build",
+            "presentation": {
+                "clear": true
+            }
+        },
+        {
             "label": "Build and Run Project (release-fast)",
             "type": "shell",
             "command": "zig build run -Drelease-fast",
