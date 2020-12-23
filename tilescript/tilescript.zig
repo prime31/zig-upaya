@@ -132,7 +132,7 @@ pub fn tileImageButton(state: *AppState, size: f32, tile: usize) bool {
     const uv1 = ImVec2{ .x = rect.x + rect.w, .y = rect.y + rect.h };
 
     const tint = colors.colorRgbaVec4(255, 255, 255, 255);
-    return ogImageButton(state.texture.imTextureID(), .{ .x = size, .y = size }, uv0, uv1, 2, .{ .w = 1 }, tint);
+    return ogImageButton(state.texture.imTextureID(), .{ .x = size, .y = size }, uv0, uv1, 2);
 }
 
 pub fn uvsForTile(state: *AppState, tile: usize) upaya.math.Rect {
