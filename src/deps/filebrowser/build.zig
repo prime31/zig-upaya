@@ -10,7 +10,7 @@ pub fn build(b: *Builder) void {
     exe.install();
 }
 
-pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
+pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     if (target.isWindows()) {
         exe.linkSystemLibrary("comdlg32");
         exe.linkSystemLibrary("ole32");
@@ -21,5 +21,5 @@ pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.buil
     exe.linkLibC();
 
     const lib_cflags = &[_][]const u8{ "-D_CRT_SECURE_NO_WARNINGS", "-D_CRT_SECURE_NO_DEPRECATE" };
-    exe.addCSourceFile("src/deps/filebrowser/src/tinyfiledialogs.c", lib_cflags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/filebrowser/src/tinyfiledialogs.c", lib_cflags);
 }

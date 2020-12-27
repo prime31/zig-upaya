@@ -2,11 +2,7 @@ const builtin = @import("builtin");
 const std = @import("std");
 const Builder = std.build.Builder;
 
-pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target) void {
-    compileImGui(b, artifact, target);
-}
-
-fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
+pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     exe.linkLibC();
     if (target.isWindows()) {
         exe.linkSystemLibrary("user32");
@@ -29,16 +25,16 @@ fn compileImGui(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.linkSystemLibrary("X11");
     }
 
-    exe.addIncludeDir("src/deps/imgui");
-    exe.addIncludeDir("src/deps/imgui/cimgui");
+    exe.addIncludeDir(prefix_path ++ "src/deps/imgui");
+    exe.addIncludeDir(prefix_path ++ "src/deps/imgui/cimgui");
 
     const cpp_args = [_][]const u8{"-Wno-return-type-c-linkage"};
-    exe.addCSourceFile("src/deps/imgui/cimgui/imgui/imgui.cpp", &cpp_args);
-    exe.addCSourceFile("src/deps/imgui/cimgui/imgui/imgui_demo.cpp", &cpp_args);
-    exe.addCSourceFile("src/deps/imgui/cimgui/imgui/imgui_draw.cpp", &cpp_args);
-    exe.addCSourceFile("src/deps/imgui/cimgui/imgui/imgui_widgets.cpp", &cpp_args);
-    exe.addCSourceFile("src/deps/imgui/cimgui/cimgui.cpp", &cpp_args);
-    exe.addCSourceFile("src/deps/imgui/temporary_hacks.cpp", &cpp_args);
+    exe.addCSourceFile(prefix_path ++ "src/deps/imgui/cimgui/imgui/imgui.cpp", &cpp_args);
+    exe.addCSourceFile(prefix_path ++ "src/deps/imgui/cimgui/imgui/imgui_demo.cpp", &cpp_args);
+    exe.addCSourceFile(prefix_path ++ "src/deps/imgui/cimgui/imgui/imgui_draw.cpp", &cpp_args);
+    exe.addCSourceFile(prefix_path ++ "src/deps/imgui/cimgui/imgui/imgui_widgets.cpp", &cpp_args);
+    exe.addCSourceFile(prefix_path ++ "src/deps/imgui/cimgui/cimgui.cpp", &cpp_args);
+    exe.addCSourceFile(prefix_path ++ "src/deps/imgui/temporary_hacks.cpp", &cpp_args);
 }
 
 // helper function to get SDK path on Mac

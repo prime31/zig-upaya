@@ -2,11 +2,7 @@ const builtin = @import("builtin");
 const std = @import("std");
 const Builder = std.build.Builder;
 
-pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target) void {
-    compileSokol(b, artifact, target);
-}
-
-fn compileSokol(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target) void {
+pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     exe.linkLibC();
 
     if (target.isDarwin()) {
@@ -28,9 +24,9 @@ fn compileSokol(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Ta
         exe.linkSystemLibrary("X11");
     }
 
-    exe.addIncludeDir("src/deps/sokol");
+    exe.addIncludeDir(prefix_path ++ "src/deps/sokol");
     const cFlags = if (std.Target.current.os.tag == .macos) [_][]const u8{ "-std=c99", "-ObjC", "-fobjc-arc" } else [_][]const u8{"-std=c99"};
-    exe.addCSourceFile("src/deps/sokol/compile_sokol.c", &cFlags);
+    exe.addCSourceFile(prefix_path ++ "src/deps/sokol/compile_sokol.c", &cFlags);
 }
 
 /// helper function to get SDK path on Mac

@@ -43,9 +43,9 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
     exe.setTarget(target);
 
     if (is_cli) {
-        upaya_build.linkCommandLineArtifact(b, exe, target);
+        upaya_build.linkCommandLineArtifact(b, exe, target, "");
     } else {
-        upaya_build.linkArtifact(b, exe, target);
+        addUpayaToArtifact(b, exe, target, "");
     }
 
     const run_cmd = exe.run();
@@ -53,4 +53,9 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
     exe_step.dependOn(&run_cmd.step);
     b.default_step.dependOn(&exe.step);
     b.installArtifact(exe);
+}
+
+pub fn addUpayaToArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+    if (prefix_path.len > 0 and !std.mem.endsWith(u8, prefix_path, "/")) @panic("prefix-path must end with '/' if it is not empty");
+    upaya_build.linkArtifact(b, exe, target, prefix_path);
 }
