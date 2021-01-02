@@ -36,7 +36,7 @@ pub const TilemapEditor = struct {
 
         self.drawPostProcessedMap(pos);
 
-        _ = igInvisibleButton("##input_map_button", map_size);
+        _ = ogInvisibleButton("##input_map_button", map_size, ImGuiButtonFlags_None);
         const is_hovered = igIsItemHovered(ImGuiHoveredFlags_None);
         if (is_hovered) self.handleInput(pos);
 
@@ -60,7 +60,7 @@ pub const TilemapEditor = struct {
             igPushIDInt(@intCast(c_int, i));
             defer igPopID();
 
-            if (igSelectableBool(layer.name.ptr, i == self.map.current_layer, ImGuiSelectableFlags_None, .{})) {
+            if (ogSelectableBool(layer.name.ptr, i == self.map.current_layer, ImGuiSelectableFlags_None, .{})) {
                 self.map.current_layer = i;
             }
         }
@@ -93,7 +93,7 @@ pub const TilemapEditor = struct {
             const max_y = @intToFloat(f32, std.math.min(tile1.y, tile2.y)) * tile_size + origin.y;
 
             const color = if (igIsMouseDragging(ImGuiMouseButton_Left, 0)) colors.rgbToU32(255, 255, 255) else colors.rgbToU32(220, 0, 0);
-            ImDrawList_AddQuad(igGetWindowDrawList(), .{ .x = min_x, .y = max_y }, .{ .x = max_x, .y = max_y }, .{ .x = max_x, .y = min_y }, .{ .x = min_x, .y = min_y }, color, 2);
+            ogImDrawList_AddQuad(igGetWindowDrawList(), &ImVec2{ .x = min_x, .y = max_y }, &ImVec2{ .x = max_x, .y = max_y }, &ImVec2{ .x = max_x, .y = min_y }, &ImVec2{ .x = min_x, .y = min_y }, color, 2);
 
             self.shift_dragged = true;
         } else if ((igIsMouseReleased(ImGuiMouseButton_Left) or igIsMouseReleased(ImGuiMouseButton_Right)) and self.shift_dragged) {

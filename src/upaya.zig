@@ -209,12 +209,12 @@ fn beginDock() void {
     if (igDockBuilderGetNode(dockspace_id) == null) {
         if (state.config.setupDockLayout) |setupDockLayout| {
             var dock_main_id = igDockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-            igDockBuilderSetNodeSize(dockspace_id, work_size);
+            ogDockBuilderSetNodeSize(dockspace_id, work_size);
             setupDockLayout(dock_main_id);
         }
     }
 
-    igDockSpace(dockspace_id, .{}, ImGuiDockNodeFlags_None, null);
+    ogDockSpace(dockspace_id, .{}, ImGuiDockNodeFlags_None, null);
 }
 
 fn loadDefaultFont() void {
