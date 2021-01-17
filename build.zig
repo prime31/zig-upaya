@@ -39,7 +39,7 @@ fn createExe(b: *Builder, target: std.build.Target, name: []const u8, source: []
 
     var exe = b.addExecutable(name, source);
     exe.setBuildMode(b.standardReleaseOptions());
-    exe.setOutputDir(std.fs.path.joinPosix(b.allocator, &[_][]const u8{ b.cache_root, "bin" }) catch unreachable);
+    exe.setOutputDir(std.fs.path.join(b.allocator, &[_][]const u8{ b.cache_root, "bin" }) catch unreachable);
     exe.setTarget(target);
 
     if (is_cli) {
