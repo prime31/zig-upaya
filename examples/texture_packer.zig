@@ -29,8 +29,8 @@ fn shutdown() void {
 }
 
 fn update() void {
-    igSetNextWindowPos(.{}, ImGuiCond_Always, .{});
-    igSetNextWindowSize(.{
+    ogSetNextWindowPos(.{}, ImGuiCond_Always, .{});
+    ogSetNextWindowSize(.{
         .x = @intToFloat(f32, upaya.sokol.sapp_width()),
         .y = @intToFloat(f32, upaya.sokol.sapp_height()),
     }, ImGuiCond_Always);
@@ -93,7 +93,8 @@ fn drawChunk(tl: ImVec2, rect: math.Rect) void {
     const uv0 = ImVec2{ .x = rect.x * inv_w, .y = rect.y * inv_h };
     const uv1 = ImVec2{ .x = (rect.x + rect.w) * inv_w, .y = (rect.y + rect.h) * inv_h };
 
-    ImDrawList_AddImage(igGetWindowDrawList(), texture.?.imTextureID(), tl, br, uv0, uv1, 0xffffffff);
+    ogImDrawList_AddImage(igGetWindowDrawList(), texture.?.imTextureID(), tl, br, uv0, uv1, 0xFFFFFFFF);
+
 }
 
 fn onFileDropped(file: []const u8) void {
