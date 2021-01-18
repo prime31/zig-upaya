@@ -33,6 +33,10 @@ CIMGUI_API void _ogColoredText(float r, float g, float b, const char* text) {
     ImGui::TextColored(tint_col, text);
 }
 
+CIMGUI_API ImU32 _ogColorConvertFloat4ToU32(ImVec4* color) {
+    return ImGui::ColorConvertFloat4ToU32(*color);
+} 
+
 // M1 needs this for some reason...
 CIMGUI_API bool _ogButton(const char* label, const float x, const float y) {
     ImVec2 size;
@@ -105,6 +109,10 @@ CIMGUI_API void _ogImDrawList_AddQuad(ImDrawList* self, const ImVec2* p1, const 
 
 CIMGUI_API void _ogImDrawList_AddQuadFilled(ImDrawList* self, const ImVec2* p1, const ImVec2* p2, const ImVec2* p3, const ImVec2* p4, ImU32 col) {
     return self->AddQuadFilled(*p1, *p2, *p3, *p4, col);
+}
+
+CIMGUI_API void _ogImDrawList_AddImage(ImDrawList* self, ImTextureID id, const ImVec2* p_min, const ImVec2* p_max, const ImVec2* uv_min, const ImVec2* uv_max, ImU32 col) {
+    return self->AddImage(id, *p_min, *p_max, *uv_min, *uv_max, col);
 }
 
 CIMGUI_API void _ogImDrawList_AddLine(ImDrawList* self, const ImVec2* p1, const ImVec2* p2, ImU32 col, float thickness) {

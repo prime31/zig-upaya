@@ -44,7 +44,7 @@ pub fn hsvShiftColor(color: ImVec4, h_shift: f32, s_shift: f32, v_shift: f32) Im
 }
 
 pub fn rgbToU32(r: i32, g: i32, b: i32) ImU32 {
-    return igGetColorU32Vec4(.{ .x = @intToFloat(f32, r) / 255, .y = @intToFloat(f32, g) / 255, .z = @intToFloat(f32, b) / 255, .w = 1 });
+    return ogColorConvertFloat4ToU32(.{ .x = @intToFloat(f32, r) / 255, .y = @intToFloat(f32, g) / 255, .z = @intToFloat(f32, b) / 255, .w = 1 });
 }
 
 pub fn rgbToVec4(r: i32, g: i32, b: i32) ImVec4 {
@@ -52,7 +52,8 @@ pub fn rgbToVec4(r: i32, g: i32, b: i32) ImVec4 {
 }
 
 pub fn rgbaToU32(r: i32, g: i32, b: i32, a: i32) ImU32 {
-    return igGetColorU32Vec4(.{ .x = @intToFloat(f32, r) / 255, .y = @intToFloat(f32, g) / 255, .z = @intToFloat(f32, b) / 255, .w = @intToFloat(f32, a) / 255 });
+    return ogColorConvertFloat4ToU32(.{ .x = @intToFloat(f32, r) / 255, .y = @intToFloat(f32, g) / 255, .z = @intToFloat(f32, b) / 255, .w = @intToFloat(f32, a) / 255 });
+
 }
 
 pub fn rgbaToVec4(r: i32, g: i32, b: i32, a: i32) ImVec4 {

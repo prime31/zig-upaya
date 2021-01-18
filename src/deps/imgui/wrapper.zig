@@ -21,9 +21,11 @@ extern fn _ogBeginChildEx(name: [*c]const u8, id: ImGuiID, size_arg: *const ImVe
 extern fn _ogDockSpace(id: ImGuiID, w: f32, h: f32, flags: ImGuiDockNodeFlags, window_class: [*c]const ImGuiWindowClass) void;
 extern fn _ogImDrawList_AddQuad(self: [*c]ImDrawList, p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: ImU32, thickness: f32) void;
 extern fn _ogImDrawList_AddQuadFilled(self: [*c]ImDrawList, p1: *const ImVec2, p2: *const ImVec2, p3: *const ImVec2, p4: *const ImVec2, col: ImU32) void;
+extern fn _ogImDrawList_AddImage(self: [*c]ImDrawList, id: ImTextureID, p_min: *const ImVec2, p_max: *const ImVec2, uv_min: *const ImVec2, uv_max: *const ImVec2, col: ImU32) void;
 extern fn _ogImDrawList_AddLine(self: [*c]ImDrawList, p1: *const ImVec2, p2: *const ImVec2, col: ImU32, thickness: f32) void;
 extern fn _ogSetCursorScreenPos(pos: *const ImVec2) void;
 extern fn _ogListBoxHeaderVec2(label: [*c]const u8, size: *const ImVec2) bool;
+extern fn _ogColorConvertFloat4ToU32(color: *const ImVec4 ) ImU32;
 
 // implementations for ABI incompatibility bugs
 pub fn ogImage(texture: ImTextureID, width: i32, height: i32) void {
@@ -107,6 +109,10 @@ pub fn ogImDrawList_AddQuad(draw_list: [*c]ImDrawList, p1: *ImVec2, p2: *ImVec2,
 
 pub fn ogImDrawList_AddQuadFilled(draw_list: [*c]ImDrawList, p1: *ImVec2, p2: *ImVec2, p3: *ImVec2, p4: *ImVec2, col: ImU32) void {
     _ogImDrawList_AddQuadFilled(draw_list, p1, p2, p3, p4, col);
+}
+
+pub fn ogImDrawList_AddImage( draw_list: [*c]ImDrawList, id: ImTextureID, p_min: ImVec2, p_max: ImVec2, uv_min: ImVec2, uv_max: ImVec2, col: ImU32) void {
+    _ogImDrawList_AddImage(draw_list, id, &p_min, &p_max, &uv_min, &uv_max, col);
 }
 
 /// adds a rect outline with possibly non-matched width/height to the draw list
@@ -340,4 +346,8 @@ pub fn ogColorConvertU32ToFloat4(in: ImU32) ImVec4 {
     var col = ImVec4{};
     igColorConvertU32ToFloat4(&col, in);
     return col;
+}
+
+pub fn ogColorConvertFloat4ToU32 (in: ImVec4) ImU32 {
+    return _ogColorConvertFloat4ToU32(&in);
 }
