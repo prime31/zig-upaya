@@ -2,6 +2,8 @@ const builtin = @import("builtin");
 const std = @import("std");
 const Builder = std.build.Builder;
 
+pub fn build(b: *Builder) void {}
+
 pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     exe.linkLibC();
     if (target.isWindows()) {

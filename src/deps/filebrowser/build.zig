@@ -6,7 +6,7 @@ const Builder = std.build.Builder;
 /// only for local testing.
 pub fn build(b: *Builder) void {
     const exe = b.addStaticLibrary("JunkLib", null);
-    linkArtifact(b, exe, b.standardTargetOptions(.{}), .static, "");
+    linkArtifact(b, exe, b.standardTargetOptions(.{}), "");
     exe.install();
 }
 

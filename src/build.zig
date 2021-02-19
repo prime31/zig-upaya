@@ -8,6 +8,8 @@ const stb_build = @import("deps/stb/build.zig");
 const imgui_build = @import("deps/imgui/build.zig");
 const filebrowser_build = @import("deps/filebrowser/build.zig");
 
+pub fn build(b: *Builder) void {}
+
 pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     sokol_build.linkArtifact(b, artifact, target, prefix_path);
     stb_build.linkArtifact(b, artifact, target, prefix_path);
