@@ -29,7 +29,6 @@ extern fn _ogColorConvertFloat4ToU32(color: *const ImVec4 ) ImU32;
 
 // implementations for ABI incompatibility bugs
 pub fn ogImage(texture: ImTextureID, width: i32, height: i32) void {
-    const white = ImVec4{ .x = 1, .y = 1, .z = 1, .w = 1 };
     var size = ImVec2{ .x = @intToFloat(f32, width), .y = @intToFloat(f32, height) };
     _ogImage(texture, &size, &ImVec2{}, &ImVec2{ .x = 1, .y = 1 });
 }
@@ -39,6 +38,8 @@ pub fn ogImageButton(texture: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec
 }
 
 pub fn ogImageButtonEx(texture: ImTextureID, size: ImVec2, uv0: ImVec2, uv1: ImVec2, frame_padding: c_int, bg_col: ImVec4, tint_col: ImVec4) bool {
+    _ = bg_col;
+    _ = tint_col;
     return _ogImageButton(texture, &size, &uv0, &uv1, frame_padding);
 }
 

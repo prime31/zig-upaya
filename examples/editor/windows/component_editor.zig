@@ -39,7 +39,7 @@ pub fn draw(state: *editor.AppState) void {
             if (igButton("Create Component", .{ .x = -1, .y = 0 })) {
                 igCloseCurrentPopup();
                 const label_sentinel_index = std.mem.indexOfScalar(u8, &name_buf, 0).?;
-                std.debug.print("new comp name: {}\n", .{name_buf[0..label_sentinel_index]});
+                std.debug.print("new comp name: {s}\n", .{name_buf[0..label_sentinel_index]});
             }
 
             igEndPopup();
@@ -66,6 +66,7 @@ fn drawDetailsPane(state: *editor.AppState) void {
 }
 
 fn addFieldPopup(state: *editor.AppState) void {
+    _ = state;
     igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{ .x = 0.5 });
     if (igBeginPopup("##add-field", ImGuiWindowFlags_None)) {
         igText("Field Type");

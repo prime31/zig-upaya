@@ -3,13 +3,13 @@ const upaya = @import("upaya_cli.zig");
 const fs = std.fs;
 
 /// reads the contents of a file. Returned value is owned by the caller and must be freed!
-pub fn read(allocator: *std.mem.Allocator, filename: []const u8) ![]u8 {
+pub fn read(_: *std.mem.Allocator, filename: []const u8) ![]u8 {
     const file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 
     const file_size = try file.getEndPos();
     var buffer = try upaya.mem.allocator.alloc(u8, file_size);
-    const bytes_read = try file.read(buffer[0..buffer.len]);
+    _ = try file.read(buffer[0..buffer.len]);
 
     return buffer;
 }
@@ -18,7 +18,7 @@ pub fn write(filename: []const u8, data: []u8) !void {
     const file = try std.fs.cwd().openFile(filename, .{ .write = true });
     defer file.close();
 
-    const file_size = try file.getEndPos();
+    try file.getEndPos();
     try file.writeAll(data);
 }
 

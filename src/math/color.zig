@@ -108,7 +108,6 @@ test "test color" {
         r: u8, g: u8, b: u8, a: u8
     };
 
-    const c = Color{ .value = @as(u32, 0xFF9900FF) };
     const cc = Color{ .value = @bitCast(u32, [4]u8{ 10, 45, 34, 255 }) };
     const ccc = Color{ .value = @bitCast(u32, ColorConverter{ .r = 10, .g = 45, .b = 34, .a = 255 }) };
     // const c = @bitCast(Color, @as(u32, 0xFF9900FF));
@@ -116,7 +115,6 @@ test "test color" {
     // const ccc = @bitCast(Color, ColorConverter{ .r = 10, .g = 45, .b = 34, .a = 255 });
     std.testing.expectEqual(cc.value, ccc.value);
 
-    const c2 = Color.fromBytes(10, 45, 34, 255);
     const c3 = Color.fromRgb(0.2, 0.4, 0.3);
     const c4 = Color.fromRgba(0.2, 0.4, 0.3, 1.0);
     std.testing.expectEqual(c3.value, c4.value);

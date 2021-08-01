@@ -15,7 +15,9 @@ const ToDoState = struct {
         return .{ .todos = &[_]ToDo{} };
     }
 
-    pub fn deinit(self: ToDoState) void {}
+    pub fn deinit(self: ToDoState) void {
+        _ = self;
+    }
 
     pub fn addToDo(self: *ToDoState) void {
         self.todos = upaya.mem.allocator.realloc(self.todos, self.todos.len + 1) catch unreachable;
@@ -45,7 +47,7 @@ fn init() void {
     if (std.Target.current.os.tag == .windows) {
         state = ToDoState.init();
     } else {
-        state = upaya.fs.readPrefsJson(ToDoState, "upaya-todo", "todos.json") catch |err| ToDoState.init();
+        state = upaya.fs.readPrefsJson(ToDoState, "upaya-todo", "todos.json") catch ToDoState.init();
     }
 }
 

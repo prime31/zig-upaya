@@ -8,7 +8,7 @@ const stb_build = @import("deps/stb/build.zig");
 const imgui_build = @import("deps/imgui/build.zig");
 const filebrowser_build = @import("deps/filebrowser/build.zig");
 
-pub fn build(b: *Builder) void {}
+pub fn build(_: *Builder) void {}
 
 pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
     sokol_build.linkArtifact(b, artifact, target, prefix_path);
@@ -18,23 +18,23 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
 
     const sokol = Pkg{
         .name = "sokol",
-        .path = prefix_path ++ "src/deps/sokol/sokol.zig",
+        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/sokol/sokol.zig" },
     };
     const stb = Pkg{
         .name = "stb",
-        .path = prefix_path ++ "src/deps/stb/stb.zig",
+        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/stb/stb.zig" },
     };
     const imgui = Pkg{
         .name = "imgui",
-        .path = prefix_path ++ "src/deps/imgui/imgui.zig",
+        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/imgui/imgui.zig" },
     };
     const filebrowser = Pkg{
         .name = "filebrowser",
-        .path = prefix_path ++ "src/deps/filebrowser/filebrowser.zig",
+        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/filebrowser/filebrowser.zig" },
     };
     const upaya = Pkg{
         .name = "upaya",
-        .path = prefix_path ++ "src/upaya.zig",
+        .path = std.build.FileSource{ .path = prefix_path ++ "src/upaya.zig" },
         .dependencies = &[_]Pkg{ stb, filebrowser, sokol, imgui },
     };
 
@@ -51,11 +51,11 @@ pub fn linkCommandLineArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, 
 
     const stb = Pkg{
         .name = "stb",
-        .path = prefix_path ++ "src/deps/stb/stb.zig",
+        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/stb/stb.zig" },
     };
     const upaya = Pkg{
         .name = "upaya",
-        .path = prefix_path ++ "src/upaya_cli.zig",
+        .path = std.build.FileSource{ .path = prefix_path ++ "src/upaya_cli.zig" },
         .dependencies = &[_]Pkg{stb},
     };
 

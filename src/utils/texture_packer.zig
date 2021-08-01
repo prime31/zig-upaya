@@ -93,7 +93,7 @@ pub const TexturePacker = struct {
         for (pngs) |png, i| {
             var w: c_int = undefined;
             var h: c_int = undefined;
-            const tex_size = upaya.Image.getTextureSize(png, &w, &h);
+            _ = upaya.Image.getTextureSize(png, &w, &h);
             frames.append(.{
                 .id = @intCast(c_int, i),
                 .w = @intCast(u16, w),
@@ -106,7 +106,6 @@ pub const TexturePacker = struct {
 
     fn runRectPacker(frames: []stb.stbrp_rect) ?Size {
         var ctx: stb.stbrp_context = undefined;
-        const rects_size = @sizeOf(stb.stbrp_rect) * frames.len;
         const node_count = 4096 * 2;
         var nodes: [node_count]stb.stbrp_node = undefined;
 

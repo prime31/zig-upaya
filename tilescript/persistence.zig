@@ -356,7 +356,7 @@ fn readValueInto(in: Reader, ptr: anytype) !void {
     const T = @TypeOf(ptr);
     comptime std.debug.assert(std.meta.trait.is(.Pointer)(T));
 
-    if (comptime std.meta.trait.isSlice(T) or comptime std.meta.trait.isPtrTo(.Array)(T)) {
+    if (comptime std.meta.trait.isSlice(T) or std.meta.trait.isPtrTo(.Array)(T)) {
         for (ptr) |*v|
             try readValueInto(in, v);
         return;

@@ -92,7 +92,6 @@ pub fn commit() void {
 
 pub fn undo() void {
     var added_commit_boundary = false;
-    var last_ptr: usize = 0;
     while (history.undo.popOrNull()) |item| {
         if (item.ptr == 0) {
             break;
