@@ -8,7 +8,7 @@ pub fn build(b: *Builder) void {
     const target = b.standardTargetOptions(.{});
 
     // use a different cache folder for macos arm builds
-    b.cache_root = if (std.builtin.os.tag == .macos and std.builtin.arch == std.builtin.Arch.aarch64) "zig-arm-cache" else "zig-cache";
+    b.cache_root = if (std.builtin.os.tag == .macos and std.builtin.target.cpu.arch == std.Target.Cpu.Arch.aarch64) "zig-arm-cache" else "zig-cache";
 
     // first item in list will be added as "run" so `zig build run` will always work
     const examples = [_][2][]const u8{

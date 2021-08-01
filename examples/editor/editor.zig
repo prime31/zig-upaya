@@ -18,9 +18,14 @@ pub const Editor = struct {
         return .{ .state = AppState.init() };
     }
 
-    pub fn deinit(self: *Editor) void {}
+    pub fn deinit(self: *Editor) void {
+        _ = self;
+    }
 
-    pub fn handleDroppedFile(self: *Editor, file: []const u8) void {}
+    pub fn handleDroppedFile(self: *Editor, file: []const u8) void {
+        _ = self;
+        _ = file;
+    }
 
     pub fn update(self: *Editor) void {
         menu.draw(&self.state);

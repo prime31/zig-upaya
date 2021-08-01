@@ -131,7 +131,6 @@ pub fn tileImageButton(state: *AppState, size: f32, tile: usize) bool {
     const uv0 = ImVec2{ .x = rect.x, .y = rect.y };
     const uv1 = ImVec2{ .x = rect.x + rect.w, .y = rect.y + rect.h };
 
-    const tint = colors.colorRgbaVec4(255, 255, 255, 255);
     return ogImageButton(state.texture.imTextureID(), .{ .x = size, .y = size }, uv0, uv1, 2);
 }
 

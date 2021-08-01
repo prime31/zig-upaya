@@ -41,6 +41,7 @@ var screen_pos: ImVec2 = undefined;
 var tex: ?upaya.Texture = null;
 
 pub fn draw(state: *editor.AppState) void {
+    _ = state;
     if (tex == null) tex = upaya.Texture.initFromFile("examples/assets/plant.png", .nearest) catch unreachable;
 
     if (begin("Scene")) {

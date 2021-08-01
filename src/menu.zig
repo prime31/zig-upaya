@@ -32,4 +32,4 @@ pub fn draw(menuitems: []const MenuItem) void {
     }
 }
 
-fn drawMenuItem(menuitem: MenuItem) void {}
+fn drawMenuItem(_: MenuItem) void {}

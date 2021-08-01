@@ -112,7 +112,7 @@ pub fn draw(state: *ts.AppState) void {
             if (igMenuItemBool("Open...", null, false, true)) {
                 const res = files.openFileDialog("Open project", getDefaultPath(), "*.ts");
                 if (res != null) {
-                    state.loadMap(std.mem.spanZ(res)) catch |err| {
+                    state.loadMap(std.mem.spanZ(res)) catch {
                         state.showToast("Error loading map. Could not find tileset image.", 300);
                     };
                 }

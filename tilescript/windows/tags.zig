@@ -61,8 +61,6 @@ fn tagTileSelectorPopup(state: *ts.AppState, tag: *ts.data.Tag) void {
 
     ogImage(state.texture.imTextureID(), state.texture.width * @intCast(i32, zoom), state.texture.height * @intCast(i32, zoom));
 
-    const draw_list = igGetWindowDrawList();
-
     // draw selected tiles
     var iter = tag.tiles.iter();
     while (iter.next()) |value| {

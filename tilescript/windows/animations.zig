@@ -96,8 +96,6 @@ fn animTileSelectorPopup(state: *ts.AppState, anim: *ts.data.Animation, selectio
 
     ogImage(state.texture.imTextureID(), state.texture.width * @intCast(i32, zoom), state.texture.height * @intCast(i32, zoom));
 
-    const draw_list = igGetWindowDrawList();
-
     // draw selected tile or tiles
     if (selection_type == .multi) {
         var iter = anim.tiles.iter();

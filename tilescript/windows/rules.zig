@@ -382,7 +382,7 @@ fn rulesetSettingsPopup(state: *ts.AppState) void {
     }
 }
 
-fn groupDropTarget(group: u8, index: usize) void {
+fn groupDropTarget(_: u8, index: usize) void {
     if (drag_drop_state.active) {
         var cursor = ogGetCursorPos();
         const old_pos = cursor;
@@ -397,7 +397,7 @@ fn groupDropTarget(group: u8, index: usize) void {
     if (igBeginDragDropTarget()) {
         defer igEndDragDropTarget();
 
-        if (igAcceptDragDropPayload("RULESET_DRAG", ImGuiDragDropFlags_None)) |payload| {
+        if (igAcceptDragDropPayload("RULESET_DRAG", ImGuiDragDropFlags_None)) {
             drag_drop_state.completed = true;
             drag_drop_state.to = index;
             drag_drop_state.above_group = true;
@@ -447,7 +447,7 @@ fn rulesDragDrop(index: usize, rule: *Rule, drop_only: bool, is_pre_rule: bool) 
         igSetCursorPos(old_pos);
 
         if (igBeginDragDropTarget()) {
-            if (igAcceptDragDropPayload("RULESET_DRAG", ImGuiDragDropFlags_None)) |payload| {
+            if (igAcceptDragDropPayload("RULESET_DRAG", ImGuiDragDropFlags_None)) {
                 drag_drop_state.dropped_in_group = drag_drop_state.rendering_group;
                 drag_drop_state.completed = true;
                 drag_drop_state.to = index;
@@ -756,8 +756,6 @@ fn resultPopup(state: *ts.AppState, ruleset: *Rule, is_pre_rule: bool) void {
     } else {
         ogImage(state.texture.imTextureID(), state.texture.width * @intCast(i32, zoom), state.texture.height * @intCast(i32, zoom));
     }
-
-    const draw_list = igGetWindowDrawList();
 
     // draw selected tiles
     var iter = ruleset.result_tiles.iter();

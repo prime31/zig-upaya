@@ -7,7 +7,6 @@ const comp_editor = @import("windows/component_editor.zig");
 
 pub fn draw(state: *editor.AppState) void {
     var show_component_editor_popup = false;
-    var show_help_popup = false;
 
     if (igBeginMenuBar()) {
         defer igEndMenuBar();

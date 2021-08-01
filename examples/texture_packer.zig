@@ -98,11 +98,11 @@ fn drawChunk(tl: ImVec2, rect: math.Rect) void {
 }
 
 fn onFileDropped(file: []const u8) void {
-    if (fs.cwd().openDir(file, .{ .iterate = true })) |dir| {
+    if (fs.cwd().openDir(file, .{ .iterate = true })) {
         atlas = upaya.TexturePacker.pack(file) catch unreachable;
         if (texture) |tex| tex.deinit();
         texture = atlas.?.image.asTexture(.nearest);
     } else |err| {
-        std.debug.print("Dropped a non-directory: {}, err: {}\n", .{ file, err });
+        std.debug.print("Dropped a non-directory: {s}, err: {}\n", .{ file, err });
     }
 }

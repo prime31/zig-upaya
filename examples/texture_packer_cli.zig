@@ -33,13 +33,13 @@ pub fn main() !void {
     const out_name = parser.get("-n");
     const in_folder = parser.values.items[0];
 
-    if (fs.cwd().openDir(in_folder, .{})) |dir| {
+    if (fs.cwd().openDir(in_folder, .{})) {
         const atlas = upaya.TexturePacker.pack(in_folder) catch unreachable;
         defer atlas.deinit();
 
         atlas.save(out_folder, out_name);
         std.debug.print("texture atlas generated successfully\n", .{});
     } else |err| {
-        std.debug.print("Invalid input directory: {}, err: {}\n", .{ in_folder, err });
+        std.debug.print("Invalid input directory: {s}, err: {}\n", .{ in_folder, err });
     }
 }

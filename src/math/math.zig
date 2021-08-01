@@ -11,12 +11,12 @@ pub const Vec3 = @import("vec3.zig").Vec3;
 pub const rand = @import("rand.zig");
 
 /// Converts degrees to radian
-pub fn toRadians(deg: anytype) @typeOf(deg) {
+pub fn toRadians(deg: anytype) @TypeOf(deg) {
     return pi * deg / 180.0;
 }
 
 /// Converts radian to degree
-pub fn toDegrees(rad: anytype) @typeOf(deg) {
+pub fn toDegrees(rad: anytype) @TypeOf(deg) {
     return 180.0 * rad / pi;
 }
 

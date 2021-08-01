@@ -84,12 +84,14 @@ pub const Texture = extern struct {
         sg_destroy_image(self.img);
     }
 
-    pub fn setData(self: Texture, data: []u8) void {
+    pub fn setData(self: Texture, _: []u8) void {
+        _ = self;
         std.debug.panic("not implemented\n", .{});
         // aya.gfx.device.setTextureData2D(self.tex, .color, 0, 0, self.width, self.height, 0, &data[0], @intCast(i32, data.len));
     }
 
-    pub fn setColorData(self: Texture, data: []u32) void {
+    pub fn setColorData(self: Texture, _: []u32) void {
+        _ = self;
         std.debug.panic("not implemented\n", .{});
         // aya.gfx.device.setTextureData2D(self.tex, .color, 0, 0, self.width, self.height, 0, &data[0], @intCast(i32, data.len));
     }

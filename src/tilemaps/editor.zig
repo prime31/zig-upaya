@@ -16,7 +16,7 @@ pub const TilemapEditor = struct {
         return .{ .map = map, .tileset = tileset };
     }
 
-    pub fn deinit(self: @This()) void {}
+    pub fn deinit(_: @This()) void {}
 
     pub fn mapSize(self: @This()) ImVec2 {
         return .{ .x = @intToFloat(f32, self.map.w * self.tileset.tile_size), .y = @intToFloat(f32, self.map.h * self.tileset.tile_size) };
@@ -192,10 +192,8 @@ pub const TilemapEditor = struct {
         var x: i32 = @floatToInt(i32, x1);
         while (x <= maxX) : (x += 1) {
             if (steep) {
-                const index = @intCast(usize, y) + @intCast(usize, x) * self.map.w;
                 self.map.setTile(@intCast(usize, y), @intCast(usize, x), color);
             } else {
-                const index = @intCast(usize, x) + @intCast(usize, y) * self.map.w;
                 self.map.setTile(@intCast(usize, x), @intCast(usize, y), color);
             }
 

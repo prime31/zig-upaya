@@ -2,9 +2,11 @@ const builtin = @import("builtin");
 const std = @import("std");
 const Builder = std.build.Builder;
 
-pub fn build(b: *Builder) void {}
+pub fn build(_: *Builder) void {}
 
-pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn linkArtifact(b: *Builder, exe: *std.build.LibExeObjStep, t: std.build.Target, comptime prefix_path: []const u8) void {
+    _ = b;
+    _ = t;
     exe.linkLibC();
     exe.addIncludeDir(prefix_path ++ "src/deps/stb/src");
 

@@ -30,12 +30,12 @@ pub extern fn stbrp_init_target(context: [*c]stbrp_context, width: c_int, height
 pub extern fn stbrp_setup_allow_out_of_mem(context: [*c]stbrp_context, allow_out_of_mem: c_int) void;
 pub extern fn stbrp_setup_heuristic(context: [*c]stbrp_context, heuristic: c_int) void;
 
-pub const STBRP_HEURISTIC_Skyline_default = @enumToInt(enum_unnamed_1.STBRP_HEURISTIC_Skyline_default);
+pub const STBRP_HEURISTIC_Skyline_default = 1; // @enumToInt(enum_unnamed_1.STBRP_HEURISTIC_Skyline_default);
 pub const STBRP_HEURISTIC_Skyline_BL_sortHeight = @enumToInt(enum_unnamed_1.STBRP_HEURISTIC_Skyline_BL_sortHeight);
 pub const STBRP_HEURISTIC_Skyline_BF_sortHeight = @enumToInt(enum_unnamed_1.STBRP_HEURISTIC_Skyline_BF_sortHeight);
-const enum_unnamed_1 = extern enum(c_int) {
+const enum_unnamed_1 = enum(c_int) {
     STBRP_HEURISTIC_Skyline_default = 0,
-    STBRP_HEURISTIC_Skyline_BL_sortHeight = 0,
-    STBRP_HEURISTIC_Skyline_BF_sortHeight = 1,
+    STBRP_HEURISTIC_Skyline_BL_sortHeight = 1,
+    STBRP_HEURISTIC_Skyline_BF_sortHeight = 2,
     _,
 };
