@@ -3,7 +3,7 @@ const upaya = @import("upaya_cli.zig");
 const fs = std.fs;
 
 /// reads the contents of a file. Returned value is owned by the caller and must be freed!
-pub fn read(_: *std.mem.Allocator, filename: []const u8) ![]u8 {
+pub fn read(_: std.mem.Allocator, filename: []const u8) ![]u8 {
     const file = try std.fs.cwd().openFile(filename, .{});
     defer file.close();
 
@@ -72,11 +72,11 @@ pub fn freePrefsJson(data: anytype) void {
 }
 
 /// returns a slice of all the files with extension. The caller owns the slice AND each path in the slice.
-pub fn getAllFilesOfType(allocator: *std.mem.Allocator, root_directory: []const u8, extension: []const u8, recurse: bool) [][:0]const u8 {
+pub fn getAllFilesOfType(allocator: std.mem.Allocator, root_directory: []const u8, extension: []const u8, recurse: bool) [][:0]const u8 {
     var list = std.ArrayList([:0]const u8).init(allocator);
 
     var recursor = struct {
-        fn search(alloc: *std.mem.Allocator, directory: []const u8, recursive: bool, filelist: *std.ArrayList([:0]const u8), ext: []const u8) void {
+        fn search(alloc: std.mem.Allocator, directory: []const u8, recursive: bool, filelist: *std.ArrayList([:0]const u8), ext: []const u8) void {
             var dir = fs.cwd().openDir(directory, .{ .iterate = true }) catch unreachable;
             defer dir.close();
 
@@ -102,8 +102,8 @@ pub fn getAllFilesOfType(allocator: *std.mem.Allocator, root_directory: []const 
 }
 
 test "test fs read" {
-    upaya.mem.initTmpAllocator();
-    std.testing.expectError(error.FileNotFound, read(std.testing.allocator, "junk.png"));
+   try upaya.mem.initTmpAllocator();
+    try std.testing.expectError(error.FileNotFound, read(std.testing.allocator, "junk.png"));
     // var bytes = try read(std.testing.allocator, "src/assets/fa-solid-900.ttf");
     // std.testing.allocator.free(bytes);
 }

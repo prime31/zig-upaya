@@ -1,10 +1,10 @@
 const std = @import("std");
 const upaya = @import("upaya");
 const editor = @import("../editor.zig");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 pub fn draw(state: *editor.AppState) void {
     _ = state;
-    if (igBegin("Inspector", null, ImGuiWindowFlags_None)) {}
-    igEnd();
+    if (imgui.igBegin("Inspector", null, imgui.ImGuiWindowFlags_None)) {}
+    imgui.igEnd();
 }

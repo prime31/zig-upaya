@@ -67,7 +67,7 @@ pub fn push(slice: []u8) void {
     }
 
     history.temp.append(.{
-        .data = std.mem.dupe(upaya.mem.allocator, u8, slice) catch unreachable,
+        .data = upaya.mem.allocator.dupe(u8, slice) catch unreachable,
         .ptr = @ptrToInt(slice.ptr),
         .size = slice.len,
     }) catch unreachable;
@@ -105,7 +105,7 @@ pub fn undo() void {
         var dst = @intToPtr([*]u8, item.ptr);
 
         // dupe the data currently in the pointer and copy it to our Item so that we can use it for a redo later
-        const tmp = std.mem.dupe(upaya.mem.tmp_allocator, u8, dst[0..item.size]) catch unreachable;
+        const tmp = upaya.mem.tmp_allocator.dupe(u8, dst[0..item.size]) catch unreachable;
         std.mem.copy(u8, dst[0..item.size], item.data);
         std.mem.copy(u8, item.data, tmp);
 
@@ -128,7 +128,7 @@ pub fn redo() void {
         var dst = @intToPtr([*]u8, item.ptr);
 
         // dupe the data currently in the pointer and copy it to our Item so that we can use it for a undo later
-        const tmp = std.mem.dupe(upaya.mem.tmp_allocator, u8, dst[0..item.size]) catch unreachable;
+        const tmp = upaya.mem.tmp_allocator.dupe(u8, dst[0..item.size]) catch unreachable;
         std.mem.copy(u8, dst[0..item.size], item.data);
         std.mem.copy(u8, item.data, tmp);
 

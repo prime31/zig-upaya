@@ -1,4 +1,5 @@
 const std = @import("std");
+const builtin = @import("builtin");
 
 // libs
 pub const sokol = @import("sokol");
@@ -23,15 +24,12 @@ pub const menu = @import("menu.zig");
 pub const known_folders = @import("utils/known-folders.zig");
 pub const tilemaps = @import("tilemaps/tilemaps.zig");
 
-usingnamespace sokol;
-usingnamespace imgui;
-
 pub const Config = struct {
     init: fn () void,
     update: fn () void,
     shutdown: ?fn () void = null,
     /// optional, will be called if there is no previous dock layout setup with the id of the main dockspace node
-    setupDockLayout: ?fn (ImGuiID) void = null,
+    setupDockLayout: ?fn (imgui.ImGuiID) void = null,
     onFileDropped: ?fn ([]const u8) void = null,
 
     width: c_int = 1024,
@@ -54,18 +52,18 @@ pub const Config = struct {
 };
 
 // private
-const font_awesome_range: [3]ImWchar = [_]ImWchar{ icons.icon_range_min, icons.icon_range_max, 0 };
+const font_awesome_range: [3]imgui.ImWchar = [_]imgui.ImWchar{ imgui.icons.icon_range_min, imgui.icons.icon_range_max, 0 };
 
 var state = struct {
     config: Config = undefined,
-    pass_action: sg_pass_action = undefined,
+    pass_action: sokol.sg_pass_action = undefined,
     cmd_down: bool = false,
 }{};
 
 pub fn run(config: Config) void {
     state.config = config;
 
-    var app_desc = std.mem.zeroes(sapp_desc);
+    var app_desc = std.mem.zeroes(sokol.sapp_desc);
     app_desc.init_cb = init;
     app_desc.frame_cb = update;
     app_desc.cleanup_cb = cleanup;
@@ -84,20 +82,20 @@ pub fn run(config: Config) void {
     }
 
     app_desc.alpha = false;
-    _ = sapp_run(&app_desc);
+    _ = sokol.sapp_run(&app_desc);
 }
 
 // Event functions
 export fn init() void {
-    mem.initTmpAllocator();
+    mem.initTmpAllocator() catch return;
 
-    var desc = std.mem.zeroes(sg_desc);
-    desc.context = sapp_sgcontext();
-    sg_setup(&desc);
+    var desc = std.mem.zeroes(sokol.sg_desc);
+    desc.context = sokol.sapp_sgcontext();
+    sokol.sg_setup(&desc);
 
-    var imgui_desc = std.mem.zeroes(simgui_desc_t);
+    var imgui_desc = std.mem.zeroes(sokol.simgui_desc_t);
     imgui_desc.no_default_font = true;
-    imgui_desc.dpi_scale = sapp_dpi_scale();
+    imgui_desc.dpi_scale = sokol.sapp_dpi_scale();
 
     if (state.config.ini_file_storage != .none) {
         if (state.config.ini_file_storage == .current_dir) {
@@ -109,18 +107,18 @@ export fn init() void {
         }
     }
 
-    simgui_setup(&imgui_desc);
+    sokol.simgui_setup(&imgui_desc);
 
-    var io = igGetIO();
-    if (state.config.docking) io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+    var io = imgui.igGetIO();
+    if (state.config.docking) io.ConfigFlags |= imgui.ImGuiConfigFlags_DockingEnable;
     io.ConfigDockingWithShift = true;
 
     if (state.config.dark_style) {
-        igStyleColorsDark(igGetStyle());
+        imgui.igStyleColorsDark(imgui.igGetStyle());
     }
 
-    igGetStyle().FrameRounding = 0;
-    igGetStyle().WindowRounding = 0;
+    imgui.igGetStyle().FrameRounding = 0;
+    imgui.igGetStyle().WindowRounding = 0;
 
     loadDefaultFont();
 
@@ -131,112 +129,112 @@ export fn init() void {
 }
 
 export fn update() void {
-    const width = sapp_width();
-    const height = sapp_height();
-    simgui_new_frame(width, height, 0.017);
+    const width = sokol.sapp_width();
+    const height = sokol.sapp_height();
+    sokol.simgui_new_frame(width, height, 0.017);
 
     if (state.config.docking) beginDock();
     state.config.update();
-    if (state.config.docking) igEnd();
+    if (state.config.docking) imgui.igEnd();
 
-    sg_begin_default_pass(&state.pass_action, width, height);
-    simgui_render();
-    sg_end_pass();
-    sg_commit();
+    sokol.sg_begin_default_pass(&state.pass_action, width, height);
+    sokol.simgui_render();
+    sokol.sg_end_pass();
+    sokol.sg_commit();
 }
 
-export fn event(e: [*c]const sapp_event) void {
+export fn event(e: [*c]const sokol.sapp_event) void {
     // special handling of dropped files
     if (e[0].type == .SAPP_EVENTTYPE_FILE_DROPPED) {
         if (state.config.onFileDropped) |onFileDropped| {
-            const dropped_file_cnt = sapp_get_num_dropped_files();
+            const dropped_file_cnt = sokol.sapp_get_num_dropped_files();
             var i: usize = 0;
             while (i < dropped_file_cnt) : (i += 1) {
-                onFileDropped(std.mem.spanZ(sapp_get_dropped_file_path(@intCast(c_int, i))));
+                onFileDropped(std.mem.span(sokol.sapp_get_dropped_file_path(@intCast(c_int, i))));
             }
         }
     }
 
     // handle cmd+Q on macos
-    if (std.Target.current.os.tag == .macos) {
+    if (builtin.os.tag == .macos) {
         if (e[0].type == .SAPP_EVENTTYPE_KEY_DOWN) {
             if (e[0].key_code == .SAPP_KEYCODE_LEFT_SUPER) {
                 state.cmd_down = true;
             } else if (state.cmd_down and e[0].key_code == .SAPP_KEYCODE_Q) {
-                sapp_request_quit();
+                imgui.sapp_request_quit();
             }
         } else if (e[0].type == .SAPP_EVENTTYPE_KEY_UP and e[0].key_code == .SAPP_KEYCODE_LEFT_SUPER) {
             state.cmd_down = false;
         }
     }
 
-    _ = simgui_handle_event(e);
+    _ = sokol.simgui_handle_event(e);
 }
 
 export fn cleanup() void {
     if (state.config.shutdown) |shutdown| shutdown();
-    simgui_shutdown();
-    sg_shutdown();
+    sokol.simgui_shutdown();
+    sokol.sg_shutdown();
 }
 
 pub fn quit() void {
-    sapp_request_quit();
+    sokol.sapp_request_quit();
 }
 
 // helper functions
 fn beginDock() void {
-    const vp = igGetMainViewport();
-    var work_pos = ImVec2{};
-    var work_size = ImVec2{};
-    ImGuiViewport_GetWorkPos(&work_pos, vp);
-    ImGuiViewport_GetWorkSize(&work_size, vp);
+    const vp = imgui.igGetMainViewport();
+    var work_pos = imgui.ImVec2{};
+    var work_size = imgui.ImVec2{};
+    imgui.ImGuiViewport_GetWorkPos(&work_pos, vp);
+    imgui.ImGuiViewport_GetWorkSize(&work_size, vp);
 
-    igSetNextWindowPos(work_pos, ImGuiCond_Always, .{});
-    igSetNextWindowSize(work_size, ImGuiCond_Always);
-    igSetNextWindowViewport(vp.ID);
+    imgui.igSetNextWindowPos(work_pos, imgui.ImGuiCond_Always, .{});
+    imgui.igSetNextWindowSize(work_size, imgui.ImGuiCond_Always);
+    imgui.igSetNextWindowViewport(vp.ID);
 
-    var window_flags = ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_MenuBar;
-    window_flags |= ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
-    window_flags |= ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoNavFocus;
+    var window_flags = imgui.ImGuiWindowFlags_NoDocking | imgui.ImGuiWindowFlags_MenuBar;
+    window_flags |= imgui.ImGuiWindowFlags_NoTitleBar | imgui.ImGuiWindowFlags_NoCollapse | imgui.ImGuiWindowFlags_NoResize | imgui.ImGuiWindowFlags_NoMove;
+    window_flags |= imgui.ImGuiWindowFlags_NoBringToFrontOnFocus | imgui.ImGuiWindowFlags_NoNavFocus;
 
-    igPushStyleVarVec2(ImGuiStyleVar_WindowPadding, .{});
-    _ = igBegin("Dockspace", null, window_flags);
-    igPopStyleVar(1);
+    imgui.igPushStyleVarVec2(imgui.ImGuiStyleVar_WindowPadding, .{});
+    _ = imgui.igBegin("Dockspace", null, window_flags);
+    imgui.igPopStyleVar(1);
 
-    const dockspace_id = igGetIDStr("upaya-dockspace");
+    const dockspace_id = imgui.igGetIDStr("upaya-dockspace");
     // igDockBuilderRemoveNode(dockspace_id); // uncomment for testing initial layout setup code
-    if (igDockBuilderGetNode(dockspace_id) == null) {
+    if (imgui.igDockBuilderGetNode(dockspace_id) == null) {
         if (state.config.setupDockLayout) |setupDockLayout| {
-            var dock_main_id = igDockBuilderAddNode(dockspace_id, ImGuiDockNodeFlags_DockSpace);
-            ogDockBuilderSetNodeSize(dockspace_id, work_size);
+            var dock_main_id = imgui.igDockBuilderAddNode(dockspace_id, imgui.ImGuiDockNodeFlags_DockSpace);
+            imgui.ogDockBuilderSetNodeSize(dockspace_id, work_size);
             setupDockLayout(dock_main_id);
         }
     }
 
-    ogDockSpace(dockspace_id, .{}, ImGuiDockNodeFlags_None, null);
+    imgui.ogDockSpace(dockspace_id, .{}, imgui.ImGuiDockNodeFlags_None, null);
 }
 
 fn loadDefaultFont() void {
-    var io = igGetIO();
-    _ = ImFontAtlas_AddFontDefault(io.Fonts, null);
+    var io = imgui.igGetIO();
+    _ = imgui.ImFontAtlas_AddFontDefault(io.Fonts, null);
 
     // add FontAwesome optionally
     if (state.config.icon_font) {
-        var icons_config = ImFontConfig_ImFontConfig();
+        var icons_config = imgui.ImFontConfig_ImFontConfig();
         icons_config[0].MergeMode = true;
         icons_config[0].PixelSnapH = true;
         icons_config[0].FontDataOwnedByAtlas = false;
 
-        var data = @embedFile("assets/" ++ icons.font_icon_filename_fas);
-        _ = ImFontAtlas_AddFontFromMemoryTTF(io.Fonts, data, data.len, 14, icons_config, &font_awesome_range[0]);
+        var data = @embedFile("assets/" ++ imgui.icons.font_icon_filename_fas);
+        _ = imgui.ImFontAtlas_AddFontFromMemoryTTF(io.Fonts, data, data.len, 14, icons_config, &font_awesome_range[0]);
     }
 
     var w: i32 = undefined;
     var h: i32 = undefined;
     var bytes_per_pixel: i32 = undefined;
     var pixels: [*c]u8 = undefined;
-    ImFontAtlas_GetTexDataAsRGBA32(io.Fonts, &pixels, &w, &h, &bytes_per_pixel);
+    imgui.ImFontAtlas_GetTexDataAsRGBA32(io.Fonts, &pixels, &w, &h, &bytes_per_pixel);
 
     var tex = Texture.initWithData(pixels[0..@intCast(usize, w * h * bytes_per_pixel)], w, h, .nearest);
-    ImFontAtlas_SetTexID(io.Fonts, tex.imTextureID());
+    imgui.ImFontAtlas_SetTexID(io.Fonts, tex.imTextureID());
 }

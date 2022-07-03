@@ -1,87 +1,87 @@
 const std = @import("std");
 const upaya = @import("upaya");
 const editor = @import("../editor.zig");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 var name_buf: [25]u8 = undefined;
 
 pub fn draw(state: *editor.AppState) void {
-    igSetNextWindowSize(.{ .x = 500, .y = -1 }, ImGuiCond_Always);
+    imgui.igSetNextWindowSize(.{ .x = 500, .y = -1 },  imgui.ImGuiCond_Always);
     var open: bool = true;
-    if (igBeginPopupModal("Component Editor", &open, ImGuiWindowFlags_AlwaysAutoResize)) {
-        defer igEndPopup();
+    if (imgui.igBeginPopupModal("Component Editor", &open, imgui.ImGuiWindowFlags_AlwaysAutoResize)) {
+        defer imgui.igEndPopup();
 
-        igColumns(2, "id", true);
-        igSetColumnWidth(0, 150);
+        imgui.igColumns(2, "id", true);
+        imgui.igSetColumnWidth(0, 150);
 
-        igPushItemWidth(-1);
-        if (igListBoxHeaderVec2("", .{})) {
-            defer igListBoxFooter();
+        imgui.igPushItemWidth(-1);
+        if (imgui.igListBoxHeaderVec2("", .{})) {
+            defer imgui.igListBoxFooter();
 
-            if (igSelectableBool("Transform", false, ImGuiSelectableFlags_DontClosePopups, .{})) {}
-            if (igSelectableBool("BoxCollider", false, ImGuiSelectableFlags_DontClosePopups, .{})) {}
+            if (imgui.igSelectableBool("Transform", false, imgui.ImGuiSelectableFlags_DontClosePopups, .{})) {}
+            if (imgui.igSelectableBool("BoxCollider", false, imgui.ImGuiSelectableFlags_DontClosePopups, .{})) {}
         }
-        igPopItemWidth();
+        imgui.igPopItemWidth();
 
-        igNextColumn();
+        imgui.igNextColumn();
         drawDetailsPane(state);
 
-        igColumns(1, "id", false);
-        if (ogButton("Add Component")) {
-            igOpenPopup("##new-component");
+        imgui.igColumns(1, "id", false);
+        if (imgui.ogButton("Add Component")) {
+            imgui.igOpenPopup("##new-component");
             std.mem.copy(u8, &name_buf, "NewComponent");
         }
 
-        igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{ .x = 0.5 });
-        if (igBeginPopup("##new-component", ImGuiWindowFlags_None)) {
-            _ = ogInputText("##name", &name_buf, name_buf.len);
+        imgui.igSetNextWindowPos(imgui.igGetIO().MousePos, imgui.ImGuiCond_Appearing, .{ .x = 0.5 });
+        if (imgui.igBeginPopup("##new-component", imgui.ImGuiWindowFlags_None)) {
+            _ = imgui.ogInputText("##name", &name_buf, name_buf.len);
 
-            if (igButton("Create Component", .{ .x = -1, .y = 0 })) {
-                igCloseCurrentPopup();
+            if (imgui.igButton("Create Component", .{ .x = -1, .y = 0 })) {
+                imgui.igCloseCurrentPopup();
                 const label_sentinel_index = std.mem.indexOfScalar(u8, &name_buf, 0).?;
                 std.debug.print("new comp name: {s}\n", .{name_buf[0..label_sentinel_index]});
             }
 
-            igEndPopup();
+            imgui.igEndPopup();
         }
     }
 }
 
 fn drawDetailsPane(state: *editor.AppState) void {
-    if (igButton("Add Field", ImVec2{})) {
-        igOpenPopup("##add-field");
+    if (imgui.igButton("Add Field", imgui.ImVec2{})) {
+        imgui.igOpenPopup("##add-field");
     }
 
-    igPushItemWidth(igGetColumnWidth(1) / 2 - 20);
-    _ = ogInputText("##key", &name_buf, name_buf.len);
-    igSameLine(0, 5);
+    imgui.igPushItemWidth(imgui.igGetColumnWidth(1) / 2 - 20);
+    _ = imgui.ogInputText("##key", &name_buf, name_buf.len);
+    imgui.igSameLine(0, 5);
 
-    _ = ogInputText("##value", &name_buf, name_buf.len);
-    igSameLine(0, 5);
+    _ = imgui.ogInputText("##value", &name_buf, name_buf.len);
+    imgui.igSameLine(0, 5);
 
-    igPopItemWidth();
-    if (ogButton(icons.trash)) {}
+    imgui.igPopItemWidth();
+    if (imgui.ogButton(imgui.icons.trash)) {}
 
     addFieldPopup(state);
 }
 
 fn addFieldPopup(state: *editor.AppState) void {
     _ = state;
-    igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{ .x = 0.5 });
-    if (igBeginPopup("##add-field", ImGuiWindowFlags_None)) {
-        igText("Field Type");
-        if (igButton("bool", .{ .x = 100 })) {
-            igCloseCurrentPopup();
+    imgui.igSetNextWindowPos(imgui.igGetIO().MousePos, imgui.ImGuiCond_Appearing, .{ .x = 0.5 });
+    if (imgui.igBeginPopup("##add-field", imgui.ImGuiWindowFlags_None)) {
+        imgui.igText("Field Type");
+        if (imgui.igButton("bool", .{ .x = 100 })) {
+            imgui.igCloseCurrentPopup();
         }
-        if (igButton("string", .{ .x = 100 })) {
-            igCloseCurrentPopup();
+        if (imgui.igButton("string", .{ .x = 100 })) {
+            imgui.igCloseCurrentPopup();
         }
-        if (igButton("float", .{ .x = 100 })) {
-            igCloseCurrentPopup();
+        if (imgui.igButton("float", .{ .x = 100 })) {
+            imgui.igCloseCurrentPopup();
         }
-        if (igButton("int", .{ .x = 100 })) {
-            igCloseCurrentPopup();
+        if (imgui.igButton("int", .{ .x = 100 })) {
+            imgui.igCloseCurrentPopup();
         }
-        igEndPopup();
+        imgui.igEndPopup();
     }
 }

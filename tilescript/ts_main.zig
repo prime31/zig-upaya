@@ -1,6 +1,6 @@
 const std = @import("std");
 const upaya = @import("upaya");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 const TileScript = @import("tilescript.zig").TileScript;
 
 var ts: TileScript = undefined;

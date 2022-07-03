@@ -10,7 +10,7 @@ const filebrowser_build = @import("deps/filebrowser/build.zig");
 
 pub fn build(_: *Builder) void {}
 
-pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     sokol_build.linkArtifact(b, artifact, target, prefix_path);
     stb_build.linkArtifact(b, artifact, target, prefix_path);
     imgui_build.linkArtifact(b, artifact, target, prefix_path);
@@ -18,23 +18,23 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
 
     const sokol = Pkg{
         .name = "sokol",
-        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/sokol/sokol.zig" },
+        .source = std.build.FileSource{ .path = prefix_path ++ "src/deps/sokol/sokol.zig" },
     };
     const stb = Pkg{
         .name = "stb",
-        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/stb/stb.zig" },
+        .source = std.build.FileSource{ .path = prefix_path ++ "src/deps/stb/stb.zig" },
     };
     const imgui = Pkg{
         .name = "imgui",
-        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/imgui/imgui.zig" },
+        .source = std.build.FileSource{ .path = prefix_path ++ "src/deps/imgui/imgui.zig" },
     };
     const filebrowser = Pkg{
         .name = "filebrowser",
-        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/filebrowser/filebrowser.zig" },
+        .source = std.build.FileSource{ .path = prefix_path ++ "src/deps/filebrowser/filebrowser.zig" },
     };
     const upaya = Pkg{
         .name = "upaya",
-        .path = std.build.FileSource{ .path = prefix_path ++ "src/upaya.zig" },
+        .source = std.build.FileSource{ .path = prefix_path ++ "src/upaya.zig" },
         .dependencies = &[_]Pkg{ stb, filebrowser, sokol, imgui },
     };
 
@@ -46,16 +46,16 @@ pub fn linkArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std
     artifact.addPackage(filebrowser);
 }
 
-pub fn linkCommandLineArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn linkCommandLineArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     stb_build.linkArtifact(b, artifact, target, prefix_path);
 
     const stb = Pkg{
         .name = "stb",
-        .path = std.build.FileSource{ .path = prefix_path ++ "src/deps/stb/stb.zig" },
+        .source = std.build.FileSource{ .path = prefix_path ++ "src/deps/stb/stb.zig" },
     };
     const upaya = Pkg{
         .name = "upaya",
-        .path = std.build.FileSource{ .path = prefix_path ++ "src/upaya_cli.zig" },
+        .source = std.build.FileSource{ .path = prefix_path ++ "src/upaya_cli.zig" },
         .dependencies = &[_]Pkg{stb},
     };
 
@@ -65,7 +65,7 @@ pub fn linkCommandLineArtifact(b: *Builder, artifact: *std.build.LibExeObjStep, 
 }
 
 // add tests.zig file runnable via "zig build test"
-pub fn addTests(b: *Builder, target: std.build.Target) void {
+pub fn addTests(b: *Builder, target: std.zig.CrossTarget) void {
     var tst = b.addTest("src/tests.zig");
     linkArtifact(b, tst, target, "");
     const test_step = b.step("test", "Run tests in tests.zig");

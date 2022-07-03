@@ -1,5 +1,5 @@
 const upaya = @import("upaya.zig");
-usingnamespace upaya.imgui;
+const imgui = upaya.imgui;
 
 pub const MenuItem = struct {
     label: [*c]const u8,
@@ -9,7 +9,7 @@ pub const MenuItem = struct {
 
     pub fn draw(self: MenuItem) void {
         if (self.children.len == 0) {
-            if (igMenuItemBool(self.label, self.shortcut, false, true)) {
+            if (imgui.igMenuItemBool(self.label, self.shortcut, false, true)) {
                 if (self.action) |action| action();
             }
         } else {
@@ -18,17 +18,17 @@ pub const MenuItem = struct {
     }
 
     fn drawMultiple(self: MenuItem) void {
-        if (igBeginMenu(self.label, true)) {
-            defer igEndMenu();
+        if (imgui.igBeginMenu(self.label, true)) {
+            defer imgui.igEndMenu();
             for (self.children) |child| child.draw();
         }
     }
 };
 
 pub fn draw(menuitems: []const MenuItem) void {
-    if (igBeginMenuBar()) {
+    if (imgui.igBeginMenuBar()) {
         for (menuitems) |menu| menu.draw();
-        igEndMenuBar();
+        imgui.igEndMenuBar();
     }
 }
 

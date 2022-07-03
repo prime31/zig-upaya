@@ -3,7 +3,7 @@ const upaya = @import("upaya");
 const math = upaya.math;
 const colors = upaya.colors;
 const fs = std.fs;
-usingnamespace upaya.imgui;
+const imgui = upaya.imgui;
 const stb = @import("stb");
 
 var atlas: ?upaya.TexturePacker.Atlas = null;
@@ -29,60 +29,60 @@ fn shutdown() void {
 }
 
 fn update() void {
-    ogSetNextWindowPos(.{}, ImGuiCond_Always, .{});
-    ogSetNextWindowSize(.{
+    imgui.ogSetNextWindowPos(.{},  imgui.ImGuiCond_Always, .{});
+    imgui.ogSetNextWindowSize(.{
         .x = @intToFloat(f32, upaya.sokol.sapp_width()),
         .y = @intToFloat(f32, upaya.sokol.sapp_height()),
-    }, ImGuiCond_Always);
+    },  imgui.ImGuiCond_Always);
 
-    if (igBegin("Main Window", null, ImGuiWindowFlags_NoTitleBar)) {
+    if (imgui.igBegin("Main Window", null, imgui.ImGuiWindowFlags_NoTitleBar)) {
         if (atlas) |a| {
-            igText("Atlas Size:");
-            igSameLine(0, 5);
+            imgui.igText("Atlas Size:");
+            imgui.igSameLine(0, 5);
 
-            igSetNextItemWidth(100);
+            imgui.igSetNextItemWidth(100);
             var tmp_size = [_]c_int{ @intCast(c_int, a.w), @intCast(c_int, a.h) };
-            _ = igInputInt2("", &tmp_size, ImGuiInputTextFlags_None);
-            igSameLine(0, 5);
+            _ = imgui.igInputInt2("", &tmp_size, imgui.ImGuiInputTextFlags_None);
+            imgui.igSameLine(0, 5);
 
-            if (ogButton("Save to Desktop")) {
+            if (imgui.ogButton("Save to Desktop")) {
                 const path_or_null = upaya.known_folders.getPath(upaya.mem.tmp_allocator, .desktop) catch unreachable;
                 if (path_or_null) |path| atlas.?.save(path, "test");
             }
 
-            defer igEndChild();
-            if (ogBeginChildEx("#child", 666, ogGetContentRegionAvail(), true, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_HorizontalScrollbar)) {
-                var pos = ogGetCursorScreenPos();
-                const size = ImVec2{ .x = @intToFloat(f32, a.w), .y = @intToFloat(f32, a.h) };
+            defer imgui.igEndChild();
+            if (imgui.ogBeginChildEx("#child", 666, imgui.ogGetContentRegionAvail(), true, imgui.ImGuiWindowFlags_NoTitleBar | imgui.ImGuiWindowFlags_HorizontalScrollbar)) {
+                var pos = imgui.ogGetCursorScreenPos();
+                const size = imgui.ImVec2{ .x = @intToFloat(f32, a.w), .y = @intToFloat(f32, a.h) };
 
-                ogAddRectFilled(igGetWindowDrawList(), pos, size, colors.rgbToU32(0, 0, 0));
-                ogAddRect(igGetWindowDrawList(), pos, size, colors.rgbToU32(155, 0, 155), 1);
-                _ = ogInvisibleButton("##rects", size, ImGuiButtonFlags_None);
+                imgui.ogAddRectFilled(imgui.igGetWindowDrawList(), pos, size, colors.rgbToU32(0, 0, 0));
+                imgui.ogAddRect(imgui.igGetWindowDrawList(), pos, size, colors.rgbToU32(155, 0, 155), 1);
+                _ = imgui.ogInvisibleButton("##rects", size, imgui.ImGuiButtonFlags_None);
 
                 for (a.rects) |rect| {
                     const tl = .{ .x = pos.x + @intToFloat(f32, rect.x), .y = pos.y + @intToFloat(f32, rect.y) };
-                    ogAddRect(igGetWindowDrawList(), tl, .{ .x = @intToFloat(f32, rect.w), .y = @intToFloat(f32, rect.h) }, colors.rgbToU32(0, 255, 0), 1);
+                    imgui.ogAddRect(imgui.igGetWindowDrawList(), tl, .{ .x = @intToFloat(f32, rect.w), .y = @intToFloat(f32, rect.h) }, colors.rgbToU32(0, 255, 0), 1);
                     drawChunk(tl, rect.asRect());
                 }
             }
         } else {
-            var pos = ogGetCursorScreenPos();
-            const size = ogGetContentRegionAvail();
-            ogAddRectFilled(igGetWindowDrawList(), pos, size, colors.rgbToU32(80, 80, 80));
+            var pos = imgui.ogGetCursorScreenPos();
+            const size = imgui.ogGetContentRegionAvail();
+            imgui.ogAddRectFilled(imgui.igGetWindowDrawList(), pos, size, colors.rgbToU32(80, 80, 80));
 
-            var text_size: ImVec2 = undefined;
-            igCalcTextSize(&text_size, "Drag/drop a folder", null, false, 1024);
-            ogSetCursorPos(.{ .x = (size.x / 2) - text_size.x, .y = size.y / 2 });
+            var text_size: imgui.ImVec2 = undefined;
+            imgui.igCalcTextSize(&text_size, "Drag/drop a folder", null, false, 1024);
+            imgui.ogSetCursorPos(.{ .x = (size.x / 2) - text_size.x, .y = size.y / 2 });
 
-            igGetCurrentContext().FontSize *= 2;
-            igText("Drag/drop a folder");
-            igGetCurrentContext().FontSize /= 2;
+            imgui.igGetCurrentContext().FontSize *= 2;
+            imgui.igText("Drag/drop a folder");
+            imgui.igGetCurrentContext().FontSize /= 2;
         }
     }
-    igEnd();
+    imgui.igEnd();
 }
 
-fn drawChunk(tl: ImVec2, rect: math.Rect) void {
+fn drawChunk(tl: imgui.ImVec2, rect: math.Rect) void {
     var br = tl;
     br.x += rect.w;
     br.y += rect.h;
@@ -90,10 +90,10 @@ fn drawChunk(tl: ImVec2, rect: math.Rect) void {
     const inv_w = 1.0 / @intToFloat(f32, atlas.?.w);
     const inv_h = 1.0 / @intToFloat(f32, atlas.?.h);
 
-    const uv0 = ImVec2{ .x = rect.x * inv_w, .y = rect.y * inv_h };
-    const uv1 = ImVec2{ .x = (rect.x + rect.w) * inv_w, .y = (rect.y + rect.h) * inv_h };
+    const uv0 = imgui.ImVec2{ .x = rect.x * inv_w, .y = rect.y * inv_h };
+    const uv1 = imgui.ImVec2{ .x = (rect.x + rect.w) * inv_w, .y = (rect.y + rect.h) * inv_h };
 
-    ogImDrawList_AddImage(igGetWindowDrawList(), texture.?.imTextureID(), tl, br, uv0, uv1, 0xFFFFFFFF);
+    imgui.ogImDrawList_AddImage(imgui.igGetWindowDrawList(), texture.?.imTextureID(), tl, br, uv0, uv1, 0xFFFFFFFF);
 
 }
 

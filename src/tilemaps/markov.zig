@@ -1,4 +1,5 @@
 const std = @import("std");
+const aya = @import("../upaya.zig");
 
 pub const Markov = struct {
     rows: std.StringHashMap(std.StringHashMap(u8)),

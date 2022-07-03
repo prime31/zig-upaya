@@ -1,7 +1,7 @@
 const std = @import("std");
 const upaya = @import("upaya");
 const ts = @import("../tilescript.zig");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 const object_editor = @import("object_editor.zig");
 
@@ -10,22 +10,22 @@ var filter = false;
 var selected_index: usize = std.math.maxInt(usize);
 
 pub fn draw(state: *ts.AppState) void {
-    igPushStyleVarVec2(ImGuiStyleVar_WindowMinSize, ImVec2{ .x = 200, .y = 100 });
-    defer igPopStyleVar(1);
+    imgui.igPushStyleVarVec2(imgui.ImGuiStyleVar_WindowMinSize, imgui.ImVec2{ .x = 200, .y = 100 });
+    defer imgui.igPopStyleVar(1);
 
     if (state.prefs.windows.objects) {
-        _ = igBegin("Objects", &state.prefs.windows.objects, ImGuiWindowFlags_None);
-        defer igEnd();
+        _ = imgui.igBegin("Objects", &state.prefs.windows.objects, imgui.ImGuiWindowFlags_None);
+        defer imgui.igEnd();
 
-        if (igBeginChildEx("##obj-child", igGetItemID(), .{ .y = -igGetFrameHeightWithSpacing() }, false, ImGuiWindowFlags_None)) {
-            defer igEndChild();
+        if (imgui.igBeginChildEx("##obj-child", imgui.igGetItemID(), .{ .y = -imgui.igGetFrameHeightWithSpacing() }, false, imgui.ImGuiWindowFlags_None)) {
+            defer imgui.igEndChild();
 
-            igPushItemWidth(igGetWindowContentRegionWidth());
-            if (ogInputText("##obj-filter", &filter_buffer, filter_buffer.len)) {
+            imgui.igPushItemWidth(imgui.igGetWindowContentRegionWidth());
+            if (imgui.ogInputText("##obj-filter", &filter_buffer, filter_buffer.len)) {
                 const null_index = std.mem.indexOfScalar(u8, &filter_buffer, 0) orelse 0;
                 filter = null_index > 0;
             }
-            igPopItemWidth();
+            imgui.igPopItemWidth();
 
             var delete_index: usize = std.math.maxInt(usize);
             for (state.map.objects.items) |*obj, i| {
@@ -35,21 +35,21 @@ pub fn draw(state: *ts.AppState) void {
                         continue;
                     }
                 }
-                igPushIDInt(@intCast(c_int, i));
+                imgui.igPushIDInt(@intCast(c_int, i));
 
-                if (igSelectableBool(&obj.name, selected_index == i, ImGuiSelectableFlags_None, .{ .x = igGetWindowContentRegionWidth() - 24 })) {
+                if (imgui.igSelectableBool(&obj.name, selected_index == i, imgui.ImGuiSelectableFlags_None, .{ .x = imgui.igGetWindowContentRegionWidth() - 24 })) {
                     selected_index = i;
                     object_editor.setSelectedObject(selected_index);
                     state.prefs.windows.object_editor = true;
                 }
 
-                igSameLine(igGetWindowContentRegionWidth() - 20, 0);
-                igSetCursorPosY(igGetCursorPosY() - 3);
-                if (ogButton(icons.trash)) {
+                imgui.igSameLine(imgui.igGetWindowContentRegionWidth() - 20, 0);
+                imgui.igSetCursorPosY(imgui.igGetCursorPosY() - 3);
+                if (imgui.ogButton(imgui.icons.trash)) {
                     delete_index = i;
                 }
 
-                igPopID();
+                imgui.igPopID();
             }
 
             if (delete_index < std.math.maxInt(usize)) {
@@ -70,7 +70,7 @@ pub fn draw(state: *ts.AppState) void {
             }
         }
 
-        if (igButton("Add Object", .{})) {
+        if (imgui.igButton("Add Object", .{})) {
             state.map.addObject();
             object_editor.setSelectedObject(state.map.objects.items.len - 1);
             state.prefs.windows.object_editor = true;

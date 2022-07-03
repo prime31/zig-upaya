@@ -1,44 +1,44 @@
 const std = @import("std");
 const upaya = @import("upaya");
 const ts = @import("../tilescript.zig");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 pub fn draw(state: *ts.AppState) void {
-    igPushStyleVarVec2(ImGuiStyleVar_WindowMinSize, .{ .x = 220, .y = 100 });
-    defer igPopStyleVar(1);
+    imgui.igPushStyleVarVec2(imgui.ImGuiStyleVar_WindowMinSize, .{ .x = 220, .y = 100 });
+    defer imgui.igPopStyleVar(1);
 
     if (state.prefs.windows.tags) {
-        if (igBegin("Tags", &state.prefs.windows.tags, ImGuiWindowFlags_None)) {
-            defer igEnd();
+        if (imgui.igBegin("Tags", &state.prefs.windows.tags, imgui.ImGuiWindowFlags_None)) {
+            defer imgui.igEnd();
 
-            if (igBeginChildEx("##tag-child", igGetItemID(), .{ .y = -igGetFrameHeightWithSpacing() }, false, ImGuiWindowFlags_None)) {
-                defer igEndChild();
+            if (imgui.igBeginChildEx("##tag-child", imgui.igGetItemID(), .{ .y = -imgui.igGetFrameHeightWithSpacing() }, false, imgui.ImGuiWindowFlags_None)) {
+                defer imgui.igEndChild();
 
                 var delete_index: usize = std.math.maxInt(usize);
                 for (state.map.tags.items) |*tag, i| {
-                    igPushIDInt(@intCast(c_int, i));
+                    imgui.igPushIDInt(@intCast(c_int, i));
 
-                    if (ogInputText("##key", &tag.name, tag.name.len)) {}
-                    igSameLine(0, 5);
+                    if (imgui.ogInputText("##key", &tag.name, tag.name.len)) {}
+                    imgui.igSameLine(0, 5);
 
-                    igPushItemWidth(100);
-                    if (ogButton("Tiles")) {
-                        igOpenPopup("tag-tiles");
+                    imgui.igPushItemWidth(100);
+                    if (imgui.ogButton("Tiles")) {
+                        imgui.igOpenPopup("tag-tiles");
                     }
-                    igPopItemWidth();
+                    imgui.igPopItemWidth();
 
-                    igSameLine(igGetWindowContentRegionWidth() - 20, 0);
-                    if (ogButton(icons.trash)) {
+                    imgui.igSameLine(imgui.igGetWindowContentRegionWidth() - 20, 0);
+                    if (imgui.ogButton(imgui.icons.trash)) {
                         delete_index = i;
                     }
 
-                    igSetNextWindowPos(igGetIO().MousePos, ImGuiCond_Appearing, .{ .x = 0.5 });
-                    if (igBeginPopup("tag-tiles", ImGuiWindowFlags_None)) {
-                        defer igEndPopup();
+                    imgui.igSetNextWindowPos(imgui.igGetIO().MousePos, imgui.ImGuiCond_Appearing, .{ .x = 0.5 });
+                    if (imgui.igBeginPopup("tag-tiles", imgui.ImGuiWindowFlags_None)) {
+                        defer imgui.igEndPopup();
                         tagTileSelectorPopup(state, tag);
                     }
 
-                    igPopID();
+                    imgui.igPopID();
                 }
 
                 if (delete_index < std.math.maxInt(usize)) {
@@ -46,7 +46,7 @@ pub fn draw(state: *ts.AppState) void {
                 }
             }
 
-            if (igButton("Add Tag", .{})) {
+            if (imgui.igButton("Add Tag", .{})) {
                 state.map.addTag();
             }
         }
@@ -54,12 +54,12 @@ pub fn draw(state: *ts.AppState) void {
 }
 
 fn tagTileSelectorPopup(state: *ts.AppState, tag: *ts.data.Tag) void {
-    var content_start_pos = ogGetCursorScreenPos();
+    var content_start_pos = imgui.ogGetCursorScreenPos();
     const zoom: usize = if (state.texture.width < 200 and state.texture.height < 200) 2 else 1;
     const tile_spacing = state.map.tile_spacing * zoom;
     const tile_size = state.map.tile_size * zoom;
 
-    ogImage(state.texture.imTextureID(), state.texture.width * @intCast(i32, zoom), state.texture.height * @intCast(i32, zoom));
+    imgui.ogImage(state.texture.imTextureID(), state.texture.width * @intCast(i32, zoom), state.texture.height * @intCast(i32, zoom));
 
     // draw selected tiles
     var iter = tag.tiles.iter();
@@ -68,14 +68,14 @@ fn tagTileSelectorPopup(state: *ts.AppState, tag: *ts.data.Tag) void {
     }
 
     // check input for toggling state
-    if (igIsItemHovered(ImGuiHoveredFlags_None)) {
-        if (igIsMouseClicked(0, false)) {
+    if (imgui.igIsItemHovered(imgui.ImGuiHoveredFlags_None)) {
+        if (imgui.igIsMouseClicked(0, false)) {
             var tile = ts.tileIndexUnderMouse(@intCast(usize, tile_size + tile_spacing), content_start_pos);
             tag.toggleSelected(@intCast(u8, tile.x + tile.y * state.tilesPerRow()));
         }
     }
 
-    if (igButton("Clear", ImVec2{ .x = -1 })) {
+    if (imgui.igButton("Clear", imgui.ImVec2{ .x = -1 })) {
         tag.tiles.clear();
     }
 }

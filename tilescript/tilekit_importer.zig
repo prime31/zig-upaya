@@ -7,6 +7,8 @@ pub fn import(file: []const u8) !tilescript.Map {
     var tokens = std.json.TokenStream.init(bytes);
 
     // TODO: why does this poop itself when using the real allocator?
+    @setEvalBranchQuota(10000);
+
     const options = std.json.ParseOptions{ .allocator = upaya.mem.tmp_allocator };
     var res = try std.json.parse(TileKitMap, &tokens, options);
     defer std.json.parseFree(TileKitMap, res, options);
@@ -14,7 +16,7 @@ pub fn import(file: []const u8) !tilescript.Map {
     var map = tilescript.Map.init(res.output_map.tile_w, res.output_map.tile_spacing);
     map.w = res.input_map.w;
     map.h = res.input_map.h;
-    map.image = try std.mem.dupe(upaya.mem.allocator, u8, res.output_map.image_filename);
+    map.image = try upaya.mem.allocator.dupe(u8, res.output_map.image_filename);
 
     upaya.mem.allocator.free(map.data);
     map.data = try upaya.mem.allocator.alloc(u8, map.w * map.h);

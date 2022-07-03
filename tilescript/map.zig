@@ -75,7 +75,7 @@ pub const Map = struct {
     }
 
     pub fn renameGroup(self: *Map, group: u8, name: []const u8) void {
-        if (self.ruleset_groups.remove(group)) |entry| {
+        if (self.ruleset_groups.fetchRemove(group)) |entry| {
             upaya.mem.allocator.free(entry.value);
         }
         self.ruleset_groups.put(group, upaya.mem.allocator.dupe(u8, name) catch unreachable) catch unreachable;
@@ -85,7 +85,7 @@ pub const Map = struct {
         for (self.ruleset.rules.items) |rule| {
             if (rule.group == group) return;
         }
-        if (self.ruleset_groups.remove(group)) |entry| {
+        if (self.ruleset_groups.fetchRemove(group)) |entry| {
             upaya.mem.allocator.free(entry.value);
         }
     }

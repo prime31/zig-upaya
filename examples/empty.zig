@@ -13,9 +13,9 @@ pub fn main() !void {
 fn init() void {}
 
 fn update() void {
-    if (igBegin("My First Window", null, ImGuiWindowFlags_None)) {
-        igText("Hello, world!");
-        igText("We get built-in icons too: " ++ icons.igloo);
+    if (upaya.imgui.igBegin("My First Window", null, upaya.imgui.ImGuiWindowFlags_None)) {
+        upaya.imgui.igText("Hello, world!");
+        upaya.imgui.igText("We get built-in icons too: " ++ upaya.imgui.icons.igloo);
     }
-    igEnd();
+    upaya.imgui.igEnd();
 }

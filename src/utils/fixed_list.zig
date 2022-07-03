@@ -31,7 +31,7 @@ pub fn FixedList(comptime T: type, comptime len: usize) type {
 
         pub fn append(self: *Self, item: T) void {
             if (self.len == self.items.len) {
-                std.debug.warn("attemped to append to a full FixedList\n", .{});
+                std.log.warn("attemped to append to a full FixedList\n", .{});
                 return;
             }
             self.items[self.len] = item;
