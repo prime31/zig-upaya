@@ -19,8 +19,7 @@ pub const ArgParser = struct {
         if (!args.skip()) return;
 
         var flag: ?[]const u8 = null;
-        while (args.next(mem.tmp_allocator)) |arg_error| {
-            const arg = try arg_error;
+        while (args.next()) |arg| {
             if (std.mem.startsWith(u8, arg, "-")) {
                 flag = arg;
             } else if (flag) |flag_value| {

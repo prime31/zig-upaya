@@ -1,5 +1,5 @@
 const std = @import("std");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 const upaya = @import("upaya");
 const ts = @import("../tilescript.zig");
 const colors = @import("../colors.zig");
@@ -17,18 +17,18 @@ pub fn drawWindow(state: *ts.AppState) void {
         state.map_data_dirty = false;
     }
 
-    if (igBegin("Output Map", null, ImGuiWindowFlags_NoCollapse | ImGuiWindowFlags_AlwaysHorizontalScrollbar)) {
+    if (imgui.igBegin("Output Map", null, imgui.ImGuiWindowFlags_NoCollapse | imgui.ImGuiWindowFlags_AlwaysHorizontalScrollbar)) {
         draw(state);
     }
-    igEnd();
+    imgui.igEnd();
 }
 
 fn draw(state: *ts.AppState) void {
-    const origin = ogGetCursorScreenPos();
+    const origin = imgui.ogGetCursorScreenPos();
     const map_size = state.mapSize();
 
-    ogAddRectFilled(igGetWindowDrawList(), origin, map_size, colors.colorRgb(0, 0, 0));
-    _ = igInvisibleButton("##output-map-button", map_size);
+    imgui.ogAddRectFilled(imgui.igGetWindowDrawList(), origin, map_size, colors.colorRgb(0, 0, 0));
+    _ = imgui.igInvisibleButton("##output-map-button", map_size);
 
     var y: usize = 0;
     while (y < state.map.h) : (y += 1) {
@@ -53,7 +53,7 @@ fn draw(state: *ts.AppState) void {
 
             const offset_x = @intToFloat(f32, x) * state.map_rect_size;
             const offset_y = @intToFloat(f32, y) * state.map_rect_size;
-            var tl = ImVec2{ .x = origin.x + offset_x, .y = origin.y + offset_y };
+            var tl = imgui.ImVec2{ .x = origin.x + offset_x, .y = origin.y + offset_y };
             drawTile(state, tl, tile - 1);
         }
     }
@@ -61,9 +61,9 @@ fn draw(state: *ts.AppState) void {
     // draw objects
     if (state.prefs.show_objects) {
         for (state.map.objects.items) |obj, i| {
-            const tl = ImVec2{ .x = origin.x + @intToFloat(f32, obj.x) * state.map_rect_size, .y = origin.y + @intToFloat(f32, obj.y) * state.map_rect_size };
+            const tl = imgui.ImVec2{ .x = origin.x + @intToFloat(f32, obj.x) * state.map_rect_size, .y = origin.y + @intToFloat(f32, obj.y) * state.map_rect_size };
             const color = if (dragged_obj_index != null and dragged_obj_index.? == i) colors.object_selected else colors.object;
-            ogAddQuad(igGetWindowDrawList(), tl, state.map_rect_size, color, 1);
+            imgui.ogAddQuad(imgui.igGetWindowDrawList(), tl, state.map_rect_size, color, 1);
 
             for (obj.props.items) |prop| {
                 switch (prop.value) {
@@ -76,8 +76,8 @@ fn draw(state: *ts.AppState) void {
                         tl_offset.x += half_rect;
                         tl_offset.y += half_rect;
 
-                        const other = ImVec2{ .x = origin.x + half_rect + @intToFloat(f32, linked_obj.x) * state.map_rect_size, .y = origin.y + half_rect + @intToFloat(f32, linked_obj.y) * state.map_rect_size };
-                        ImDrawList_AddLine(igGetWindowDrawList(), tl_offset, other, colors.object_link, 1);
+                        const other = imgui.ImVec2{ .x = origin.x + half_rect + @intToFloat(f32, linked_obj.x) * state.map_rect_size, .y = origin.y + half_rect + @intToFloat(f32, linked_obj.y) * state.map_rect_size };
+                        imgui.ImDrawList_AddLine(imgui.igGetWindowDrawList(), tl_offset, other, colors.object_link, 1);
                     },
                     else => {},
                 }
@@ -85,7 +85,7 @@ fn draw(state: *ts.AppState) void {
         }
     }
 
-    if (igIsItemHovered(ImGuiHoveredFlags_None)) {
+    if (imgui.igIsItemHovered(imgui.ImGuiHoveredFlags_None)) {
         handleInput(state, origin);
     } else {
         dragged_obj_index = null;
@@ -93,7 +93,7 @@ fn draw(state: *ts.AppState) void {
 }
 
 /// returns the index of the object under the mouse or null
-fn objectIndexUnderMouse(state: *ts.AppState, origin: ImVec2) ?usize {
+fn objectIndexUnderMouse(state: *ts.AppState, origin: imgui.ImVec2) ?usize {
     var tile = ts.tileIndexUnderMouse(@floatToInt(usize, state.map_rect_size), origin);
     for (state.map.objects.items) |obj, i| {
         if (obj.x == tile.x and obj.y == tile.y) {
@@ -103,15 +103,15 @@ fn objectIndexUnderMouse(state: *ts.AppState, origin: ImVec2) ?usize {
     return null;
 }
 
-fn handleInput(state: *ts.AppState, origin: ImVec2) void {
+fn handleInput(state: *ts.AppState, origin: imgui.ImVec2) void {
     // scrolling via drag with alt key down
-    if (igIsMouseDragging(ImGuiMouseButton_Left, 0) and (igGetIO().KeyAlt or igGetIO().KeySuper)) {
-        var scroll_delta = ImVec2{};
-        igGetMouseDragDelta(&scroll_delta, 0, 0);
+    if (imgui.igIsMouseDragging(imgui.ImGuiMouseButton_Left, 0) and (imgui.igGetIO().KeyAlt or imgui.igGetIO().KeySuper)) {
+        var scroll_delta = imgui.ImVec2{};
+        imgui.igGetMouseDragDelta(&scroll_delta, 0, 0);
 
-        igSetScrollXFloat(igGetScrollX() - scroll_delta.x);
-        igSetScrollYFloat(igGetScrollY() - scroll_delta.y);
-        igResetMouseDragDelta(ImGuiMouseButton_Left);
+        imgui.igSetScrollXFloat(imgui.igGetScrollX() - scroll_delta.x);
+        imgui.igSetScrollYFloat(imgui.igGetScrollY() - scroll_delta.y);
+        imgui.igResetMouseDragDelta(imgui.ImGuiMouseButton_Left);
         return;
     }
 
@@ -119,7 +119,7 @@ fn handleInput(state: *ts.AppState, origin: ImVec2) void {
         return;
     }
 
-    if (igIsMouseClicked(ImGuiMouseButton_Left, false) or igIsMouseClicked(ImGuiMouseButton_Right, false)) {
+    if (imgui.igIsMouseClicked(imgui.ImGuiMouseButton_Left, false) or imgui.igIsMouseClicked(imgui.ImGuiMouseButton_Right, false)) {
         // figure out if we clicked on any of our objects
         var tile = ts.tileIndexUnderMouse(@floatToInt(usize, state.map_rect_size), origin);
         for (state.map.objects.items) |obj, i| {
@@ -127,33 +127,33 @@ fn handleInput(state: *ts.AppState, origin: ImVec2) void {
                 dragged_obj_index = i;
                 object_editor.setSelectedObject(i);
                 @import("objects.zig").setSelectedObject(i);
-                drag_type = if (igIsMouseClicked(ImGuiMouseButton_Left, false)) .move else .link;
+                drag_type = if (imgui.igIsMouseClicked(imgui.ImGuiMouseButton_Left, false)) .move else .link;
                 break;
             }
         }
     } else if (dragged_obj_index != null) {
         if (drag_type == .move) {
-            if (igIsMouseDragging(ImGuiMouseButton_Left, 0)) {
+            if (imgui.igIsMouseDragging(imgui.ImGuiMouseButton_Left, 0)) {
                 var tile = ts.tileIndexUnderMouse(@floatToInt(usize, state.map_rect_size), origin);
                 var obj = &state.map.objects.items[dragged_obj_index.?];
                 obj.x = tile.x;
                 obj.y = tile.y;
-            } else if (igIsMouseReleased(ImGuiMouseButton_Left)) {
+            } else if (imgui.igIsMouseReleased(imgui.ImGuiMouseButton_Left)) {
                 dragged_obj_index = null;
             }
         } else if (drag_type == .link) {
-            if (igIsMouseDragging(ImGuiMouseButton_Right, 0)) {
+            if (imgui.igIsMouseDragging(imgui.ImGuiMouseButton_Right, 0)) {
                 // highlight the drop target if we have one
                 if (objectIndexUnderMouse(state, origin)) |index| {
                     if (index != dragged_obj_index.?) {
                         const obj = state.map.objects.items[index];
-                        const tl = ImVec2{ .x = origin.x - 2 + @intToFloat(f32, obj.x) * state.map_rect_size, .y = origin.y - 2 + @intToFloat(f32, obj.y) * state.map_rect_size };
-                        ogAddQuad(igGetWindowDrawList(), tl, state.map_rect_size + 4, igColorConvertFloat4ToU32(igGetStyle().Colors[ImGuiCol_DragDropTarget]), 2);
+                        const tl = imgui.ImVec2{ .x = origin.x - 2 + @intToFloat(f32, obj.x) * state.map_rect_size, .y = origin.y - 2 + @intToFloat(f32, obj.y) * state.map_rect_size };
+                        imgui.ogAddQuad(imgui.igGetWindowDrawList(), tl, state.map_rect_size + 4, imgui.igColorConvertFloat4ToU32(imgui.igGetStyle().Colors[imgui.ImGuiCol_DragDropTarget]), 2);
                     }
                 }
 
-                ImDrawList_AddLine(igGetWindowDrawList(), igGetIO().MouseClickedPos[1], igGetIO().MousePos, colors.object_drag_link, 2);
-            } else if (igIsMouseReleased(ImGuiMouseButton_Right)) {
+                imgui.ImDrawList_AddLine(imgui.igGetWindowDrawList(), imgui.igGetIO().MouseClickedPos[1], imgui.igGetIO().MousePos, colors.object_drag_link, 2);
+            } else if (imgui.igIsMouseReleased(imgui.ImGuiMouseButton_Right)) {
                 if (objectIndexUnderMouse(state, origin)) |index| {
                     if (index != dragged_obj_index.?) {
                         var obj = &state.map.objects.items[dragged_obj_index.?];
@@ -169,14 +169,14 @@ fn handleInput(state: *ts.AppState, origin: ImVec2) void {
     }
 }
 
-fn drawTile(state: *ts.AppState, tl: ImVec2, tile: usize) void {
+fn drawTile(state: *ts.AppState, tl: imgui.ImVec2, tile: usize) void {
     var br = tl;
     br.x += @intToFloat(f32, state.map.tile_size * state.prefs.tile_size_multiplier);
     br.y += @intToFloat(f32, state.map.tile_size * state.prefs.tile_size_multiplier);
 
     const rect = ts.uvsForTile(state, tile);
-    const uv0 = ImVec2{ .x = rect.x, .y = rect.y };
-    const uv1 = ImVec2{ .x = rect.x + rect.w, .y = rect.y + rect.h };
+    const uv0 = imgui.ImVec2{ .x = rect.x, .y = rect.y };
+    const uv1 = imgui.ImVec2{ .x = rect.x + rect.w, .y = rect.y + rect.h };
 
-    ImDrawList_AddImage(igGetWindowDrawList(), state.texture.imTextureID(), tl, br, uv0, uv1, 0xffffffff);
+    imgui.ImDrawList_AddImage(imgui.igGetWindowDrawList(), state.texture.imTextureID(), tl, br, uv0, uv1, 0xffffffff);
 }

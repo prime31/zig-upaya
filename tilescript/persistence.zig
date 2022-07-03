@@ -39,8 +39,8 @@ pub fn save(map: Map, file: []const u8) !void {
     try out.writeIntLittle(usize, map.ruleset_groups.count());
     var iter = map.ruleset_groups.iterator();
     while (iter.next()) |entry| {
-        try out.writeIntLittle(u8, entry.key);
-        try writeFixedSliceZ(out, entry.value);
+        try out.writeIntLittle(u8, entry.key_ptr.*);
+        try writeFixedSliceZ(out, entry.value_ptr.*);
     }
 
     // pre RuleSets
@@ -175,7 +175,7 @@ pub fn load(file: []const u8) !Map {
 
     // pre RuleSets
     const pre_ruleset_count = try in.readIntLittle(usize);
-    _ = try map.pre_rulesets.ensureCapacity(pre_ruleset_count);
+    _ = try map.pre_rulesets.ensureTotalCapacity(pre_ruleset_count);
     i = 0;
     while (i < pre_ruleset_count) : (i += 1) {
         var ruleset = RuleSet.init();
@@ -185,7 +185,7 @@ pub fn load(file: []const u8) !Map {
 
     // tags
     const tag_cnt = try in.readIntLittle(usize);
-    _ = try map.tags.ensureCapacity(tag_cnt);
+    _ = try map.tags.ensureTotalCapacity(tag_cnt);
 
     i = 0;
     while (i < tag_cnt) : (i += 1) {
@@ -213,7 +213,7 @@ pub fn load(file: []const u8) !Map {
 
     // objects
     const obj_cnt = try in.readIntLittle(usize);
-    _ = try map.objects.ensureCapacity(obj_cnt);
+    _ = try map.objects.ensureTotalCapacity(obj_cnt);
 
     i = 0;
     while (i < obj_cnt) : (i += 1) {
@@ -224,7 +224,7 @@ pub fn load(file: []const u8) !Map {
         obj.y = try in.readIntLittle(usize);
 
         var props_len = try in.readIntLittle(usize);
-        try obj.props.ensureCapacity(props_len);
+        try obj.props.ensureTotalCapacity(props_len);
         while (props_len > 0) : (props_len -= 1) {
             var prop = Object.Prop.init();
             try readFixedSliceZ(in, &prop.name);
@@ -237,7 +237,7 @@ pub fn load(file: []const u8) !Map {
 
     // animations
     const anim_cnt = try in.readIntLittle(usize);
-    _ = try map.animations.ensureCapacity(anim_cnt);
+    _ = try map.animations.ensureTotalCapacity(anim_cnt);
 
     i = 0;
     while (i < anim_cnt) : (i += 1) {
@@ -260,7 +260,7 @@ fn readIntoRuleSet(in: Reader, ruleset: *RuleSet) !void {
     ruleset.repeat = try in.readIntLittle(u8);
     const rule_count = try in.readIntLittle(usize);
 
-    _ = try ruleset.rules.ensureCapacity(rule_count);
+    _ = try ruleset.rules.ensureTotalCapacity(rule_count);
     var i: usize = 0;
     while (i < rule_count) : (i += 1) {
         try ruleset.rules.append(try readRule(in));

@@ -15,9 +15,9 @@ pub extern fn sg_destroy_image(img: sg_image) void;
 pub extern fn sg_destroy_shader(shd: sg_shader) void;
 pub extern fn sg_destroy_pipeline(pip: sg_pipeline) void;
 pub extern fn sg_destroy_pass(pass: sg_pass) void;
-pub extern fn sg_update_buffer(buf: sg_buffer, data_ptr: ?*const c_void, data_size: c_int) void;
+pub extern fn sg_update_buffer(buf: sg_buffer, data_ptr: ?*const anyopaque, data_size: c_int) void;
 pub extern fn sg_update_image(img: sg_image, data: [*c]const sg_image_content) void;
-pub extern fn sg_append_buffer(buf: sg_buffer, data_ptr: ?*const c_void, data_size: c_int) c_int;
+pub extern fn sg_append_buffer(buf: sg_buffer, data_ptr: ?*const anyopaque, data_size: c_int) c_int;
 pub extern fn sg_query_buffer_overflow(buf: sg_buffer) bool;
 pub extern fn sg_begin_default_pass(pass_action: [*c]const sg_pass_action, width: c_int, height: c_int) void;
 pub extern fn sg_begin_pass(pass: sg_pass, pass_action: [*c]const sg_pass_action) void;
@@ -25,7 +25,7 @@ pub extern fn sg_apply_viewport(x: c_int, y: c_int, width: c_int, height: c_int,
 pub extern fn sg_apply_scissor_rect(x: c_int, y: c_int, width: c_int, height: c_int, origin_top_left: bool) void;
 pub extern fn sg_apply_pipeline(pip: sg_pipeline) void;
 pub extern fn sg_apply_bindings(bindings: [*c]const sg_bindings) void;
-pub extern fn sg_apply_uniforms(stage: sg_shader_stage, ub_index: c_int, data: ?*const c_void, num_bytes: c_int) void;
+pub extern fn sg_apply_uniforms(stage: sg_shader_stage, ub_index: c_int, data: ?*const anyopaque, num_bytes: c_int) void;
 pub extern fn sg_draw(base_element: c_int, num_elements: c_int, num_instances: c_int) void;
 pub extern fn sg_end_pass() void;
 pub extern fn sg_commit() void;
@@ -67,7 +67,7 @@ pub extern fn sg_fail_pass(pass_id: sg_pass) void;
 pub extern fn sg_setup_context() sg_context;
 pub extern fn sg_activate_context(ctx_id: sg_context) void;
 pub extern fn sg_discard_context(ctx_id: sg_context) void;
-pub extern fn sg_mtl_render_command_encoder() ?*const c_void;
+pub extern fn sg_mtl_render_command_encoder() ?*const anyopaque;
 
 pub const struct_sg_buffer = extern struct {
     id: u32,
@@ -787,17 +787,17 @@ pub const struct_sg_buffer_desc = extern struct {
     size: c_int,
     type: sg_buffer_type,
     usage: sg_usage,
-    content: ?*const c_void,
+    content: ?*const anyopaque,
     label: [*c]const u8,
     gl_buffers: [2]u32,
-    mtl_buffers: [2]?*const c_void,
-    d3d11_buffer: ?*const c_void,
-    wgpu_buffer: ?*const c_void,
+    mtl_buffers: [2]?*const anyopaque,
+    d3d11_buffer: ?*const anyopaque,
+    wgpu_buffer: ?*const anyopaque,
     _end_canary: u32,
 };
 pub const sg_buffer_desc = struct_sg_buffer_desc;
 pub const struct_sg_subimage_content = extern struct {
-    ptr: ?*const c_void,
+    ptr: ?*const anyopaque,
     size: c_int,
 };
 pub const sg_subimage_content = struct_sg_subimage_content;
@@ -832,9 +832,9 @@ pub const struct_sg_image_desc = extern struct {
     content: sg_image_content,
     label: [*c]const u8,
     gl_textures: [2]u32,
-    mtl_textures: [2]?*const c_void,
-    d3d11_texture: ?*const c_void,
-    wgpu_texture: ?*const c_void,
+    mtl_textures: [2]?*const anyopaque,
+    d3d11_texture: ?*const anyopaque,
+    wgpu_texture: ?*const anyopaque,
     _end_canary: u32,
 };
 pub const sg_image_desc = struct_sg_image_desc;
@@ -973,57 +973,57 @@ pub const struct_sg_pass_desc = extern struct {
 };
 pub const sg_pass_desc = struct_sg_pass_desc;
 pub const struct_sg_trace_hooks = extern struct {
-    user_data: ?*c_void,
-    reset_state_cache: ?fn (?*c_void) callconv(.C) void,
-    make_buffer: ?fn ([*c]const sg_buffer_desc, sg_buffer, ?*c_void) callconv(.C) void,
-    make_image: ?fn ([*c]const sg_image_desc, sg_image, ?*c_void) callconv(.C) void,
-    make_shader: ?fn ([*c]const sg_shader_desc, sg_shader, ?*c_void) callconv(.C) void,
-    make_pipeline: ?fn ([*c]const sg_pipeline_desc, sg_pipeline, ?*c_void) callconv(.C) void,
-    make_pass: ?fn ([*c]const sg_pass_desc, sg_pass, ?*c_void) callconv(.C) void,
-    destroy_buffer: ?fn (sg_buffer, ?*c_void) callconv(.C) void,
-    destroy_image: ?fn (sg_image, ?*c_void) callconv(.C) void,
-    destroy_shader: ?fn (sg_shader, ?*c_void) callconv(.C) void,
-    destroy_pipeline: ?fn (sg_pipeline, ?*c_void) callconv(.C) void,
-    destroy_pass: ?fn (sg_pass, ?*c_void) callconv(.C) void,
-    update_buffer: ?fn (sg_buffer, ?*const c_void, c_int, ?*c_void) callconv(.C) void,
-    update_image: ?fn (sg_image, [*c]const sg_image_content, ?*c_void) callconv(.C) void,
-    append_buffer: ?fn (sg_buffer, ?*const c_void, c_int, c_int, ?*c_void) callconv(.C) void,
-    begin_default_pass: ?fn ([*c]const sg_pass_action, c_int, c_int, ?*c_void) callconv(.C) void,
-    begin_pass: ?fn (sg_pass, [*c]const sg_pass_action, ?*c_void) callconv(.C) void,
-    apply_viewport: ?fn (c_int, c_int, c_int, c_int, bool, ?*c_void) callconv(.C) void,
-    apply_scissor_rect: ?fn (c_int, c_int, c_int, c_int, bool, ?*c_void) callconv(.C) void,
-    apply_pipeline: ?fn (sg_pipeline, ?*c_void) callconv(.C) void,
-    apply_bindings: ?fn ([*c]const sg_bindings, ?*c_void) callconv(.C) void,
-    apply_uniforms: ?fn (sg_shader_stage, c_int, ?*const c_void, c_int, ?*c_void) callconv(.C) void,
-    draw: ?fn (c_int, c_int, c_int, ?*c_void) callconv(.C) void,
-    end_pass: ?fn (?*c_void) callconv(.C) void,
-    commit: ?fn (?*c_void) callconv(.C) void,
-    alloc_buffer: ?fn (sg_buffer, ?*c_void) callconv(.C) void,
-    alloc_image: ?fn (sg_image, ?*c_void) callconv(.C) void,
-    alloc_shader: ?fn (sg_shader, ?*c_void) callconv(.C) void,
-    alloc_pipeline: ?fn (sg_pipeline, ?*c_void) callconv(.C) void,
-    alloc_pass: ?fn (sg_pass, ?*c_void) callconv(.C) void,
-    init_buffer: ?fn (sg_buffer, [*c]const sg_buffer_desc, ?*c_void) callconv(.C) void,
-    init_image: ?fn (sg_image, [*c]const sg_image_desc, ?*c_void) callconv(.C) void,
-    init_shader: ?fn (sg_shader, [*c]const sg_shader_desc, ?*c_void) callconv(.C) void,
-    init_pipeline: ?fn (sg_pipeline, [*c]const sg_pipeline_desc, ?*c_void) callconv(.C) void,
-    init_pass: ?fn (sg_pass, [*c]const sg_pass_desc, ?*c_void) callconv(.C) void,
-    fail_buffer: ?fn (sg_buffer, ?*c_void) callconv(.C) void,
-    fail_image: ?fn (sg_image, ?*c_void) callconv(.C) void,
-    fail_shader: ?fn (sg_shader, ?*c_void) callconv(.C) void,
-    fail_pipeline: ?fn (sg_pipeline, ?*c_void) callconv(.C) void,
-    fail_pass: ?fn (sg_pass, ?*c_void) callconv(.C) void,
-    push_debug_group: ?fn ([*c]const u8, ?*c_void) callconv(.C) void,
-    pop_debug_group: ?fn (?*c_void) callconv(.C) void,
-    err_buffer_pool_exhausted: ?fn (?*c_void) callconv(.C) void,
-    err_image_pool_exhausted: ?fn (?*c_void) callconv(.C) void,
-    err_shader_pool_exhausted: ?fn (?*c_void) callconv(.C) void,
-    err_pipeline_pool_exhausted: ?fn (?*c_void) callconv(.C) void,
-    err_pass_pool_exhausted: ?fn (?*c_void) callconv(.C) void,
-    err_context_mismatch: ?fn (?*c_void) callconv(.C) void,
-    err_pass_invalid: ?fn (?*c_void) callconv(.C) void,
-    err_draw_invalid: ?fn (?*c_void) callconv(.C) void,
-    err_bindings_invalid: ?fn (?*c_void) callconv(.C) void,
+    user_data: ?*anyopaque,
+    reset_state_cache: ?fn (?*anyopaque) callconv(.C) void,
+    make_buffer: ?fn ([*c]const sg_buffer_desc, sg_buffer, ?*anyopaque) callconv(.C) void,
+    make_image: ?fn ([*c]const sg_image_desc, sg_image, ?*anyopaque) callconv(.C) void,
+    make_shader: ?fn ([*c]const sg_shader_desc, sg_shader, ?*anyopaque) callconv(.C) void,
+    make_pipeline: ?fn ([*c]const sg_pipeline_desc, sg_pipeline, ?*anyopaque) callconv(.C) void,
+    make_pass: ?fn ([*c]const sg_pass_desc, sg_pass, ?*anyopaque) callconv(.C) void,
+    destroy_buffer: ?fn (sg_buffer, ?*anyopaque) callconv(.C) void,
+    destroy_image: ?fn (sg_image, ?*anyopaque) callconv(.C) void,
+    destroy_shader: ?fn (sg_shader, ?*anyopaque) callconv(.C) void,
+    destroy_pipeline: ?fn (sg_pipeline, ?*anyopaque) callconv(.C) void,
+    destroy_pass: ?fn (sg_pass, ?*anyopaque) callconv(.C) void,
+    update_buffer: ?fn (sg_buffer, ?*const anyopaque, c_int, ?*anyopaque) callconv(.C) void,
+    update_image: ?fn (sg_image, [*c]const sg_image_content, ?*anyopaque) callconv(.C) void,
+    append_buffer: ?fn (sg_buffer, ?*const anyopaque, c_int, c_int, ?*anyopaque) callconv(.C) void,
+    begin_default_pass: ?fn ([*c]const sg_pass_action, c_int, c_int, ?*anyopaque) callconv(.C) void,
+    begin_pass: ?fn (sg_pass, [*c]const sg_pass_action, ?*anyopaque) callconv(.C) void,
+    apply_viewport: ?fn (c_int, c_int, c_int, c_int, bool, ?*anyopaque) callconv(.C) void,
+    apply_scissor_rect: ?fn (c_int, c_int, c_int, c_int, bool, ?*anyopaque) callconv(.C) void,
+    apply_pipeline: ?fn (sg_pipeline, ?*anyopaque) callconv(.C) void,
+    apply_bindings: ?fn ([*c]const sg_bindings, ?*anyopaque) callconv(.C) void,
+    apply_uniforms: ?fn (sg_shader_stage, c_int, ?*const anyopaque, c_int, ?*anyopaque) callconv(.C) void,
+    draw: ?fn (c_int, c_int, c_int, ?*anyopaque) callconv(.C) void,
+    end_pass: ?fn (?*anyopaque) callconv(.C) void,
+    commit: ?fn (?*anyopaque) callconv(.C) void,
+    alloc_buffer: ?fn (sg_buffer, ?*anyopaque) callconv(.C) void,
+    alloc_image: ?fn (sg_image, ?*anyopaque) callconv(.C) void,
+    alloc_shader: ?fn (sg_shader, ?*anyopaque) callconv(.C) void,
+    alloc_pipeline: ?fn (sg_pipeline, ?*anyopaque) callconv(.C) void,
+    alloc_pass: ?fn (sg_pass, ?*anyopaque) callconv(.C) void,
+    init_buffer: ?fn (sg_buffer, [*c]const sg_buffer_desc, ?*anyopaque) callconv(.C) void,
+    init_image: ?fn (sg_image, [*c]const sg_image_desc, ?*anyopaque) callconv(.C) void,
+    init_shader: ?fn (sg_shader, [*c]const sg_shader_desc, ?*anyopaque) callconv(.C) void,
+    init_pipeline: ?fn (sg_pipeline, [*c]const sg_pipeline_desc, ?*anyopaque) callconv(.C) void,
+    init_pass: ?fn (sg_pass, [*c]const sg_pass_desc, ?*anyopaque) callconv(.C) void,
+    fail_buffer: ?fn (sg_buffer, ?*anyopaque) callconv(.C) void,
+    fail_image: ?fn (sg_image, ?*anyopaque) callconv(.C) void,
+    fail_shader: ?fn (sg_shader, ?*anyopaque) callconv(.C) void,
+    fail_pipeline: ?fn (sg_pipeline, ?*anyopaque) callconv(.C) void,
+    fail_pass: ?fn (sg_pass, ?*anyopaque) callconv(.C) void,
+    push_debug_group: ?fn ([*c]const u8, ?*anyopaque) callconv(.C) void,
+    pop_debug_group: ?fn (?*anyopaque) callconv(.C) void,
+    err_buffer_pool_exhausted: ?fn (?*anyopaque) callconv(.C) void,
+    err_image_pool_exhausted: ?fn (?*anyopaque) callconv(.C) void,
+    err_shader_pool_exhausted: ?fn (?*anyopaque) callconv(.C) void,
+    err_pipeline_pool_exhausted: ?fn (?*anyopaque) callconv(.C) void,
+    err_pass_pool_exhausted: ?fn (?*anyopaque) callconv(.C) void,
+    err_context_mismatch: ?fn (?*anyopaque) callconv(.C) void,
+    err_pass_invalid: ?fn (?*anyopaque) callconv(.C) void,
+    err_draw_invalid: ?fn (?*anyopaque) callconv(.C) void,
+    err_bindings_invalid: ?fn (?*anyopaque) callconv(.C) void,
 };
 pub const sg_trace_hooks = struct_sg_trace_hooks;
 pub const struct_sg_slot_info = extern struct {
@@ -1068,23 +1068,23 @@ pub const struct_sg_gl_context_desc = extern struct {
 };
 pub const sg_gl_context_desc = struct_sg_gl_context_desc;
 pub const struct_sg_mtl_context_desc = extern struct {
-    device: ?*const c_void,
-    renderpass_descriptor_cb: ?fn () callconv(.C) ?*const c_void,
-    drawable_cb: ?fn () callconv(.C) ?*const c_void,
+    device: ?*const anyopaque,
+    renderpass_descriptor_cb: ?fn () callconv(.C) ?*const anyopaque,
+    drawable_cb: ?fn () callconv(.C) ?*const anyopaque,
 };
 pub const sg_metal_context_desc = struct_sg_mtl_context_desc;
 pub const struct_sg_d3d11_context_desc = extern struct {
-    device: ?*const c_void,
-    device_context: ?*const c_void,
-    render_target_view_cb: ?fn () callconv(.C) ?*const c_void,
-    depth_stencil_view_cb: ?fn () callconv(.C) ?*const c_void,
+    device: ?*const anyopaque,
+    device_context: ?*const anyopaque,
+    render_target_view_cb: ?fn () callconv(.C) ?*const anyopaque,
+    depth_stencil_view_cb: ?fn () callconv(.C) ?*const anyopaque,
 };
 pub const sg_d3d11_context_desc = struct_sg_d3d11_context_desc;
 pub const struct_sg_wgpu_context_desc = extern struct {
-    device: ?*const c_void,
-    render_view_cb: ?fn () callconv(.C) ?*const c_void,
-    resolve_view_cb: ?fn () callconv(.C) ?*const c_void,
-    depth_stencil_view_cb: ?fn () callconv(.C) ?*const c_void,
+    device: ?*const anyopaque,
+    render_view_cb: ?fn () callconv(.C) ?*const anyopaque,
+    resolve_view_cb: ?fn () callconv(.C) ?*const anyopaque,
+    depth_stencil_view_cb: ?fn () callconv(.C) ?*const anyopaque,
 };
 pub const sg_wgpu_context_desc = struct_sg_wgpu_context_desc;
 pub const struct_sg_context_desc = extern struct {

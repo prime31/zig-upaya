@@ -13,13 +13,13 @@ pub const FILE = extern struct {
     _file: c_short,
     _bf: struct___sbuf,
     _lbfsize: c_int,
-    _cookie: ?*c_void,
-    _close: ?fn (?*c_void) callconv(.C) c_int,
-    _read: ?fn (?*c_void, [*c]u8, c_int) callconv(.C) c_int,
+    _cookie: ?*anyopaque,
+    _close: ?fn (?*anyopaque) callconv(.C) c_int,
+    _read: ?fn (?*anyopaque, [*c]u8, c_int) callconv(.C) c_int,
     // _seek: ?fn (?*c_void, fpos_t, c_int) callconv(.C) fpos_t,
-    _write: ?fn (?*c_void, [*c]const u8, c_int) callconv(.C) c_int,
+    _write: ?fn (?*anyopaque, [*c]const u8, c_int) callconv(.C) c_int,
     _ub: struct___sbuf,
-    _extra: ?*opaque{},
+    _extra: ?*opaque {},
     _ur: c_int,
     _ubuf: [3]u8,
     _nbuf: [1]u8,
@@ -31,8 +31,8 @@ pub const FILE = extern struct {
 pub const struct___va_list_tag = extern struct {
     gp_offset: c_uint,
     fp_offset: c_uint,
-    overflow_arg_area: ?*c_void,
-    reg_save_area: ?*c_void,
+    overflow_arg_area: ?*anyopaque,
+    reg_save_area: ?*anyopaque,
 };
 
 pub const struct_ImGuiStoragePair = extern struct {
@@ -40,7 +40,7 @@ pub const struct_ImGuiStoragePair = extern struct {
     unnamed_0: extern union {
         val_i: c_int,
         val_f: f32,
-        val_p: ?*c_void,
+        val_p: ?*anyopaque,
     },
 };
 pub const ImGuiStoragePair = struct_ImGuiStoragePair;
@@ -73,7 +73,7 @@ pub const struct_ImGuiViewportP = extern struct {
 };
 pub const ImGuiViewportP = struct_ImGuiViewportP;
 pub const struct_ImGuiPtrOrIndex = extern struct {
-    Ptr: ?*c_void,
+    Ptr: ?*anyopaque,
     Index: c_int,
 };
 pub const ImGuiPtrOrIndex = struct_ImGuiPtrOrIndex;
@@ -191,7 +191,7 @@ pub const struct_ImGuiWindowTempData = extern struct {
     StackSizesBackup: [6]c_short,
 };
 pub const ImGuiWindowTempData = struct_ImGuiWindowTempData;
-pub const struct_ImGuiWindow = opaque{}; // /Users/mikedesaro/Zig-Aya/deps/imgui/cimgui/cimgui.h:1954:10: warning: struct demoted to opaque type - has bitfield
+pub const struct_ImGuiWindow = opaque {}; // /Users/mikedesaro/Zig-Aya/deps/imgui/cimgui/ch:1954:10: warning: struct demoted to opaque type - has bitfield
 pub const ImGuiWindow = struct_ImGuiWindow;
 pub const struct_ImGuiTabItem = extern struct {
     ID: ImGuiID,
@@ -246,11 +246,11 @@ pub const struct_ImGuiSettingsHandler = extern struct {
     TypeHash: ImGuiID,
     ClearAllFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler) callconv(.C) void,
     ReadInitFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler) callconv(.C) void,
-    ReadOpenFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler, [*c]const u8) callconv(.C) ?*c_void,
-    ReadLineFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler, ?*c_void, [*c]const u8) callconv(.C) void,
+    ReadOpenFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler, [*c]const u8) callconv(.C) ?*anyopaque,
+    ReadLineFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler, ?*anyopaque, [*c]const u8) callconv(.C) void,
     ApplyAllFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler) callconv(.C) void,
     WriteAllFn: ?fn ([*c]ImGuiContext, [*c]ImGuiSettingsHandler, [*c]ImGuiTextBuffer) callconv(.C) void,
-    UserData: ?*c_void,
+    UserData: ?*anyopaque,
 };
 pub const ImGuiSettingsHandler = struct_ImGuiSettingsHandler;
 pub const struct_ImGuiPopupData = extern struct {
@@ -286,7 +286,7 @@ pub const struct_ImGuiNextWindowData = extern struct {
     CollapsedVal: bool,
     SizeConstraintRect: ImRect,
     SizeCallback: ImGuiSizeCallback,
-    SizeCallbackUserData: ?*c_void,
+    SizeCallbackUserData: ?*anyopaque,
     BgAlphaVal: f32,
     ViewportId: ImGuiID,
     DockId: ImGuiID,
@@ -335,7 +335,7 @@ pub const struct_ImGuiInputTextState = extern struct {
     SelectedAllMouseLock: bool,
     UserFlags: ImGuiInputTextFlags,
     UserCallback: ImGuiInputTextCallback,
-    UserCallbackData: ?*c_void,
+    UserCallbackData: ?*anyopaque,
 };
 pub const ImGuiInputTextState = struct_ImGuiInputTextState;
 pub const struct_ImGuiGroupData = extern struct {
@@ -350,11 +350,11 @@ pub const struct_ImGuiGroupData = extern struct {
     EmitItem: bool,
 };
 pub const ImGuiGroupData = struct_ImGuiGroupData;
-pub const struct_ImGuiDockNodeSettings = opaque{};
+pub const struct_ImGuiDockNodeSettings = opaque {};
 pub const ImGuiDockNodeSettings = struct_ImGuiDockNodeSettings;
-pub const struct_ImGuiDockNode = opaque{}; // /Users/mikedesaro/Zig-Aya/deps/imgui/cimgui/cimgui.h:1551:24: warning: struct demoted to opaque type - has bitfield
+pub const struct_ImGuiDockNode = opaque {}; // /Users/mikedesaro/Zig-Aya/deps/imgui/cimgui/ch:1551:24: warning: struct demoted to opaque type - has bitfield
 pub const ImGuiDockNode = struct_ImGuiDockNode;
-pub const struct_ImGuiDockRequest = opaque{};
+pub const struct_ImGuiDockRequest = opaque {};
 pub const ImGuiDockRequest = struct_ImGuiDockRequest;
 pub const struct_ImGuiDockContext = extern struct {
     Nodes: ImGuiStorage,
@@ -434,10 +434,10 @@ pub const struct_ImGuiViewport = extern struct {
     DpiScale: f32,
     DrawData: [*c]ImDrawData,
     ParentViewportId: ImGuiID,
-    RendererUserData: ?*c_void,
-    PlatformUserData: ?*c_void,
-    PlatformHandle: ?*c_void,
-    PlatformHandleRaw: ?*c_void,
+    RendererUserData: ?*anyopaque,
+    PlatformUserData: ?*anyopaque,
+    PlatformHandle: ?*anyopaque,
+    PlatformHandleRaw: ?*anyopaque,
     PlatformRequestMove: bool,
     PlatformRequestResize: bool,
     PlatformRequestClose: bool,
@@ -498,7 +498,7 @@ pub const struct_ImGuiStorage = extern struct {
 };
 pub const ImGuiStorage = struct_ImGuiStorage;
 pub const struct_ImGuiSizeCallbackData = extern struct {
-    UserData: ?*c_void,
+    UserData: ?*anyopaque,
     Pos: ImVec2,
     CurrentSize: ImVec2,
     DesiredSize: ImVec2,
@@ -526,24 +526,24 @@ pub const struct_ImGuiPlatformIO = extern struct {
     Platform_SetWindowTitle: ?fn ([*c]ImGuiViewport, [*c]const u8) callconv(.C) void,
     Platform_SetWindowAlpha: ?fn ([*c]ImGuiViewport, f32) callconv(.C) void,
     Platform_UpdateWindow: ?fn ([*c]ImGuiViewport) callconv(.C) void,
-    Platform_RenderWindow: ?fn ([*c]ImGuiViewport, ?*c_void) callconv(.C) void,
-    Platform_SwapBuffers: ?fn ([*c]ImGuiViewport, ?*c_void) callconv(.C) void,
+    Platform_RenderWindow: ?fn ([*c]ImGuiViewport, ?*anyopaque) callconv(.C) void,
+    Platform_SwapBuffers: ?fn ([*c]ImGuiViewport, ?*anyopaque) callconv(.C) void,
     Platform_GetWindowDpiScale: ?fn ([*c]ImGuiViewport) callconv(.C) f32,
     Platform_OnChangedViewport: ?fn ([*c]ImGuiViewport) callconv(.C) void,
     Platform_SetImeInputPos: ?fn ([*c]ImGuiViewport, ImVec2) callconv(.C) void,
-    Platform_CreateVkSurface: ?fn ([*c]ImGuiViewport, ImU64, ?*const c_void, [*c]ImU64) callconv(.C) c_int,
+    Platform_CreateVkSurface: ?fn ([*c]ImGuiViewport, ImU64, ?*const anyopaque, [*c]ImU64) callconv(.C) c_int,
     Renderer_CreateWindow: ?fn ([*c]ImGuiViewport) callconv(.C) void,
     Renderer_DestroyWindow: ?fn ([*c]ImGuiViewport) callconv(.C) void,
     Renderer_SetWindowSize: ?fn ([*c]ImGuiViewport, ImVec2) callconv(.C) void,
-    Renderer_RenderWindow: ?fn ([*c]ImGuiViewport, ?*c_void) callconv(.C) void,
-    Renderer_SwapBuffers: ?fn ([*c]ImGuiViewport, ?*c_void) callconv(.C) void,
+    Renderer_RenderWindow: ?fn ([*c]ImGuiViewport, ?*anyopaque) callconv(.C) void,
+    Renderer_SwapBuffers: ?fn ([*c]ImGuiViewport, ?*anyopaque) callconv(.C) void,
     Monitors: ImVector_ImGuiPlatformMonitor,
     MainViewport: [*c]ImGuiViewport,
     Viewports: ImVector_ImGuiViewportPtr,
 };
 pub const ImGuiPlatformIO = struct_ImGuiPlatformIO;
 pub const struct_ImGuiPayload = extern struct {
-    Data: ?*c_void,
+    Data: ?*anyopaque,
     DataSize: c_int,
     SourceId: ImGuiID,
     SourceParentId: ImGuiID,
@@ -569,7 +569,7 @@ pub const ImGuiListClipper = struct_ImGuiListClipper;
 pub const struct_ImGuiInputTextCallbackData = extern struct {
     EventFlag: ImGuiInputTextFlags,
     Flags: ImGuiInputTextFlags,
-    UserData: ?*c_void,
+    UserData: ?*anyopaque,
     EventChar: ImWchar,
     EventKey: ImGuiKey,
     Buf: [*c]u8,
@@ -595,7 +595,7 @@ pub const struct_ImGuiIO = extern struct {
     KeyMap: [22]c_int,
     KeyRepeatDelay: f32,
     KeyRepeatRate: f32,
-    UserData: ?*c_void,
+    UserData: ?*anyopaque,
     Fonts: [*c]ImFontAtlas,
     FontGlobalScale: f32,
     FontAllowUserScaling: bool,
@@ -617,13 +617,13 @@ pub const struct_ImGuiIO = extern struct {
     ConfigWindowsMemoryCompactTimer: f32,
     BackendPlatformName: [*c]const u8,
     BackendRendererName: [*c]const u8,
-    BackendPlatformUserData: ?*c_void,
-    BackendRendererUserData: ?*c_void,
-    BackendLanguageUserData: ?*c_void,
-    GetClipboardTextFn: ?fn (?*c_void) callconv(.C) [*c]const u8,
-    SetClipboardTextFn: ?fn (?*c_void, [*c]const u8) callconv(.C) void,
-    ClipboardUserData: ?*c_void,
-    RenderDrawListsFnUnused: ?*c_void,
+    BackendPlatformUserData: ?*anyopaque,
+    BackendRendererUserData: ?*anyopaque,
+    BackendLanguageUserData: ?*anyopaque,
+    GetClipboardTextFn: ?fn (?*anyopaque) callconv(.C) [*c]const u8,
+    SetClipboardTextFn: ?fn (?*anyopaque, [*c]const u8) callconv(.C) void,
+    ClipboardUserData: ?*anyopaque,
+    RenderDrawListsFnUnused: ?*anyopaque,
     MousePos: ImVec2,
     MouseDown: [5]bool,
     MouseWheel: f32,
@@ -692,7 +692,7 @@ pub const struct_ImGuiContext = extern struct {
     WithinEndChild: bool,
     TestEngineHookItems: bool,
     TestEngineHookIdInfo: ImGuiID,
-    TestEngine: ?*c_void,
+    TestEngine: ?*anyopaque,
     Windows: ImVector_ImGuiWindowPtr,
     WindowsFocusOrder: ImVector_ImGuiWindowPtr,
     WindowsTempSortBuffer: ImVector_ImGuiWindowPtr,
@@ -875,10 +875,10 @@ pub const struct_ImFontGlyphRangesBuilder = extern struct {
     UsedChars: ImVector_ImU32,
 };
 pub const ImFontGlyphRangesBuilder = struct_ImFontGlyphRangesBuilder;
-pub const struct_ImFontGlyph = opaque{}; // /Users/mikedesaro/Zig-Aya/deps/imgui/cimgui/cimgui.h:1012:18: warning: struct demoted to opaque type - has bitfield
+pub const struct_ImFontGlyph = opaque {}; // /Users/mikedesaro/Zig-Aya/deps/imgui/cimgui/ch:1012:18: warning: struct demoted to opaque type - has bitfield
 pub const ImFontGlyph = struct_ImFontGlyph;
 pub const struct_ImFontConfig = extern struct {
-    FontData: ?*c_void,
+    FontData: ?*anyopaque,
     FontDataSize: c_int,
     FontDataOwnedByAtlas: bool,
     FontNo: c_int,
@@ -998,7 +998,7 @@ pub const struct_ImDrawCmd = extern struct {
     VtxOffset: c_uint,
     IdxOffset: c_uint,
     UserCallback: ImDrawCallback,
-    UserCallbackData: ?*c_void,
+    UserCallbackData: ?*anyopaque,
 };
 pub const ImDrawCmd = struct_ImDrawCmd;
 pub const struct_ImDrawChannel = extern struct {
@@ -1034,7 +1034,7 @@ pub const ImGuiTabItemFlags = c_int;
 pub const ImGuiTreeNodeFlags = c_int;
 pub const ImGuiViewportFlags = c_int;
 pub const ImGuiWindowFlags = c_int;
-pub const ImTextureID = ?*c_void;
+pub const ImTextureID = ?*anyopaque;
 pub const ImGuiID = c_uint;
 pub const ImGuiInputTextCallback = ?fn ([*c]ImGuiInputTextCallbackData) callconv(.C) c_int;
 pub const ImGuiSizeCallback = ?fn ([*c]ImGuiSizeCallbackData) callconv(.C) void;
@@ -1073,7 +1073,7 @@ pub const ImPoolIdx = c_int;
 pub const struct_ImVector = extern struct {
     Size: c_int,
     Capacity: c_int,
-    Data: ?*c_void,
+    Data: ?*anyopaque,
 };
 pub const ImVector = struct_ImVector;
 pub const struct_ImVector_float = extern struct {
@@ -1555,7 +1555,7 @@ pub const ImGuiTabBarFlags_NoTooltip = @enumToInt(enum_unnamed_13.ImGuiTabBarFla
 pub const ImGuiTabBarFlags_FittingPolicyResizeDown = @enumToInt(enum_unnamed_13.ImGuiTabBarFlags_FittingPolicyResizeDown);
 pub const ImGuiTabBarFlags_FittingPolicyScroll = @enumToInt(enum_unnamed_13.ImGuiTabBarFlags_FittingPolicyScroll);
 pub const ImGuiTabBarFlags_FittingPolicyMask_ = @enumToInt(enum_unnamed_13.ImGuiTabBarFlags_FittingPolicyMask_);
-pub const ImGuiTabBarFlags_FittingPolicyDefault_ = @enumToInt(enum_unnamed_13.ImGuiTabBarFlags_FittingPolicyDefault_);
+pub const ImGuiTabBarFlags_FittingPolicyDefault_ = @enumToInt(enum_unnamed_13.ImGuiTabBarFlags_FittingPolicyResizeDown);
 const enum_unnamed_13 = enum(c_int) {
     ImGuiTabBarFlags_None = 0,
     ImGuiTabBarFlags_Reorderable = 1,
@@ -1567,7 +1567,6 @@ const enum_unnamed_13 = enum(c_int) {
     ImGuiTabBarFlags_FittingPolicyResizeDown = 64,
     ImGuiTabBarFlags_FittingPolicyScroll = 128,
     ImGuiTabBarFlags_FittingPolicyMask_ = 192,
-    ImGuiTabBarFlags_FittingPolicyDefault_ = 64,
     _,
 };
 pub const ImGuiTabBarFlags_ = enum_unnamed_13;
@@ -2235,7 +2234,7 @@ pub const ImGuiItemFlags_NoNav = @enumToInt(enum_unnamed_36.ImGuiItemFlags_NoNav
 pub const ImGuiItemFlags_NoNavDefaultFocus = @enumToInt(enum_unnamed_36.ImGuiItemFlags_NoNavDefaultFocus);
 pub const ImGuiItemFlags_SelectableDontClosePopup = @enumToInt(enum_unnamed_36.ImGuiItemFlags_SelectableDontClosePopup);
 pub const ImGuiItemFlags_MixedValue = @enumToInt(enum_unnamed_36.ImGuiItemFlags_MixedValue);
-pub const ImGuiItemFlags_Default_ = @enumToInt(enum_unnamed_36.ImGuiItemFlags_Default_);
+pub const ImGuiItemFlags_Default_ = @enumToInt(enum_unnamed_36.ImGuiItemFlags_None);
 const enum_unnamed_36 = enum(c_int) {
     ImGuiItemFlags_None = 0,
     ImGuiItemFlags_NoTabStop = 1,
@@ -2245,7 +2244,6 @@ const enum_unnamed_36 = enum(c_int) {
     ImGuiItemFlags_NoNavDefaultFocus = 16,
     ImGuiItemFlags_SelectableDontClosePopup = 32,
     ImGuiItemFlags_MixedValue = 64,
-    ImGuiItemFlags_Default_ = 0,
     _,
 };
 pub const ImGuiItemFlags_ = enum_unnamed_36;
@@ -2709,7 +2707,7 @@ pub extern fn igGetWindowWidth() f32;
 pub extern fn igGetWindowHeight() f32;
 pub extern fn igSetNextWindowPos(pos: ImVec2, cond: ImGuiCond, pivot: ImVec2) void;
 pub extern fn igSetNextWindowSize(size: ImVec2, cond: ImGuiCond) void;
-pub extern fn igSetNextWindowSizeConstraints(size_min: ImVec2, size_max: ImVec2, custom_callback: ImGuiSizeCallback, custom_callback_data: ?*c_void) void;
+pub extern fn igSetNextWindowSizeConstraints(size_min: ImVec2, size_max: ImVec2, custom_callback: ImGuiSizeCallback, custom_callback_data: ?*anyopaque) void;
 pub extern fn igSetNextWindowContentSize(size: ImVec2) void;
 pub extern fn igSetNextWindowCollapsed(collapsed: bool, cond: ImGuiCond) void;
 pub extern fn igSetNextWindowFocus() void;
@@ -2789,12 +2787,12 @@ pub extern fn igGetFrameHeight() f32;
 pub extern fn igGetFrameHeightWithSpacing() f32;
 pub extern fn igPushIDStr(str_id: [*c]const u8) void;
 pub extern fn igPushIDStrStr(str_id_begin: [*c]const u8, str_id_end: [*c]const u8) void;
-pub extern fn igPushIDPtr(ptr_id: ?*const c_void) void;
+pub extern fn igPushIDPtr(ptr_id: ?*const anyopaque) void;
 pub extern fn igPushIDInt(int_id: c_int) void;
 pub extern fn igPopID() void;
 pub extern fn igGetIDStr(str_id: [*c]const u8) ImGuiID;
 pub extern fn igGetIDStrStr(str_id_begin: [*c]const u8, str_id_end: [*c]const u8) ImGuiID;
-pub extern fn igGetIDPtr(ptr_id: ?*const c_void) ImGuiID;
+pub extern fn igGetIDPtr(ptr_id: ?*const anyopaque) ImGuiID;
 pub extern fn igTextUnformatted(text: [*c]const u8, text_end: [*c]const u8) void;
 pub extern fn igText(fmt: [*c]const u8, ...) void;
 pub extern fn igTextV(fmt: [*c]const u8, args: [*c]struct___va_list_tag) void;
@@ -2824,7 +2822,7 @@ pub extern fn igBeginCombo(label: [*c]const u8, preview_value: [*c]const u8, fla
 pub extern fn igEndCombo() void;
 pub extern fn igComboStr_arr(label: [*c]const u8, current_item: [*c]c_int, items: [*c]const [*c]const u8, items_count: c_int, popup_max_height_in_items: c_int) bool;
 pub extern fn igComboStr(label: [*c]const u8, current_item: [*c]c_int, items_separated_by_zeros: [*c]const u8, popup_max_height_in_items: c_int) bool;
-pub extern fn igComboFnBoolPtr(label: [*c]const u8, current_item: [*c]c_int, items_getter: ?fn (?*c_void, c_int, [*c][*c]const u8) callconv(.C) bool, data: ?*c_void, items_count: c_int, popup_max_height_in_items: c_int) bool;
+pub extern fn igComboFnBoolPtr(label: [*c]const u8, current_item: [*c]c_int, items_getter: ?fn (?*anyopaque, c_int, [*c][*c]const u8) callconv(.C) bool, data: ?*anyopaque, items_count: c_int, popup_max_height_in_items: c_int) bool;
 pub extern fn igDragFloat(label: [*c]const u8, v: [*c]f32, v_speed: f32, v_min: f32, v_max: f32, format: [*c]const u8, power: f32) bool;
 pub extern fn igDragFloat2(label: [*c]const u8, v: [*c]f32, v_speed: f32, v_min: f32, v_max: f32, format: [*c]const u8, power: f32) bool;
 pub extern fn igDragFloat3(label: [*c]const u8, v: [*c]f32, v_speed: f32, v_min: f32, v_max: f32, format: [*c]const u8, power: f32) bool;
@@ -2835,8 +2833,8 @@ pub extern fn igDragInt2(label: [*c]const u8, v: [*c]c_int, v_speed: f32, v_min:
 pub extern fn igDragInt3(label: [*c]const u8, v: [*c]c_int, v_speed: f32, v_min: c_int, v_max: c_int, format: [*c]const u8) bool;
 pub extern fn igDragInt4(label: [*c]const u8, v: [*c]c_int, v_speed: f32, v_min: c_int, v_max: c_int, format: [*c]const u8) bool;
 pub extern fn igDragIntRange2(label: [*c]const u8, v_current_min: [*c]c_int, v_current_max: [*c]c_int, v_speed: f32, v_min: c_int, v_max: c_int, format: [*c]const u8, format_max: [*c]const u8) bool;
-pub extern fn igDragScalar(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, v_speed: f32, p_min: ?*const c_void, p_max: ?*const c_void, format: [*c]const u8, power: f32) bool;
-pub extern fn igDragScalarN(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, components: c_int, v_speed: f32, p_min: ?*const c_void, p_max: ?*const c_void, format: [*c]const u8, power: f32) bool;
+pub extern fn igDragScalar(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, v_speed: f32, p_min: ?*const anyopaque, p_max: ?*const anyopaque, format: [*c]const u8, power: f32) bool;
+pub extern fn igDragScalarN(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, components: c_int, v_speed: f32, p_min: ?*const anyopaque, p_max: ?*const anyopaque, format: [*c]const u8, power: f32) bool;
 pub extern fn igSliderFloat(label: [*c]const u8, v: [*c]f32, v_min: f32, v_max: f32, format: [*c]const u8, power: f32) bool;
 pub extern fn igSliderFloat2(label: [*c]const u8, v: [*c]f32, v_min: f32, v_max: f32, format: [*c]const u8, power: f32) bool;
 pub extern fn igSliderFloat3(label: [*c]const u8, v: [*c]f32, v_min: f32, v_max: f32, format: [*c]const u8, power: f32) bool;
@@ -2846,14 +2844,14 @@ pub extern fn igSliderInt(label: [*c]const u8, v: [*c]c_int, v_min: c_int, v_max
 pub extern fn igSliderInt2(label: [*c]const u8, v: [*c]c_int, v_min: c_int, v_max: c_int, format: [*c]const u8) bool;
 pub extern fn igSliderInt3(label: [*c]const u8, v: [*c]c_int, v_min: c_int, v_max: c_int, format: [*c]const u8) bool;
 pub extern fn igSliderInt4(label: [*c]const u8, v: [*c]c_int, v_min: c_int, v_max: c_int, format: [*c]const u8) bool;
-pub extern fn igSliderScalar(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, p_min: ?*const c_void, p_max: ?*const c_void, format: [*c]const u8, power: f32) bool;
-pub extern fn igSliderScalarN(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, components: c_int, p_min: ?*const c_void, p_max: ?*const c_void, format: [*c]const u8, power: f32) bool;
+pub extern fn igSliderScalar(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, p_min: ?*const anyopaque, p_max: ?*const anyopaque, format: [*c]const u8, power: f32) bool;
+pub extern fn igSliderScalarN(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, components: c_int, p_min: ?*const anyopaque, p_max: ?*const anyopaque, format: [*c]const u8, power: f32) bool;
 pub extern fn igVSliderFloat(label: [*c]const u8, size: ImVec2, v: [*c]f32, v_min: f32, v_max: f32, format: [*c]const u8, power: f32) bool;
 pub extern fn igVSliderInt(label: [*c]const u8, size: ImVec2, v: [*c]c_int, v_min: c_int, v_max: c_int, format: [*c]const u8) bool;
-pub extern fn igVSliderScalar(label: [*c]const u8, size: ImVec2, data_type: ImGuiDataType, p_data: ?*c_void, p_min: ?*const c_void, p_max: ?*const c_void, format: [*c]const u8, power: f32) bool;
-pub extern fn igInputText(label: [*c]const u8, buf: [*c]u8, buf_size: usize, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*c_void) bool;
-pub extern fn igInputTextMultiline(label: [*c]const u8, buf: [*c]u8, buf_size: usize, size: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*c_void) bool;
-pub extern fn igInputTextWithHint(label: [*c]const u8, hint: [*c]const u8, buf: [*c]u8, buf_size: usize, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*c_void) bool;
+pub extern fn igVSliderScalar(label: [*c]const u8, size: ImVec2, data_type: ImGuiDataType, p_data: ?*anyopaque, p_min: ?*const anyopaque, p_max: ?*const anyopaque, format: [*c]const u8, power: f32) bool;
+pub extern fn igInputText(label: [*c]const u8, buf: [*c]u8, buf_size: usize, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*anyopaque) bool;
+pub extern fn igInputTextMultiline(label: [*c]const u8, buf: [*c]u8, buf_size: usize, size: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*anyopaque) bool;
+pub extern fn igInputTextWithHint(label: [*c]const u8, hint: [*c]const u8, buf: [*c]u8, buf_size: usize, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*anyopaque) bool;
 pub extern fn igInputFloat(label: [*c]const u8, v: [*c]f32, step: f32, step_fast: f32, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
 pub extern fn igInputFloat2(label: [*c]const u8, v: [*c]f32, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
 pub extern fn igInputFloat3(label: [*c]const u8, v: [*c]f32, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
@@ -2863,8 +2861,8 @@ pub extern fn igInputInt2(label: [*c]const u8, v: [*c]c_int, flags: ImGuiInputTe
 pub extern fn igInputInt3(label: [*c]const u8, v: [*c]c_int, flags: ImGuiInputTextFlags) bool;
 pub extern fn igInputInt4(label: [*c]const u8, v: [*c]c_int, flags: ImGuiInputTextFlags) bool;
 pub extern fn igInputDouble(label: [*c]const u8, v: [*c]f64, step: f64, step_fast: f64, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
-pub extern fn igInputScalar(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, p_step: ?*const c_void, p_step_fast: ?*const c_void, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
-pub extern fn igInputScalarN(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, components: c_int, p_step: ?*const c_void, p_step_fast: ?*const c_void, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
+pub extern fn igInputScalar(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, p_step: ?*const anyopaque, p_step_fast: ?*const anyopaque, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
+pub extern fn igInputScalarN(label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, components: c_int, p_step: ?*const anyopaque, p_step_fast: ?*const anyopaque, format: [*c]const u8, flags: ImGuiInputTextFlags) bool;
 pub extern fn igColorEdit3(label: [*c]const u8, col: [*c]f32, flags: ImGuiColorEditFlags) bool;
 pub extern fn igColorEdit4(label: [*c]const u8, col: [*c]f32, flags: ImGuiColorEditFlags) bool;
 pub extern fn igColorPicker3(label: [*c]const u8, col: [*c]f32, flags: ImGuiColorEditFlags) bool;
@@ -2873,16 +2871,16 @@ pub extern fn igColorButton(desc_id: [*c]const u8, col: ImVec4, flags: ImGuiColo
 pub extern fn igSetColorEditOptions(flags: ImGuiColorEditFlags) void;
 pub extern fn igTreeNodeStr(label: [*c]const u8) bool;
 pub extern fn igTreeNodeStrStr(str_id: [*c]const u8, fmt: [*c]const u8, ...) bool;
-pub extern fn igTreeNodePtr(ptr_id: ?*const c_void, fmt: [*c]const u8, ...) bool;
+pub extern fn igTreeNodePtr(ptr_id: ?*const anyopaque, fmt: [*c]const u8, ...) bool;
 pub extern fn igTreeNodeVStr(str_id: [*c]const u8, fmt: [*c]const u8, args: [*c]struct___va_list_tag) bool;
-pub extern fn igTreeNodeVPtr(ptr_id: ?*const c_void, fmt: [*c]const u8, args: [*c]struct___va_list_tag) bool;
+pub extern fn igTreeNodeVPtr(ptr_id: ?*const anyopaque, fmt: [*c]const u8, args: [*c]struct___va_list_tag) bool;
 pub extern fn igTreeNodeExStr(label: [*c]const u8, flags: ImGuiTreeNodeFlags) bool;
 pub extern fn igTreeNodeExStrStr(str_id: [*c]const u8, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, ...) bool;
-pub extern fn igTreeNodeExPtr(ptr_id: ?*const c_void, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, ...) bool;
+pub extern fn igTreeNodeExPtr(ptr_id: ?*const anyopaque, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, ...) bool;
 pub extern fn igTreeNodeExVStr(str_id: [*c]const u8, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, args: [*c]struct___va_list_tag) bool;
-pub extern fn igTreeNodeExVPtr(ptr_id: ?*const c_void, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, args: [*c]struct___va_list_tag) bool;
+pub extern fn igTreeNodeExVPtr(ptr_id: ?*const anyopaque, flags: ImGuiTreeNodeFlags, fmt: [*c]const u8, args: [*c]struct___va_list_tag) bool;
 pub extern fn igTreePushStr(str_id: [*c]const u8) void;
-pub extern fn igTreePushPtr(ptr_id: ?*const c_void) void;
+pub extern fn igTreePushPtr(ptr_id: ?*const anyopaque) void;
 pub extern fn igTreePop() void;
 pub extern fn igGetTreeNodeToLabelSpacing() f32;
 pub extern fn igCollapsingHeaderTreeNodeFlags(label: [*c]const u8, flags: ImGuiTreeNodeFlags) bool;
@@ -2891,14 +2889,14 @@ pub extern fn igSetNextItemOpen(is_open: bool, cond: ImGuiCond) void;
 pub extern fn igSelectableBool(label: [*c]const u8, selected: bool, flags: ImGuiSelectableFlags, size: ImVec2) bool;
 pub extern fn igSelectableBoolPtr(label: [*c]const u8, p_selected: [*c]bool, flags: ImGuiSelectableFlags, size: ImVec2) bool;
 pub extern fn igListBoxStr_arr(label: [*c]const u8, current_item: [*c]c_int, items: [*c]const [*c]const u8, items_count: c_int, height_in_items: c_int) bool;
-pub extern fn igListBoxFnBoolPtr(label: [*c]const u8, current_item: [*c]c_int, items_getter: ?fn (?*c_void, c_int, [*c][*c]const u8) callconv(.C) bool, data: ?*c_void, items_count: c_int, height_in_items: c_int) bool;
+pub extern fn igListBoxFnBoolPtr(label: [*c]const u8, current_item: [*c]c_int, items_getter: ?fn (?*anyopaque, c_int, [*c][*c]const u8) callconv(.C) bool, data: ?*anyopaque, items_count: c_int, height_in_items: c_int) bool;
 pub extern fn igListBoxHeaderVec2(label: [*c]const u8, size: ImVec2) bool;
 pub extern fn igListBoxHeaderInt(label: [*c]const u8, items_count: c_int, height_in_items: c_int) bool;
 pub extern fn igListBoxFooter() void;
 pub extern fn igPlotLinesFloatPtr(label: [*c]const u8, values: [*c]const f32, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, graph_size: ImVec2, stride: c_int) void;
-pub extern fn igPlotLinesFnFloatPtr(label: [*c]const u8, values_getter: ?fn (?*c_void, c_int) callconv(.C) f32, data: ?*c_void, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, graph_size: ImVec2) void;
+pub extern fn igPlotLinesFnFloatPtr(label: [*c]const u8, values_getter: ?fn (?*anyopaque, c_int) callconv(.C) f32, data: ?*anyopaque, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, graph_size: ImVec2) void;
 pub extern fn igPlotHistogramFloatPtr(label: [*c]const u8, values: [*c]const f32, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, graph_size: ImVec2, stride: c_int) void;
-pub extern fn igPlotHistogramFnFloatPtr(label: [*c]const u8, values_getter: ?fn (?*c_void, c_int) callconv(.C) f32, data: ?*c_void, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, graph_size: ImVec2) void;
+pub extern fn igPlotHistogramFnFloatPtr(label: [*c]const u8, values_getter: ?fn (?*anyopaque, c_int) callconv(.C) f32, data: ?*anyopaque, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, graph_size: ImVec2) void;
 pub extern fn igValueBool(prefix: [*c]const u8, b: bool) void;
 pub extern fn igValueInt(prefix: [*c]const u8, v: c_int) void;
 pub extern fn igValueUint(prefix: [*c]const u8, v: c_uint) void;
@@ -2950,7 +2948,7 @@ pub extern fn igLogToClipboard(auto_open_depth: c_int) void;
 pub extern fn igLogFinish() void;
 pub extern fn igLogButtons() void;
 pub extern fn igBeginDragDropSource(flags: ImGuiDragDropFlags) bool;
-pub extern fn igSetDragDropPayload(type: [*c]const u8, data: ?*const c_void, sz: usize, cond: ImGuiCond) bool;
+pub extern fn igSetDragDropPayload(type: [*c]const u8, data: ?*const anyopaque, sz: usize, cond: ImGuiCond) bool;
 pub extern fn igEndDragDropSource() void;
 pub extern fn igBeginDragDropTarget() bool;
 pub extern fn igAcceptDragDropPayload(type: [*c]const u8, flags: ImGuiDragDropFlags) ?*const ImGuiPayload;
@@ -3025,16 +3023,16 @@ pub extern fn igLoadIniSettingsFromMemory(ini_data: [*c]const u8, ini_size: usiz
 pub extern fn igSaveIniSettingsToDisk(ini_filename: [*c]const u8) void;
 pub extern fn igSaveIniSettingsToMemory(out_ini_size: [*c]usize) [*c]const u8;
 pub extern fn igDebugCheckVersionAndDataLayout(version_str: [*c]const u8, sz_io: usize, sz_style: usize, sz_vec2: usize, sz_vec4: usize, sz_drawvert: usize, sz_drawidx: usize) bool;
-pub extern fn igSetAllocatorFunctions(alloc_func: ?fn (usize, ?*c_void) callconv(.C) ?*c_void, free_func: ?fn (?*c_void, ?*c_void) callconv(.C) void, user_data: ?*c_void) void;
-pub extern fn igMemAlloc(size: usize) ?*c_void;
-pub extern fn igMemFree(ptr: ?*c_void) void;
+pub extern fn igSetAllocatorFunctions(alloc_func: ?fn (usize, ?*anyopaque) callconv(.C) ?*anyopaque, free_func: ?fn (?*anyopaque, ?*anyopaque) callconv(.C) void, user_data: ?*anyopaque) void;
+pub extern fn igMemAlloc(size: usize) ?*anyopaque;
+pub extern fn igMemFree(ptr: ?*anyopaque) void;
 pub extern fn igGetPlatformIO() [*c]ImGuiPlatformIO;
 pub extern fn igGetMainViewport() *ImGuiViewport;
 pub extern fn igUpdatePlatformWindows() void;
-pub extern fn igRenderPlatformWindowsDefault(platform_render_arg: ?*c_void, renderer_render_arg: ?*c_void) void;
+pub extern fn igRenderPlatformWindowsDefault(platform_render_arg: ?*anyopaque, renderer_render_arg: ?*anyopaque) void;
 pub extern fn igDestroyPlatformWindows() void;
 pub extern fn igFindViewportByID(id: ImGuiID) [*c]ImGuiViewport;
-pub extern fn igFindViewportByPlatformHandle(platform_handle: ?*c_void) ?*ImGuiViewport;
+pub extern fn igFindViewportByPlatformHandle(platform_handle: ?*anyopaque) ?*ImGuiViewport;
 pub extern fn ImGuiStyle_ImGuiStyle() [*c]ImGuiStyle;
 pub extern fn ImGuiStyle_destroy(self: [*c]ImGuiStyle) void;
 pub extern fn ImGuiStyle_ScaleAllSizes(self: [*c]ImGuiStyle, scale_factor: f32) void;
@@ -3085,7 +3083,7 @@ pub extern fn ImGuiTextBuffer_appendfv(self: [*c]ImGuiTextBuffer, fmt: [*c]const
 pub extern fn ImGuiStoragePair_ImGuiStoragePairInt(_key: ImGuiID, _val_i: c_int) [*c]ImGuiStoragePair;
 pub extern fn ImGuiStoragePair_destroy(self: [*c]ImGuiStoragePair) void;
 pub extern fn ImGuiStoragePair_ImGuiStoragePairFloat(_key: ImGuiID, _val_f: f32) [*c]ImGuiStoragePair;
-pub extern fn ImGuiStoragePair_ImGuiStoragePairPtr(_key: ImGuiID, _val_p: ?*c_void) [*c]ImGuiStoragePair;
+pub extern fn ImGuiStoragePair_ImGuiStoragePairPtr(_key: ImGuiID, _val_p: ?*anyopaque) [*c]ImGuiStoragePair;
 pub extern fn ImGuiStorage_Clear(self: [*c]ImGuiStorage) void;
 pub extern fn ImGuiStorage_GetInt(self: [*c]ImGuiStorage, key: ImGuiID, default_val: c_int) c_int;
 pub extern fn ImGuiStorage_SetInt(self: [*c]ImGuiStorage, key: ImGuiID, val: c_int) void;
@@ -3093,12 +3091,12 @@ pub extern fn ImGuiStorage_GetBool(self: [*c]ImGuiStorage, key: ImGuiID, default
 pub extern fn ImGuiStorage_SetBool(self: [*c]ImGuiStorage, key: ImGuiID, val: bool) void;
 pub extern fn ImGuiStorage_GetFloat(self: [*c]ImGuiStorage, key: ImGuiID, default_val: f32) f32;
 pub extern fn ImGuiStorage_SetFloat(self: [*c]ImGuiStorage, key: ImGuiID, val: f32) void;
-pub extern fn ImGuiStorage_GetVoidPtr(self: [*c]ImGuiStorage, key: ImGuiID) ?*c_void;
-pub extern fn ImGuiStorage_SetVoidPtr(self: [*c]ImGuiStorage, key: ImGuiID, val: ?*c_void) void;
+pub extern fn ImGuiStorage_GetVoidPtr(self: [*c]ImGuiStorage, key: ImGuiID) ?*anyopaque;
+pub extern fn ImGuiStorage_SetVoidPtr(self: [*c]ImGuiStorage, key: ImGuiID, val: ?*anyopaque) void;
 pub extern fn ImGuiStorage_GetIntRef(self: [*c]ImGuiStorage, key: ImGuiID, default_val: c_int) [*c]c_int;
 pub extern fn ImGuiStorage_GetBoolRef(self: [*c]ImGuiStorage, key: ImGuiID, default_val: bool) [*c]bool;
 pub extern fn ImGuiStorage_GetFloatRef(self: [*c]ImGuiStorage, key: ImGuiID, default_val: f32) [*c]f32;
-pub extern fn ImGuiStorage_GetVoidPtrRef(self: [*c]ImGuiStorage, key: ImGuiID, default_val: ?*c_void) [*c]?*c_void;
+pub extern fn ImGuiStorage_GetVoidPtrRef(self: [*c]ImGuiStorage, key: ImGuiID, default_val: ?*anyopaque) [*c]?*anyopaque;
 pub extern fn ImGuiStorage_SetAllInt(self: [*c]ImGuiStorage, val: c_int) void;
 pub extern fn ImGuiStorage_BuildSortByKey(self: [*c]ImGuiStorage) void;
 pub extern fn ImGuiListClipper_ImGuiListClipper(items_count: c_int, items_height: f32) [*c]ImGuiListClipper;
@@ -3161,7 +3159,7 @@ pub extern fn ImDrawList_PathArcTo(self: [*c]ImDrawList, center: ImVec2, radius:
 pub extern fn ImDrawList_PathArcToFast(self: [*c]ImDrawList, center: ImVec2, radius: f32, a_min_of_12: c_int, a_max_of_12: c_int) void;
 pub extern fn ImDrawList_PathBezierCurveTo(self: [*c]ImDrawList, p2: ImVec2, p3: ImVec2, p4: ImVec2, num_segments: c_int) void;
 pub extern fn ImDrawList_PathRect(self: [*c]ImDrawList, rect_min: ImVec2, rect_max: ImVec2, rounding: f32, rounding_corners: ImDrawCornerFlags) void;
-pub extern fn ImDrawList_AddCallback(self: [*c]ImDrawList, callback: ImDrawCallback, callback_data: ?*c_void) void;
+pub extern fn ImDrawList_AddCallback(self: [*c]ImDrawList, callback: ImDrawCallback, callback_data: ?*anyopaque) void;
 pub extern fn ImDrawList_AddDrawCmd(self: [*c]ImDrawList) void;
 pub extern fn ImDrawList_CloneOutput(self: [*c]ImDrawList) [*c]ImDrawList;
 pub extern fn ImDrawList_ChannelsSplit(self: [*c]ImDrawList, count: c_int) void;
@@ -3203,8 +3201,8 @@ pub extern fn ImFontAtlas_destroy(self: [*c]ImFontAtlas) void;
 pub extern fn ImFontAtlas_AddFont(self: [*c]ImFontAtlas, font_cfg: [*c]const ImFontConfig) [*c]ImFont;
 pub extern fn ImFontAtlas_AddFontDefault(self: [*c]ImFontAtlas, font_cfg: [*c]const ImFontConfig) [*c]ImFont;
 pub extern fn ImFontAtlas_AddFontFromFileTTF(self: [*c]ImFontAtlas, filename: [*c]const u8, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const ImWchar) [*c]ImFont;
-pub extern fn ImFontAtlas_AddFontFromMemoryTTF(self: [*c]ImFontAtlas, font_data: ?*const c_void, font_size: c_int, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const ImWchar) [*c]ImFont;
-pub extern fn ImFontAtlas_AddFontFromMemoryCompressedTTF(self: [*c]ImFontAtlas, compressed_font_data: ?*const c_void, compressed_font_size: c_int, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const ImWchar) [*c]ImFont;
+pub extern fn ImFontAtlas_AddFontFromMemoryTTF(self: [*c]ImFontAtlas, font_data: ?*const anyopaque, font_size: c_int, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const ImWchar) [*c]ImFont;
+pub extern fn ImFontAtlas_AddFontFromMemoryCompressedTTF(self: [*c]ImFontAtlas, compressed_font_data: ?*const anyopaque, compressed_font_size: c_int, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const ImWchar) [*c]ImFont;
 pub extern fn ImFontAtlas_AddFontFromMemoryCompressedBase85TTF(self: [*c]ImFontAtlas, compressed_font_data_base85: [*c]const u8, size_pixels: f32, font_cfg: [*c]const ImFontConfig, glyph_ranges: [*c]const ImWchar) [*c]ImFont;
 pub extern fn ImFontAtlas_ClearInputData(self: [*c]ImFontAtlas) void;
 pub extern fn ImFontAtlas_ClearTexData(self: [*c]ImFontAtlas) void;
@@ -3255,7 +3253,7 @@ pub extern fn ImGuiViewport_ImGuiViewport() [*c]ImGuiViewport;
 pub extern fn ImGuiViewport_destroy(self: [*c]ImGuiViewport) void;
 pub extern fn ImGuiViewport_GetWorkPos(pOut: [*c]ImVec2, self: [*c]ImGuiViewport) void;
 pub extern fn ImGuiViewport_GetWorkSize(pOut: [*c]ImVec2, self: [*c]ImGuiViewport) void;
-pub extern fn igImHashData(data: ?*const c_void, data_size: usize, seed: ImU32) ImU32;
+pub extern fn igImHashData(data: ?*const anyopaque, data_size: usize, seed: ImU32) ImU32;
 pub extern fn igImHashStr(data: [*c]const u8, data_size: usize, seed: ImU32) ImU32;
 pub extern fn igImAlphaBlendColors(col_a: ImU32, col_b: ImU32) ImU32;
 pub extern fn igImIsPowerOfTwo(v: c_int) bool;
@@ -3289,9 +3287,9 @@ pub extern fn igImTextCountUtf8BytesFromStr(in_text: [*c]const ImWchar, in_text_
 pub extern fn igImFileOpen(filename: [*c]const u8, mode: [*c]const u8) ImFileHandle;
 pub extern fn igImFileClose(file: ImFileHandle) bool;
 pub extern fn igImFileGetSize(file: ImFileHandle) ImU64;
-pub extern fn igImFileRead(data: ?*c_void, size: ImU64, count: ImU64, file: ImFileHandle) ImU64;
-pub extern fn igImFileWrite(data: ?*const c_void, size: ImU64, count: ImU64, file: ImFileHandle) ImU64;
-pub extern fn igImFileLoadToMemory(filename: [*c]const u8, mode: [*c]const u8, out_file_size: [*c]usize, padding_bytes: c_int) ?*c_void;
+pub extern fn igImFileRead(data: ?*anyopaque, size: ImU64, count: ImU64, file: ImFileHandle) ImU64;
+pub extern fn igImFileWrite(data: ?*const anyopaque, size: ImU64, count: ImU64, file: ImFileHandle) ImU64;
+pub extern fn igImFileLoadToMemory(filename: [*c]const u8, mode: [*c]const u8, out_file_size: [*c]usize, padding_bytes: c_int) ?*anyopaque;
 pub extern fn igImPowFloat(x: f32, y: f32) f32;
 pub extern fn igImPowdouble(x: f64, y: f64) f64;
 pub extern fn igImMin(pOut: [*c]ImVec2, lhs: ImVec2, rhs: ImVec2) void;
@@ -3401,7 +3399,7 @@ pub extern fn ImGuiNextWindowData_ClearFlags(self: [*c]ImGuiNextWindowData) void
 pub extern fn ImGuiNextItemData_ImGuiNextItemData() [*c]ImGuiNextItemData;
 pub extern fn ImGuiNextItemData_destroy(self: [*c]ImGuiNextItemData) void;
 pub extern fn ImGuiNextItemData_ClearFlags(self: [*c]ImGuiNextItemData) void;
-pub extern fn ImGuiPtrOrIndex_ImGuiPtrOrIndexPtr(ptr: ?*c_void) [*c]ImGuiPtrOrIndex;
+pub extern fn ImGuiPtrOrIndex_ImGuiPtrOrIndexPtr(ptr: ?*anyopaque) [*c]ImGuiPtrOrIndex;
 pub extern fn ImGuiPtrOrIndex_destroy(self: [*c]ImGuiPtrOrIndex) void;
 pub extern fn ImGuiPtrOrIndex_ImGuiPtrOrIndexInt(index: c_int) [*c]ImGuiPtrOrIndex;
 pub extern fn ImGuiColumnData_ImGuiColumnData() [*c]ImGuiColumnData;
@@ -3441,10 +3439,10 @@ pub extern fn ImGuiWindowTempData_destroy(self: [*c]ImGuiWindowTempData) void;
 pub extern fn ImGuiWindow_ImGuiWindow(context: [*c]ImGuiContext, name: [*c]const u8) ?*ImGuiWindow;
 pub extern fn ImGuiWindow_destroy(self: ?*ImGuiWindow) void;
 pub extern fn ImGuiWindow_GetIDStr(self: ?*ImGuiWindow, str: [*c]const u8, str_end: [*c]const u8) ImGuiID;
-pub extern fn ImGuiWindow_GetIDPtr(self: ?*ImGuiWindow, ptr: ?*const c_void) ImGuiID;
+pub extern fn ImGuiWindow_GetIDPtr(self: ?*ImGuiWindow, ptr: ?*const anyopaque) ImGuiID;
 pub extern fn ImGuiWindow_GetIDInt(self: ?*ImGuiWindow, n: c_int) ImGuiID;
 pub extern fn ImGuiWindow_GetIDNoKeepAliveStr(self: ?*ImGuiWindow, str: [*c]const u8, str_end: [*c]const u8) ImGuiID;
-pub extern fn ImGuiWindow_GetIDNoKeepAlivePtr(self: ?*ImGuiWindow, ptr: ?*const c_void) ImGuiID;
+pub extern fn ImGuiWindow_GetIDNoKeepAlivePtr(self: ?*ImGuiWindow, ptr: ?*const anyopaque) ImGuiID;
 pub extern fn ImGuiWindow_GetIDNoKeepAliveInt(self: ?*ImGuiWindow, n: c_int) ImGuiID;
 pub extern fn ImGuiWindow_GetIDFromRectangle(self: ?*ImGuiWindow, r_abs: ImRect) ImGuiID;
 pub extern fn ImGuiWindow_Rect(pOut: [*c]ImRect, self: ?*ImGuiWindow) void;
@@ -3656,26 +3654,26 @@ pub extern fn igGetWindowScrollbarID(window: ?*ImGuiWindow, axis: ImGuiAxis) ImG
 pub extern fn igGetWindowResizeID(window: ?*ImGuiWindow, n: c_int) ImGuiID;
 pub extern fn igSeparatorEx(flags: ImGuiSeparatorFlags) void;
 pub extern fn igButtonBehavior(bb: ImRect, id: ImGuiID, out_hovered: [*c]bool, out_held: [*c]bool, flags: ImGuiButtonFlags) bool;
-pub extern fn igDragBehavior(id: ImGuiID, data_type: ImGuiDataType, p_v: ?*c_void, v_speed: f32, p_min: ?*const c_void, p_max: ?*const c_void, format: [*c]const u8, power: f32, flags: ImGuiDragFlags) bool;
-pub extern fn igSliderBehavior(bb: ImRect, id: ImGuiID, data_type: ImGuiDataType, p_v: ?*c_void, p_min: ?*const c_void, p_max: ?*const c_void, format: [*c]const u8, power: f32, flags: ImGuiSliderFlags, out_grab_bb: [*c]ImRect) bool;
+pub extern fn igDragBehavior(id: ImGuiID, data_type: ImGuiDataType, p_v: ?*anyopaque, v_speed: f32, p_min: ?*const anyopaque, p_max: ?*const anyopaque, format: [*c]const u8, power: f32, flags: ImGuiDragFlags) bool;
+pub extern fn igSliderBehavior(bb: ImRect, id: ImGuiID, data_type: ImGuiDataType, p_v: ?*anyopaque, p_min: ?*const anyopaque, p_max: ?*const anyopaque, format: [*c]const u8, power: f32, flags: ImGuiSliderFlags, out_grab_bb: [*c]ImRect) bool;
 pub extern fn igSplitterBehavior(bb: ImRect, id: ImGuiID, axis: ImGuiAxis, size1: [*c]f32, size2: [*c]f32, min_size1: f32, min_size2: f32, hover_extend: f32, hover_visibility_delay: f32) bool;
 pub extern fn igTreeNodeBehavior(id: ImGuiID, flags: ImGuiTreeNodeFlags, label: [*c]const u8, label_end: [*c]const u8) bool;
 pub extern fn igTreeNodeBehaviorIsOpen(id: ImGuiID, flags: ImGuiTreeNodeFlags) bool;
 pub extern fn igTreePushOverrideID(id: ImGuiID) void;
 pub extern fn igDataTypeGetInfo(data_type: ImGuiDataType) [*c]const ImGuiDataTypeInfo;
-pub extern fn igDataTypeFormatString(buf: [*c]u8, buf_size: c_int, data_type: ImGuiDataType, p_data: ?*const c_void, format: [*c]const u8) c_int;
-pub extern fn igDataTypeApplyOp(data_type: ImGuiDataType, op: c_int, output: ?*c_void, arg_1: ?*c_void, arg_2: ?*const c_void) void;
-pub extern fn igDataTypeApplyOpFromText(buf: [*c]const u8, initial_value_buf: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, format: [*c]const u8) bool;
-pub extern fn igDataTypeClamp(data_type: ImGuiDataType, p_data: ?*c_void, p_min: ?*const c_void, p_max: ?*const c_void) bool;
-pub extern fn igInputTextEx(label: [*c]const u8, hint: [*c]const u8, buf: [*c]u8, buf_size: c_int, size_arg: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*c_void) bool;
+pub extern fn igDataTypeFormatString(buf: [*c]u8, buf_size: c_int, data_type: ImGuiDataType, p_data: ?*const anyopaque, format: [*c]const u8) c_int;
+pub extern fn igDataTypeApplyOp(data_type: ImGuiDataType, op: c_int, output: ?*anyopaque, arg_1: ?*anyopaque, arg_2: ?*const anyopaque) void;
+pub extern fn igDataTypeApplyOpFromText(buf: [*c]const u8, initial_value_buf: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, format: [*c]const u8) bool;
+pub extern fn igDataTypeClamp(data_type: ImGuiDataType, p_data: ?*anyopaque, p_min: ?*const anyopaque, p_max: ?*const anyopaque) bool;
+pub extern fn igInputTextEx(label: [*c]const u8, hint: [*c]const u8, buf: [*c]u8, buf_size: c_int, size_arg: ImVec2, flags: ImGuiInputTextFlags, callback: ImGuiInputTextCallback, user_data: ?*anyopaque) bool;
 pub extern fn igTempInputText(bb: ImRect, id: ImGuiID, label: [*c]const u8, buf: [*c]u8, buf_size: c_int, flags: ImGuiInputTextFlags) bool;
-pub extern fn igTempInputScalar(bb: ImRect, id: ImGuiID, label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*c_void, format: [*c]const u8, p_clamp_min: ?*const c_void, p_clamp_max: ?*const c_void) bool;
+pub extern fn igTempInputScalar(bb: ImRect, id: ImGuiID, label: [*c]const u8, data_type: ImGuiDataType, p_data: ?*anyopaque, format: [*c]const u8, p_clamp_min: ?*const anyopaque, p_clamp_max: ?*const anyopaque) bool;
 pub extern fn igTempInputIsActive(id: ImGuiID) bool;
 pub extern fn igGetInputTextState(id: ImGuiID) [*c]ImGuiInputTextState;
 pub extern fn igColorTooltip(text: [*c]const u8, col: [*c]const f32, flags: ImGuiColorEditFlags) void;
 pub extern fn igColorEditOptionsPopup(col: [*c]const f32, flags: ImGuiColorEditFlags) void;
 pub extern fn igColorPickerOptionsPopup(ref_col: [*c]const f32, flags: ImGuiColorEditFlags) void;
-pub extern fn igPlotEx(plot_type: ImGuiPlotType, label: [*c]const u8, values_getter: ?fn (?*c_void, c_int) callconv(.C) f32, data: ?*c_void, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, frame_size: ImVec2) c_int;
+pub extern fn igPlotEx(plot_type: ImGuiPlotType, label: [*c]const u8, values_getter: ?fn (?*anyopaque, c_int) callconv(.C) f32, data: ?*anyopaque, values_count: c_int, values_offset: c_int, overlay_text: [*c]const u8, scale_min: f32, scale_max: f32, frame_size: ImVec2) c_int;
 pub extern fn igShadeVertsLinearColorGradientKeepAlpha(draw_list: [*c]ImDrawList, vert_start_idx: c_int, vert_end_idx: c_int, gradient_p0: ImVec2, gradient_p1: ImVec2, col0: ImU32, col1: ImU32) void;
 pub extern fn igShadeVertsLinearUV(draw_list: [*c]ImDrawList, vert_start_idx: c_int, vert_end_idx: c_int, a: ImVec2, b: ImVec2, uv_a: ImVec2, uv_b: ImVec2, clamp: bool) void;
 pub extern fn igGcCompactTransientWindowBuffers(window: ?*ImGuiWindow) void;
@@ -3685,7 +3683,7 @@ pub extern fn igDebugStartItemPicker() void;
 pub extern fn igImFontAtlasBuildWithStbTruetype(atlas: [*c]ImFontAtlas) bool;
 pub extern fn igImFontAtlasBuildInit(atlas: [*c]ImFontAtlas) void;
 pub extern fn igImFontAtlasBuildSetupFont(atlas: [*c]ImFontAtlas, font: [*c]ImFont, font_config: [*c]ImFontConfig, ascent: f32, descent: f32) void;
-pub extern fn igImFontAtlasBuildPackCustomRects(atlas: [*c]ImFontAtlas, stbrp_context_opaque: ?*c_void) void;
+pub extern fn igImFontAtlasBuildPackCustomRects(atlas: [*c]ImFontAtlas, stbrp_context_opaque: ?*anyopaque) void;
 pub extern fn igImFontAtlasBuildFinish(atlas: [*c]ImFontAtlas) void;
 pub extern fn igImFontAtlasBuildMultiplyCalcLookupTable(out_table: [*c]u8, in_multiply_factor: f32) void;
 pub extern fn igImFontAtlasBuildMultiplyRectAlpha8(table: [*c]const u8, pixels: [*c]u8, x: c_int, y: c_int, w: c_int, h: c_int, stride: c_int) void;

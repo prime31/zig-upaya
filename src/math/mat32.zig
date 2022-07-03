@@ -92,11 +92,11 @@ pub const Mat32 = struct {
         const cos = math.cos(rads);
         const sin = math.sin(rads);
 
-        const nm0 = m[0] * cos + self.data[2] * sin;
-        const nm1 = m[1] * cos + self.data[3] * sin;
+        const nm0 = self.data[0] * cos + self.data[2] * sin;
+        const nm1 = self.data[1] * cos + self.data[3] * sin;
 
-        self.data[2] = m[0] * -sin + self.data[2] * cos;
-        self.data[3] = m[1] * -sin + self.data[3] * cos;
+        self.data[2] = self.data[0] * -sin + self.data[2] * cos;
+        self.data[3] = self.data[1] * -sin + self.data[3] * cos;
         self.data[0] = nm0;
         self.data[1] = nm1;
     }
@@ -146,36 +146,6 @@ pub const Mat32 = struct {
             dst[i].x = x;
             dst[i].y = y;
         }
-    }
-
-    /// transforms the positions in Quad and copies them to dst along with the uvs and color. This could be made generic
-    /// if we have other common Vertex types
-    pub fn transformQuad(self: Mat32, dst: []Vertex, quad: Quad, color: Color) void {
-        _ = self;
-        _ = dst;
-        _ = quad;
-        _ = color;
-        @compileError("Vertex doesnt exist");
-        // for (dst) |*item, i| {
-        //     item.*.pos.x = quad.positions[i].x * self.data[0] + quad.positions[i].y * self.data[2] + self.data[4];
-        //     item.*.pos.y = quad.positions[i].x * self.data[1] + quad.positions[i].y * self.data[3] + self.data[5];
-        //     item.*.uv = quad.uvs[i];
-        //     item.*.col = color.value;
-        // }
-    }
-
-    pub fn transformVertexSlice(self: Mat32, dst: []Vertex) void {
-        _ = self;
-        _ = dst;
-        @compileError("Vertex doesnt exist");
-        // for (dst) |item, i| {
-        //     const x = dst[i].pos.x * self.data[0] + dst[i].pos.y * self.data[2] + self.data[4];
-        //     const y = dst[i].pos.x * self.data[1] + dst[i].pos.y * self.data[3] + self.data[5];
-
-        //     // we defer setting because src and dst are the same
-        //     dst[i].pos.x = x;
-        //     dst[i].pos.y = y;
-        // }
     }
 };
 

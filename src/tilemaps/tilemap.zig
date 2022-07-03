@@ -46,7 +46,7 @@ pub const Tilemap = struct {
         return .{
             .w = width,
             .h = height,
-            .data = std.mem.dupe(upaya.mem.allocator, u8, data) catch unreachable,
+            .data = upaya.mem.allocator.dupe(u8, data) catch unreachable,
         };
     }
 

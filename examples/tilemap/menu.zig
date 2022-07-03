@@ -1,22 +1,22 @@
 const std = @import("std");
 const upaya = @import("upaya");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 
 pub fn draw() void {
-    if (igBeginMenuBar()) {
-        defer igEndMenuBar();
+    if (imgui.igBeginMenuBar()) {
+        defer imgui.igEndMenuBar();
 
-        if (igBeginMenu("File", true)) {
-            defer igEndMenu();
+        if (imgui.igBeginMenu("File", true)) {
+            defer imgui.igEndMenu();
 
-            if (igMenuItemBool("New", null, false, true)) {}
+            if (imgui.igMenuItemBool("New", null, false, true)) {}
         }
 
-        if (igBeginMenu("Tools", true)) {
-            defer igEndMenu();
+        if (imgui.igBeginMenu("Tools", true)) {
+            defer imgui.igEndMenu();
 
-            if (igMenuItemBool("Nothing Yet...", null, false, true)) {}
+            if (imgui.igMenuItemBool("Nothing Yet...", null, false, true)) {}
         }
     }
 }

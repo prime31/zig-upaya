@@ -12,12 +12,12 @@ pub const rand = @import("rand.zig");
 
 /// Converts degrees to radian
 pub fn toRadians(deg: anytype) @TypeOf(deg) {
-    return pi * deg / 180.0;
+    return std.math.pi * deg / 180.0;
 }
 
 /// Converts radian to degree
-pub fn toDegrees(rad: anytype) @TypeOf(deg) {
-    return 180.0 * rad / pi;
+pub fn toDegrees(rad: anytype) @TypeOf(rad) {
+    return 180.0 * rad / std.math.pi;
 }
 
 pub fn isEven(val: anytype) bool {

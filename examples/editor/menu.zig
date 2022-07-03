@@ -1,26 +1,26 @@
 const std = @import("std");
 const upaya = @import("upaya");
 const editor = @import("editor.zig");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 const comp_editor = @import("windows/component_editor.zig");
 
 pub fn draw(state: *editor.AppState) void {
     var show_component_editor_popup = false;
 
-    if (igBeginMenuBar()) {
-        defer igEndMenuBar();
+    if (imgui.igBeginMenuBar()) {
+        defer imgui.igEndMenuBar();
 
-        if (igBeginMenu("File", true)) {
-            defer igEndMenu();
+        if (imgui.igBeginMenu("File", true)) {
+            defer imgui.igEndMenu();
 
-            if (igMenuItemBool("New", null, false, true)) {}
+            if (imgui.igMenuItemBool("New", null, false, true)) {}
         }
 
-        if (igBeginMenu("Tools", true)) {
-            defer igEndMenu();
+        if (imgui.igBeginMenu("Tools", true)) {
+            defer imgui.igEndMenu();
 
-            if (igMenuItemBool("Component Editor...", null, false, true)) {
+            if (imgui.igMenuItemBool("Component Editor...", null, false, true)) {
                 show_component_editor_popup = true;
             }
         }
@@ -28,7 +28,7 @@ pub fn draw(state: *editor.AppState) void {
 
     // handle popup toggles
     if (show_component_editor_popup) {
-        igOpenPopup("Component Editor");
+        imgui.igOpenPopup("Component Editor");
     }
 
     // we always need to call our popup code

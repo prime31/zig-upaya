@@ -1,6 +1,6 @@
 const std = @import("std");
 const upaya = @import("upaya");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 const persistence = @import("persistence.zig");
 const ts = @import("tilescript.zig");
@@ -82,6 +82,7 @@ pub const AppState = struct {
     }
 
     pub fn init() AppState {
+        @setEvalBranchQuota(10000);
         const prefs = upaya.fs.readPrefsJson(AppState.Prefs, "aya_tile", "prefs.json") catch AppState.Prefs{ .windows = .{} };
         // aya.window.setSize(prefs.win_w, prefs.win_h);
         if (prefs.win_x != 0 and prefs.win_y != 0) {
@@ -149,8 +150,8 @@ pub const AppState = struct {
         return tiles_per_col;
     }
 
-    pub fn mapSize(self: AppState) ImVec2 {
-        return ImVec2{ .x = @intToFloat(f32, self.map.w) * self.map_rect_size, .y = @intToFloat(f32, self.map.h) * self.map_rect_size };
+    pub fn mapSize(self: AppState) imgui.ImVec2 {
+        return imgui.ImVec2{ .x = @intToFloat(f32, self.map.w) * self.map_rect_size, .y = @intToFloat(f32, self.map.h) * self.map_rect_size };
     }
 
     /// resizes the map and all of the sub-maps

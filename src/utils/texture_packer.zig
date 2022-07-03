@@ -28,7 +28,7 @@ pub const TexturePacker = struct {
             }
 
             for (files) |file, i| {
-                res_atlas.names[i] = std.mem.dupe(upaya.mem.allocator, u8, fs.path.basename(file)) catch unreachable;
+                res_atlas.names[i] = upaya.mem.allocator.dupe(u8, fs.path.basename(file)) catch unreachable;
             }
 
             // generate the atlas

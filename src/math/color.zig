@@ -104,9 +104,7 @@ pub const Color = extern union {
 };
 
 test "test color" {
-    const ColorConverter = extern struct {
-        r: u8, g: u8, b: u8, a: u8
-    };
+    const ColorConverter = extern struct { r: u8, g: u8, b: u8, a: u8 };
 
     const cc = Color{ .value = @bitCast(u32, [4]u8{ 10, 45, 34, 255 }) };
     const ccc = Color{ .value = @bitCast(u32, ColorConverter{ .r = 10, .g = 45, .b = 34, .a = 255 }) };

@@ -10,7 +10,7 @@ pub fn build(b: *Builder) void {
     exe.install();
 }
 
-pub fn linkArtifact(_: *Builder, exe: *std.build.LibExeObjStep, target: std.build.Target, comptime prefix_path: []const u8) void {
+pub fn linkArtifact(_: *Builder, exe: *std.build.LibExeObjStep, target: std.zig.CrossTarget, comptime prefix_path: []const u8) void {
     if (target.isWindows()) {
         exe.linkSystemLibrary("comdlg32");
         exe.linkSystemLibrary("ole32");

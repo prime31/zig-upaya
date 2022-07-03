@@ -1,6 +1,6 @@
 const std = @import("std");
 const upaya = @import("../upaya.zig");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 const Color = upaya.math.Color;
 
 pub const Tileset = struct {
@@ -97,20 +97,20 @@ pub const Tileset = struct {
     }
 
     pub fn drawTileset(self: *@This(), name: [*c]const u8) void {
-        defer igEnd();
-        if (!igBegin(name, null, ImGuiWindowFlags_None)) return;
+        defer imgui.igEnd();
+        if (!imgui.igBegin(name, null, imgui.ImGuiWindowFlags_None)) return;
 
-        var origin = ogGetCursorScreenPos();
+        var origin = imgui.ogGetCursorScreenPos();
         const zoom: usize = if (self.tex.width < 200 and self.tex.height < 200) 2 else 1;
-        ogImage(self.tex.imTextureID(), self.tex.width * @intCast(i32, zoom), self.tex.height * @intCast(i32, zoom));
+        imgui.ogImage(self.tex.imTextureID(), self.tex.width * @intCast(i32, zoom), self.tex.height * @intCast(i32, zoom));
 
         // draw selected tile
         addTileToDrawList(self.tile_size * zoom, origin, self.selected, self.tiles_per_row, self.spacing * zoom);
 
         // check input for toggling state
-        if (igIsItemHovered(ImGuiHoveredFlags_None)) {
-            if (igIsMouseClicked(ImGuiMouseButton_Left, false)) {
-                var tile = tileIndexUnderPos(igGetIO().MousePos, @intCast(usize, self.tile_size * zoom + self.spacing * zoom), origin);
+        if (imgui.igIsItemHovered(imgui.ImGuiHoveredFlags_None)) {
+            if (imgui.igIsMouseClicked(imgui.ImGuiMouseButton_Left, false)) {
+                var tile = tileIndexUnderPos(imgui.igGetIO().MousePos, @intCast(usize, self.tile_size * zoom + self.spacing * zoom), origin);
                 self.selected = @intCast(u8, tile.x + tile.y * self.tiles_per_row);
             }
         }
@@ -133,23 +133,23 @@ pub const Tileset = struct {
 };
 
 // TODO: duplicated in editor.zig
-pub fn tileIndexUnderPos(pos: ImVec2, rect_size: usize, origin: ImVec2) struct { x: usize, y: usize } {
+pub fn tileIndexUnderPos(pos: imgui.ImVec2, rect_size: usize, origin: imgui.ImVec2) struct { x: usize, y: usize } {
     const final_pos = pos.subtract(origin);
     return .{ .x = @divTrunc(@floatToInt(usize, final_pos.x), rect_size), .y = @divTrunc(@floatToInt(usize, final_pos.y), rect_size) };
 }
 
 /// adds a tile selection indicator to the draw list with an outline rectangle and a fill rectangle. Works for both tilesets and palettes.
-pub fn addTileToDrawList(tile_size: usize, content_start_pos: ImVec2, tile: u8, per_row: usize, tile_spacing: usize) void {
+pub fn addTileToDrawList(tile_size: usize, content_start_pos: imgui.ImVec2, tile: u8, per_row: usize, tile_spacing: usize) void {
     const x = @mod(tile, per_row);
     const y = @divTrunc(tile, per_row);
 
-    var tl = ImVec2{ .x = @intToFloat(f32, x) * @intToFloat(f32, tile_size + tile_spacing), .y = @intToFloat(f32, y) * @intToFloat(f32, tile_size + tile_spacing) };
+    var tl = imgui.ImVec2{ .x = @intToFloat(f32, x) * @intToFloat(f32, tile_size + tile_spacing), .y = @intToFloat(f32, y) * @intToFloat(f32, tile_size + tile_spacing) };
     tl.x += content_start_pos.x + @intToFloat(f32, tile_spacing);
     tl.y += content_start_pos.y + @intToFloat(f32, tile_spacing);
-    ogAddQuadFilled(igGetWindowDrawList(), tl, @intToFloat(f32, tile_size), upaya.colors.rgbaToU32(116, 252, 253, 100));
+    imgui.ogAddQuadFilled(imgui.igGetWindowDrawList(), tl, @intToFloat(f32, tile_size), upaya.colors.rgbaToU32(116, 252, 253, 100));
 
     // offset by 1 extra pixel because quad outlines are drawn larger than the size passed in and we shrink the size by our outline width
     tl.x += 1;
     tl.y += 1;
-    ogAddQuad(igGetWindowDrawList(), tl, @intToFloat(f32, tile_size - 2), upaya.colors.rgbToU32(116, 252, 253), 2);
+    imgui.ogAddQuad(imgui.igGetWindowDrawList(), tl, @intToFloat(f32, tile_size - 2), upaya.colors.rgbToU32(116, 252, 253), 2);
 }

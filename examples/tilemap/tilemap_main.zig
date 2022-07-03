@@ -1,11 +1,11 @@
 const std = @import("std");
 const upaya = @import("upaya");
-usingnamespace @import("imgui");
-usingnamespace upaya.tilemaps;
+const imgui = @import("imgui");
+const tilemaps = upaya.tilemaps;
 const menu = @import("menu.zig");
 
-var map: Tilemap = undefined;
-var map_editor: TilemapEditor = undefined;
+var map: tilemaps.Tilemap = undefined;
+var map_editor: tilemaps.TilemapEditor = undefined;
 
 pub fn main() !void {
     upaya.run(.{
@@ -19,7 +19,7 @@ pub fn main() !void {
 }
 
 fn init() void {
-    map_editor = TilemapEditor.init(Tilemap.init(120, 80), Tileset.init(16));
+    map_editor = tilemaps.TilemapEditor.init(tilemaps.Tilemap.init(120, 80), tilemaps.Tileset.init(16));
 }
 
 fn shutdown() void {
@@ -40,20 +40,20 @@ fn onFileDropped(file: []const u8) void {
     }
 }
 
-pub fn setupDockLayout(id: ImGuiID) void {
+pub fn setupDockLayout(id: imgui.ImGuiID) void {
     var dock_main_id = id;
 
     // dock_main_id is the left node after this
-    const right_id = igDockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.3, null, &dock_main_id);
+    const right_id = imgui.igDockBuilderSplitNode(dock_main_id, imgui.ImGuiDir_Right, 0.3, null, &dock_main_id);
 
     // bottom_right_id is the bottom node after this
-    var bottom_right_id: ImGuiID = 0;
-    const top_right_id = igDockBuilderSplitNode(right_id, ImGuiDir_Up, 0.5, null, &bottom_right_id);
-    igDockBuilderDockWindow("Layers", top_right_id);
-    igDockBuilderDockWindow("Palette", bottom_right_id);
+    var bottom_right_id: imgui.ImGuiID = 0;
+    const top_right_id = imgui.igDockBuilderSplitNode(right_id, imgui.ImGuiDir_Up, 0.5, null, &bottom_right_id);
+    imgui.igDockBuilderDockWindow("Layers", top_right_id);
+    imgui.igDockBuilderDockWindow("Palette", bottom_right_id);
 
     // dock_main_id is the bottom node after this
-    igDockBuilderDockWindow("Scene", dock_main_id);
+    imgui.igDockBuilderDockWindow("Scene", dock_main_id);
 
-    igDockBuilderFinish(id);
+    imgui.igDockBuilderFinish(id);
 }

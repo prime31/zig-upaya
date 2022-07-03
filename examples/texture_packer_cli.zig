@@ -4,13 +4,13 @@ const math = upaya.math;
 const fs = std.fs;
 
 pub fn main() !void {
-    upaya.mem.initTmpAllocator();
+    try upaya.mem.initTmpAllocator();
 
     var parser = upaya.ArgParser.init();
     try parser.parseArgs();
 
     if (parser.has("-h")) {
-        std.debug.warn("Usage is the following: packer -o output/folder -n output_file_name path/to/image/folder\n", .{});
+        std.debug.print("Usage is the following: packer -o output/folder -n output_file_name path/to/image/folder\n", .{});
         return;
     }
 

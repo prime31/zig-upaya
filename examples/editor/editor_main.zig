@@ -3,7 +3,7 @@ const upaya = @import("upaya");
 const math = upaya.math;
 const Color = math.Color;
 usingnamespace @import("windows/windows.zig");
-usingnamespace @import("imgui");
+const imgui = @import("imgui");
 
 const Editor = @import("editor.zig").Editor;
 

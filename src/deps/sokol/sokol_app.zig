@@ -13,7 +13,7 @@ pub extern fn sapp_is_fullscreen() bool;
 pub extern fn sapp_toggle_fullscreen() void;
 pub extern fn sapp_show_mouse(visible: bool) void;
 pub extern fn sapp_mouse_shown(...) bool;
-pub extern fn sapp_userdata() ?*c_void;
+pub extern fn sapp_userdata() ?*anyopaque;
 pub extern fn sapp_query_desc() sapp_desc;
 pub extern fn sapp_request_quit() void;
 pub extern fn sapp_cancel_quit() void;
@@ -27,21 +27,21 @@ pub extern fn sapp_get_dropped_file_path(index: c_int) [*c]const u8;
 pub extern fn sapp_run(desc: [*c]const sapp_desc) c_int;
 pub extern fn sapp_gles2() bool;
 pub extern fn sapp_html5_ask_leave_site(ask: bool) void;
-pub extern fn sapp_metal_get_device() ?*const c_void;
-pub extern fn sapp_metal_get_renderpass_descriptor() ?*const c_void;
-pub extern fn sapp_metal_get_drawable() ?*const c_void;
-pub extern fn sapp_macos_get_window() ?*const c_void;
-pub extern fn sapp_ios_get_window() ?*const c_void;
-pub extern fn sapp_d3d11_get_device() ?*const c_void;
-pub extern fn sapp_d3d11_get_device_context() ?*const c_void;
-pub extern fn sapp_d3d11_get_render_target_view() ?*const c_void;
-pub extern fn sapp_d3d11_get_depth_stencil_view() ?*const c_void;
-pub extern fn sapp_win32_get_hwnd() ?*const c_void;
-pub extern fn sapp_wgpu_get_device() ?*const c_void;
-pub extern fn sapp_wgpu_get_render_view() ?*const c_void;
-pub extern fn sapp_wgpu_get_resolve_view() ?*const c_void;
-pub extern fn sapp_wgpu_get_depth_stencil_view() ?*const c_void;
-pub extern fn sapp_android_get_native_activity() ?*const c_void;
+pub extern fn sapp_metal_get_device() ?*const anyopaque;
+pub extern fn sapp_metal_get_renderpass_descriptor() ?*const anyopaque;
+pub extern fn sapp_metal_get_drawable() ?*const anyopaque;
+pub extern fn sapp_macos_get_window() ?*const anyopaque;
+pub extern fn sapp_ios_get_window() ?*const anyopaque;
+pub extern fn sapp_d3d11_get_device() ?*const anyopaque;
+pub extern fn sapp_d3d11_get_device_context() ?*const anyopaque;
+pub extern fn sapp_d3d11_get_render_target_view() ?*const anyopaque;
+pub extern fn sapp_d3d11_get_depth_stencil_view() ?*const anyopaque;
+pub extern fn sapp_win32_get_hwnd() ?*const anyopaque;
+pub extern fn sapp_wgpu_get_device() ?*const anyopaque;
+pub extern fn sapp_wgpu_get_render_view() ?*const anyopaque;
+pub extern fn sapp_wgpu_get_resolve_view() ?*const anyopaque;
+pub extern fn sapp_wgpu_get_depth_stencil_view() ?*const anyopaque;
+pub extern fn sapp_android_get_native_activity() ?*const anyopaque;
 
 pub const struct_sapp_event = extern struct {
     frame_count: u64,
@@ -69,12 +69,12 @@ pub const struct_sapp_desc = extern struct {
     cleanup_cb: ?fn () callconv(.C) void,
     event_cb: ?fn ([*c]const sapp_event) callconv(.C) void,
     fail_cb: ?fn ([*c]const u8) callconv(.C) void,
-    user_data: ?*c_void,
-    init_userdata_cb: ?fn (?*c_void) callconv(.C) void,
-    frame_userdata_cb: ?fn (?*c_void) callconv(.C) void,
-    cleanup_userdata_cb: ?fn (?*c_void) callconv(.C) void,
-    event_userdata_cb: ?fn ([*c]const sapp_event, ?*c_void) callconv(.C) void,
-    fail_userdata_cb: ?fn ([*c]const u8, ?*c_void) callconv(.C) void,
+    user_data: ?*anyopaque,
+    init_userdata_cb: ?fn (?*anyopaque) callconv(.C) void,
+    frame_userdata_cb: ?fn (?*anyopaque) callconv(.C) void,
+    cleanup_userdata_cb: ?fn (?*anyopaque) callconv(.C) void,
+    event_userdata_cb: ?fn ([*c]const sapp_event, ?*anyopaque) callconv(.C) void,
+    fail_userdata_cb: ?fn ([*c]const u8, ?*anyopaque) callconv(.C) void,
     width: c_int,
     height: c_int,
     sample_count: c_int,

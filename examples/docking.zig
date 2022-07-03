@@ -1,6 +1,6 @@
 const std = @import("std");
 const upaya = @import("upaya");
-usingnamespace upaya.imgui;
+const imgui = upaya.imgui;
 
 pub fn main() !void {
     upaya.run(.{
@@ -16,8 +16,8 @@ fn init() void {}
 fn update() void {
     // note: the MenuItems do not automatically bind to keys. The shortcut field is just for the UI. You can add listeners for the key combos
     // like this:
-    const io = igGetIO();
-    if ((io.KeyCtrl or io.KeySuper) and ogKeyPressed(upaya.sokol.SAPP_KEYCODE_S)) {
+    const io = imgui.igGetIO();
+    if ((io.KeyCtrl or io.KeySuper) and imgui.ogKeyPressed(upaya.sokol.SAPP_KEYCODE_S)) {
         onSave();
     }
 
@@ -35,25 +35,25 @@ fn update() void {
         },
     } });
 
-    _ = igBegin("Properties", null, ImGuiWindowFlags_None);
-    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(255, 0, 0));
-    igEnd();
+    _ = imgui.igBegin("Properties", null, imgui.ImGuiWindowFlags_None);
+    imgui.ogAddRectFilled(imgui.igGetWindowDrawList(), imgui.ogGetCursorScreenPos(), imgui.ogGetContentRegionAvail(), upaya.colors.rgbToU32(255, 0, 0));
+    imgui.igEnd();
 
-    _ = igBegin("Top Left", null, ImGuiWindowFlags_None);
-    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(0, 0, 255));
-    igEnd();
+    _ = imgui.igBegin("Top Left", null, imgui.ImGuiWindowFlags_None);
+    imgui.ogAddRectFilled(imgui.igGetWindowDrawList(), imgui.ogGetCursorScreenPos(), imgui.ogGetContentRegionAvail(), upaya.colors.rgbToU32(0, 0, 255));
+    imgui.igEnd();
 
-    _ = igBegin("Bottom Left 1", null, ImGuiWindowFlags_None);
-    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(0, 255, 0));
-    igEnd();
+    _ = imgui.igBegin("Bottom Left 1", null, imgui.ImGuiWindowFlags_None);
+    imgui.ogAddRectFilled(imgui.igGetWindowDrawList(), imgui.ogGetCursorScreenPos(), imgui.ogGetContentRegionAvail(), upaya.colors.rgbToU32(0, 255, 0));
+    imgui.igEnd();
 
-    _ = igBegin("Bottom Left 2", null, ImGuiWindowFlags_None);
-    ogAddRectFilled(igGetWindowDrawList(), ogGetCursorScreenPos(), ogGetContentRegionAvail(), upaya.colors.rgbToU32(100, 100, 100));
-    igEnd();
+    _ = imgui.igBegin("Bottom Left 2", null, imgui.ImGuiWindowFlags_None);
+    imgui.ogAddRectFilled(imgui.igGetWindowDrawList(), imgui.ogGetCursorScreenPos(), imgui.ogGetContentRegionAvail(), upaya.colors.rgbToU32(100, 100, 100));
+    imgui.igEnd();
 
-    igSetNextWindowSize(.{ .x = 100, .y = 75 }, ImGuiCond_FirstUseEver);
-    _ = igBegin("Floating", null, ImGuiWindowFlags_None);
-    igEnd();
+    imgui.igSetNextWindowSize(.{ .x = 100, .y = 75 }, imgui.ImGuiCond_FirstUseEver);
+    _ = imgui.igBegin("Floating", null, imgui.ImGuiWindowFlags_None);
+    imgui.igEnd();
 }
 
 fn onSave() void {
@@ -63,19 +63,19 @@ fn onSave() void {
     }
 }
 
-fn setupDockLayout(id: ImGuiID) void {
+fn setupDockLayout(id: imgui.ImGuiID) void {
     var dock_main_id = id;
 
     // dock_main_id is the left node after this
-    const right_id = igDockBuilderSplitNode(dock_main_id, ImGuiDir_Right, 0.35, null, &dock_main_id);
-    igDockBuilderDockWindow("Properties", right_id);
+    const right_id = imgui.igDockBuilderSplitNode(dock_main_id, imgui.ImGuiDir_Right, 0.35, null, &dock_main_id);
+    imgui.igDockBuilderDockWindow("Properties", right_id);
 
     // dock_main_id is the bottom node after this
-    const tl_id = igDockBuilderSplitNode(dock_main_id, ImGuiDir_Up, 0.48, null, &dock_main_id);
-    igDockBuilderDockWindow("Top Left", tl_id);
+    const tl_id = imgui.igDockBuilderSplitNode(dock_main_id, imgui.ImGuiDir_Up, 0.48, null, &dock_main_id);
+    imgui.igDockBuilderDockWindow("Top Left", tl_id);
 
-    igDockBuilderDockWindow("Bottom Left 1", dock_main_id);
-    igDockBuilderDockWindow("Bottom Left 2", dock_main_id);
+    imgui.igDockBuilderDockWindow("Bottom Left 1", dock_main_id);
+    imgui.igDockBuilderDockWindow("Bottom Left 2", dock_main_id);
 
-    igDockBuilderFinish(id);
+    imgui.igDockBuilderFinish(id);
 }

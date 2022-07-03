@@ -1,16 +1,17 @@
 const std = @import("std");
 const upaya = @import("upaya");
-usingnamespace upaya.imgui;
-usingnamespace upaya.sokol;
+const builtin = @import("builtin");
+const imgui = upaya.imgui;
+const sokol = upaya.sokol;
 const Mat4 = upaya.math.Mat4;
 const Vec3 = upaya.math.Vec3;
 
 var state = struct {
     render_texture: upaya.RenderTexture = undefined,
-    offscreen_pass: sg_pass = undefined,
-    pass_action: sg_pass_action = undefined,
-    pipeline: sg_pipeline = undefined,
-    bindings: sg_bindings = undefined,
+    offscreen_pass: sokol.sg_pass = undefined,
+    pass_action: sokol.sg_pass_action = undefined,
+    pipeline: sokol.sg_pipeline = undefined,
+    bindings: sokol.sg_bindings = undefined,
 }{};
 
 const VertShaderParams = struct {
@@ -31,9 +32,9 @@ fn init() void {
 
     state.render_texture = upaya.RenderTexture.init(380, 256, .linear);
 
-    var pass_desc = std.mem.zeroes(sg_pass_desc);
+    var pass_desc = std.mem.zeroes(sokol.sg_pass_desc);
     pass_desc.color_attachments[0].image = state.render_texture.img;
-    state.offscreen_pass = sg_make_pass(&pass_desc);
+    state.offscreen_pass = sokol.sg_make_pass(&pass_desc);
 
     const vertices = [_]f32{
         // positions     // colors
@@ -77,56 +78,56 @@ fn init() void {
         22, 21, 20, 23, 22, 20,
     };
 
-    var buffer_desc = std.mem.zeroes(sg_buffer_desc);
+    var buffer_desc = std.mem.zeroes(sokol.sg_buffer_desc);
     buffer_desc.size = vertices.len * @sizeOf(f32);
     buffer_desc.content = &vertices[0];
-    state.bindings.vertex_buffers[0] = sg_make_buffer(&buffer_desc);
+    state.bindings.vertex_buffers[0] = sokol.sg_make_buffer(&buffer_desc);
 
-    buffer_desc = std.mem.zeroes(sg_buffer_desc);
+    buffer_desc = std.mem.zeroes(sokol.sg_buffer_desc);
     buffer_desc.type = .SG_BUFFERTYPE_INDEXBUFFER;
     buffer_desc.size = indices.len * @sizeOf(u16);
     buffer_desc.content = &indices[0];
-    state.bindings.index_buffer = sg_make_buffer(&buffer_desc);
+    state.bindings.index_buffer = sokol.sg_make_buffer(&buffer_desc);
 
-    var shader_desc = std.mem.zeroes(sg_shader_desc);
+    var shader_desc = std.mem.zeroes(sokol.sg_shader_desc);
     shader_desc.vs.uniform_blocks[0].size = @sizeOf(VertShaderParams);
     shader_desc.vs.uniform_blocks[0].uniforms[0] = .{
         .name = "mvp",
         .type = .SG_UNIFORMTYPE_MAT4,
         .array_count = 0,
     };
-    shader_desc.vs.source = if (std.Target.current.os.tag == .macos) @embedFile("assets/shaders/vertcolor_metal.vs") else @embedFile("assets/shaders/vertcolor_gl.vs");
-    shader_desc.fs.source = if (std.Target.current.os.tag == .macos) @embedFile("assets/shaders/vertcolor_metal.fs") else @embedFile("assets/shaders/vertcolor_gl.fs");
+    shader_desc.vs.source = if (builtin.os.tag == .macos) @embedFile("assets/shaders/vertcolor_metal.vs") else @embedFile("assets/shaders/vertcolor_gl.vs");
+    shader_desc.fs.source = if (builtin.os.tag == .macos) @embedFile("assets/shaders/vertcolor_metal.fs") else @embedFile("assets/shaders/vertcolor_gl.fs");
 
-    var pipeline_desc = std.mem.zeroes(sg_pipeline_desc);
+    var pipeline_desc = std.mem.zeroes(sokol.sg_pipeline_desc);
     pipeline_desc.layout.attrs[0].format = .SG_VERTEXFORMAT_FLOAT3;
     pipeline_desc.layout.attrs[1].format = .SG_VERTEXFORMAT_FLOAT4;
     pipeline_desc.layout.buffers[0].stride = 28;
-    pipeline_desc.shader = sg_make_shader(&shader_desc);
+    pipeline_desc.shader = sokol.sg_make_shader(&shader_desc);
     pipeline_desc.index_type = .SG_INDEXTYPE_UINT16;
     pipeline_desc.depth_stencil.depth_compare_func = .SG_COMPAREFUNC_LESS_EQUAL;
     pipeline_desc.depth_stencil.depth_write_enabled = false;
     pipeline_desc.blend.color_format = .SG_PIXELFORMAT_RGBA8;
     pipeline_desc.blend.depth_format = .SG_PIXELFORMAT_NONE;
     pipeline_desc.rasterizer.cull_mode = .SG_CULLMODE_BACK;
-    state.pipeline = sg_make_pipeline(&pipeline_desc);
+    state.pipeline = sokol.sg_make_pipeline(&pipeline_desc);
 }
 
 fn update() void {
     renderOffscreen();
 
-    if (igBegin("My First Window", null, ImGuiWindowFlags_None)) {
-        igText("Hello, world!");
-        igText("We get built-in icons too: " ++ icons.igloo);
+    if (imgui.igBegin("My First Window", null, imgui.ImGuiWindowFlags_None)) {
+        imgui.igText("Hello, world!");
+        imgui.igText("We get built-in icons too: " ++ imgui.icons.igloo);
     }
-    igEnd();
+    imgui.igEnd();
 
-    igPushStyleVarVec2(ImGuiStyleVar_WindowPadding, .{});
-    if (igBegin("Offscreen Rendering", null, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ogImage(state.render_texture.imTextureID(), state.render_texture.width, state.render_texture.height);
+    imgui.igPushStyleVarVec2(imgui.ImGuiStyleVar_WindowPadding, .{});
+    if (imgui.igBegin("Offscreen Rendering", null, imgui.ImGuiWindowFlags_AlwaysAutoResize)) {
+        imgui.ogImage(state.render_texture.imTextureID(), state.render_texture.width, state.render_texture.height);
     }
-    igEnd();
-    igPopStyleVar(1);
+    imgui.igEnd();
+    imgui.igPopStyleVar(1);
 }
 
 var rx: f32 = 0.0;
@@ -152,10 +153,10 @@ fn renderOffscreen() void {
         .mvp = mvp,
     };
 
-    sg_begin_pass(state.offscreen_pass, &state.pass_action);
-    sg_apply_pipeline(state.pipeline);
-    sg_apply_bindings(&state.bindings);
-    sg_apply_uniforms(.SG_SHADERSTAGE_VS, 0, &vs_params, @sizeOf(VertShaderParams));
-    sg_draw(0, 36, 1);
-    sg_end_pass();
+    sokol.sg_begin_pass(state.offscreen_pass, &state.pass_action);
+    sokol.sg_apply_pipeline(state.pipeline);
+    sokol.sg_apply_bindings(&state.bindings);
+    sokol.sg_apply_uniforms(.SG_SHADERSTAGE_VS, 0, &vs_params, @sizeOf(VertShaderParams));
+    sokol.sg_draw(0, 36, 1);
+    sokol.sg_end_pass();
 }
